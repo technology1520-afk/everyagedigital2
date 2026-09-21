@@ -391,8 +391,8 @@ class CatalogRepository {
     });
   }
 
-  public markLinkChecked(linkId: string): boolean {
-    const link = this.links.find(l => l.id === linkId);
+  public markLinkChecked(linkIdOrProductId: string): boolean {
+    const link = this.links.find(l => l.id === linkIdOrProductId || l.productId === linkIdOrProductId);
     if (!link) return false;
     const now = new Date().toISOString();
     link.lastCheckedAt = now;
@@ -402,6 +402,18 @@ class CatalogRepository {
       offer.lastCheckedAt = now;
     }
     return true;
+  }
+
+  public markPriceChecked(productId: string): string | null {
+    const link = this.links.find(l => l.productId === productId || l.id === productId);
+    if (!link) return null;
+    const now = new Date().toISOString();
+    link.lastCheckedAt = now;
+    const offer = this.offers.find(o => o.productId === link.productId);
+    if (offer) {
+      offer.lastCheckedAt = now;
+    }
+    return now;
   }
 
   public recordClick(linkIdOrProductId: string, referrer?: string, country: string = 'US'): string | null {
@@ -554,6 +566,122 @@ class CatalogRepository {
         hallucination: l.isHallucination
       })),
       hallucinationCount
+    };
+  }
+
+  // --- MCP SPECIFIC REUSABLE REPOSITORY METHODS ---
+  public getProductsForMcp(filter?: { status?: string; category?: string }) {
+    let prods = [...this.products];
+    if (filter?.status) {
+      prods = prods.filter(p => p.status === filter.status);
+    }
+    if (filter?.category) {
+      prods = prods.filter(p => p.category.toLowerCase() === filter.category!.toLowerCase());
+    }
+
+    return prods.map(p => {
+      const offer = this.offers.find(o => o.productId === p.id);
+      const link = this.links.find(l => l.productId === p.id);
+      return {
+        id: p.id,
+        slug: p.slug,
+        title: p.name,
+        category: p.category,
+        merchant: offer ? offer.merchantName : 'Direct',
+        price_min: offer ? offer.price : 0,
+        price_max: offer?.originalPrice ?? (offer ? offer.price : 0),
+        currency: offer ? offer.currency : 'USD',
+        status: p.status,
+        clicks: link ? link.clickCount : 0
+      };
+    });
+  }
+
+  public getClicksReport(days: number = 7) {
+    const now = Date.now();
+    const windowMs = days * 24 * 60 * 60 * 1000;
+    const filteredClicks = this.clicks.filter(c => (now - new Date(c.ts).getTime()) <= windowMs);
+
+    // Group clicks by day (YYYY-MM-DD)
+    const dayMap: Record<string, number> = {};
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(now - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      dayMap[d] = 0;
+    }
+    for (const c of filteredClicks) {
+      const d = c.ts.split('T')[0];
+      if (dayMap[d] !== undefined) {
+        dayMap[d] += 1;
+      } else {
+        dayMap[d] = 1;
+      }
+    }
+    const clicks_by_day = Object.entries(dayMap).map(([date, count]) => ({ date, count }));
+
+    // Top products by clicks
+    const prodClickMap: Record<string, number> = {};
+    for (const c of filteredClicks) {
+      prodClickMap[c.productId] = (prodClickMap[c.productId] || 0) + 1;
+    }
+
+    const top_products = Object.entries(prodClickMap)
+      .map(([productId, clicks]) => {
+        const prod = this.products.find(p => p.id === productId);
+        return {
+          title: prod ? prod.name : productId,
+          clicks
+        };
+      })
+      .sort((a, b) => b.clicks - a.clicks)
+      .slice(0, 10);
+
+    return {
+      total_clicks: filteredClicks.length,
+      clicks_by_day,
+      top_products
+    };
+  }
+
+  public getStalePricesReport() {
+    const now = Date.now();
+    const results: { title: string; url: string; lastCheckedAt: string; staleAfter: number }[] = [];
+    for (const p of this.products) {
+      const link = this.links.find(l => l.productId === p.id);
+      if (!link) continue;
+      const checked = new Date(link.lastCheckedAt).getTime();
+      const staleLimit = link.staleAfterDays * 24 * 60 * 60 * 1000;
+      if ((now - checked) > staleLimit) {
+        results.push({
+          title: p.name,
+          url: link.url,
+          lastCheckedAt: link.lastCheckedAt,
+          staleAfter: link.staleAfterDays
+        });
+      }
+    }
+    return results;
+  }
+
+  public getStoreMcpStats() {
+    const products_by_status = {
+      draft: this.products.filter(p => p.status === 'draft').length,
+      active: this.products.filter(p => p.status === 'active').length,
+      paused: this.products.filter(p => p.status === 'paused').length,
+      archived: this.products.filter(p => p.status === 'archived').length
+    };
+
+    const now = Date.now();
+    const ms7d = 7 * 24 * 60 * 60 * 1000;
+    const ms30d = 30 * 24 * 60 * 60 * 1000;
+    const clicks_7d = this.clicks.filter(c => (now - new Date(c.ts).getTime()) <= ms7d).length;
+    const clicks_30d = this.clicks.filter(c => (now - new Date(c.ts).getTime()) <= ms30d).length;
+    const assistant_conversations_7d = this.assistantLogs.filter(l => (now - new Date(l.ts).getTime()) <= ms7d).length;
+
+    return {
+      products_by_status,
+      clicks_7d,
+      clicks_30d,
+      assistant_conversations_7d
     };
   }
 }
