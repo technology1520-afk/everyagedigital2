@@ -183,7 +183,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div className="pt-2 flex flex-col sm:flex-row gap-3">
               {offer ? (
                 <a
-                  href={offer.affiliateUrl}
+                  href={`/api/go/${product.id}`}
                   target="_blank"
                   rel="sponsored nofollow noopener"
                   className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-sm font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors shadow-sm"

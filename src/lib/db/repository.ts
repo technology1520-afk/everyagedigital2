@@ -1,0 +1,559 @@
+import { 
+  Product, 
+  MerchantOffer, 
+  OwnedProduct, 
+  Collection, 
+  Book,
+  MerchantName
+} from '../../types';
+import { 
+  PRODUCTS as INITIAL_PRODUCTS, 
+  MERCHANT_OFFERS as INITIAL_OFFERS, 
+  OWNED_PRODUCTS as INITIAL_OWNED, 
+  COLLECTIONS as INITIAL_COLLECTIONS, 
+  BOOKS as INITIAL_BOOKS 
+} from '../../data/seedCatalog';
+import { 
+  ProductInput, 
+  ProductInputSchema, 
+  ProductStatus, 
+  CategoryInput, 
+  OwnProductInput, 
+  validateAffiliateUrlForNetwork, 
+  MerchantNetwork 
+} from './schema';
+
+export interface AffiliateLinkRecord {
+  id: string;
+  productId: string;
+  network: MerchantNetwork;
+  url: string;
+  relTag: string;
+  lastCheckedAt: string;
+  staleAfterDays: number;
+  clickCount: number;
+}
+
+export interface CategoryRecord {
+  id: string;
+  slug: string;
+  name: string;
+  parentId?: string;
+  sortOrder: number;
+}
+
+export interface ClickRecord {
+  id: string;
+  linkId: string;
+  productId: string;
+  ts: string;
+  referrer?: string;
+  country: string;
+}
+
+export interface AssistantLogRecord {
+  id: string;
+  ts: string;
+  sessionId: string;
+  userMessage: string;
+  assistantReply: string;
+  productsReferenced: string[];
+  isHallucination: boolean;
+}
+
+export interface DashboardStats {
+  totalActiveProducts: number;
+  clicksLast7d: number;
+  clicksLast30d: number;
+  topProduct?: { id: string; name: string; clicks: number };
+  topProducts: { id: string; name: string; merchant: string; clicks: number; price: number }[];
+  staleProducts: { id: string; name: string; lastCheckedAt: string; daysAgo: number }[];
+  assistantConversations7d: number;
+  recentQuestions: { question: string; ts: string; hallucination: boolean }[];
+  hallucinationCount: number;
+}
+
+// In-Memory Repository Store with Global Singleton guarantee in development
+class CatalogRepository {
+  private products: Product[] = [];
+  private offers: MerchantOffer[] = [];
+  private links: AffiliateLinkRecord[] = [];
+  private categories: CategoryRecord[] = [];
+  private ownedProducts: OwnedProduct[] = [];
+  private collections: Collection[] = [];
+  private books: Book[] = [];
+  private clicks: ClickRecord[] = [];
+  private assistantLogs: AssistantLogRecord[] = [];
+
+  constructor() {
+    this.reset();
+  }
+
+  public reset() {
+    this.products = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+    this.offers = JSON.parse(JSON.stringify(INITIAL_OFFERS));
+    this.ownedProducts = JSON.parse(JSON.stringify(INITIAL_OWNED));
+    this.collections = JSON.parse(JSON.stringify(INITIAL_COLLECTIONS));
+    this.books = JSON.parse(JSON.stringify(INITIAL_BOOKS));
+
+    // Categories initialization
+    const uniqueCats = Array.from(new Set(this.products.map(p => p.category)));
+    this.categories = uniqueCats.map((name, idx) => ({
+      id: `cat-${idx + 1}`,
+      slug: name.toLowerCase().replace(/\s+/g, '-'),
+      name,
+      sortOrder: idx
+    }));
+
+    // Affiliate links initialization from offers
+    this.links = this.offers.map((o, idx) => {
+      let network: MerchantNetwork = 'direct';
+      if (o.merchantName === 'Amazon') network = 'amazon';
+      else if (o.merchantName === 'Gumroad') network = 'gumroad';
+
+      return {
+        id: `link-${idx + 1}`,
+        productId: o.productId,
+        network,
+        url: o.affiliateUrl,
+        relTag: 'sponsored nofollow noopener',
+        lastCheckedAt: o.lastCheckedAt,
+        staleAfterDays: o.staleAfterDays,
+        clickCount: Math.floor(Math.random() * 45) + 12 // realistic seed clicks
+      };
+    });
+
+    // Seed realistic click logs
+    this.clicks = [];
+    const now = Date.now();
+    for (const l of this.links) {
+      for (let i = 0; i < l.clickCount; i++) {
+        const daysBack = Math.random() * 25;
+        this.clicks.push({
+          id: `click_${Math.random().toString(36).slice(2, 9)}`,
+          linkId: l.id,
+          productId: l.productId,
+          ts: new Date(now - daysBack * 24 * 60 * 60 * 1000).toISOString(),
+          referrer: i % 2 === 0 ? 'https://google.com' : 'Direct',
+          country: 'US'
+        });
+      }
+    }
+
+    // Seed sample assistant logs
+    this.assistantLogs = [
+      {
+        id: 'asst-1',
+        ts: new Date(now - 3600000).toISOString(),
+        sessionId: 'sess_seed_1',
+        userMessage: 'Recommend an ergonomic mouse under $110',
+        assistantReply: 'I recommend the Logitech MX Master 3S Wireless Mouse ($99.99). It fits within your $110 budget.',
+        productsReferenced: ['prod-2'],
+        isHallucination: false
+      },
+      {
+        id: 'asst-2',
+        ts: new Date(now - 7200000).toISOString(),
+        sessionId: 'sess_seed_2',
+        userMessage: 'Best desk lighting for dual monitors',
+        assistantReply: 'The BenQ ScreenBar Plus Monitor Light provides asymmetric glare-free desk illumination.',
+        productsReferenced: ['prod-1'],
+        isHallucination: false
+      }
+    ];
+  }
+
+  // --- PRODUCTS CRUD ---
+  public getProducts(filter?: { status?: string; category?: string; merchant?: string; staleOnly?: boolean }): Product[] {
+    let list = [...this.products];
+    if (filter?.status && filter.status !== 'all') {
+      list = list.filter(p => p.status === filter.status);
+    }
+    if (filter?.category && filter.category !== 'all') {
+      list = list.filter(p => p.category.toLowerCase() === filter.category!.toLowerCase());
+    }
+    if (filter?.merchant && filter.merchant !== 'all') {
+      list = list.filter(p => {
+        const offer = this.offers.find(o => o.productId === p.id);
+        return offer && offer.merchantName.toLowerCase() === filter.merchant!.toLowerCase();
+      });
+    }
+    if (filter?.staleOnly) {
+      list = list.filter(p => {
+        const offer = this.offers.find(o => o.productId === p.id);
+        if (!offer) return false;
+        const checked = new Date(offer.lastCheckedAt).getTime();
+        const staleLimit = offer.staleAfterDays * 24 * 60 * 60 * 1000;
+        return (Date.now() - checked) > staleLimit;
+      });
+    }
+    return list;
+  }
+
+  public getProductById(id: string): Product | undefined {
+    return this.products.find(p => p.id === id);
+  }
+
+  public getProductBySlug(slug: string): Product | undefined {
+    return this.products.find(p => p.slug === slug);
+  }
+
+  public createProduct(input: ProductInput): { success: boolean; product?: Product; error?: string } {
+    // 1. Validate Input
+    const parsed = ProductInputSchema.safeParse(input);
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0]?.message || 'Invalid input' };
+    }
+
+    const data = parsed.data;
+
+    // 2. Enforce slug uniqueness
+    if (this.products.some(p => p.slug === data.slug)) {
+      return { success: false, error: `Product slug "${data.slug}" is already taken.` };
+    }
+
+    // 3. Find category and merchant names
+    const category = this.categories.find(c => c.id === data.categoryId || c.name === data.categoryId)?.name || data.categoryId;
+    let merchantName = data.merchantId;
+    let network: MerchantNetwork = 'direct';
+
+    if (data.merchantId.toLowerCase().includes('amazon')) {
+      merchantName = 'Amazon';
+      network = 'amazon';
+    } else if (data.merchantId.toLowerCase().includes('gumroad')) {
+      merchantName = 'Gumroad';
+      network = 'gumroad';
+    }
+
+    // 4. Validate affiliate URL format per network
+    if (!validateAffiliateUrlForNetwork(data.affiliateUrl, network)) {
+      return { success: false, error: `Affiliate URL is not valid for ${network} network format.` };
+    }
+
+    const newId = `prod-${Date.now()}`;
+    const nowIso = new Date().toISOString();
+
+    const newProduct: Product = {
+      id: newId,
+      slug: data.slug,
+      name: data.title,
+      brand: data.brand || 'EveryAge Curated',
+      description: data.description,
+      productType: data.isOwned ? 'digital' : 'physical',
+      category,
+      subcategory: 'General',
+      useCases: ['Daily productivity', 'Everyday utility'],
+      bestFor: data.bestFor || 'Shoppers looking for reliable tested essentials.',
+      notFor: data.notFor || 'Users seeking cheap disposable alternatives.',
+      features: ['Editorial vetted', 'Verified merchant warranty'],
+      benefits: ['High durability', 'Direct merchant fulfillment'],
+      limitations: data.notFor ? [data.notFor] : ['Standard merchant shipping policies apply'],
+      sourceProvider: merchantName,
+      imageUrl: data.imageUrl || 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=800&q=80',
+      imageSource: 'Brand Press Kit',
+      imageLicense: 'Official Affiliate Feed',
+      altText: data.title,
+      region: ['US', 'Global'],
+      language: 'en',
+      status: data.status,
+      editorialNotes: 'Added via EveryAge Digital admin control center.',
+      handsOnTested: true,
+      editorialConfidence: 'High',
+      editorialBadge: data.editorialBadge as Product['editorialBadge'],
+      createdAt: nowIso,
+      updatedAt: nowIso
+    };
+
+    const newOffer: MerchantOffer = {
+      id: `off-${newId}`,
+      productId: newId,
+      merchantName: merchantName as MerchantName,
+      providerName: merchantName,
+      affiliateProgram: `prog-${network}`,
+      originalUrl: data.affiliateUrl,
+      affiliateUrl: data.affiliateUrl,
+      currency: data.currency,
+      price: data.priceMin || 0,
+      originalPrice: data.priceMax,
+      priceType: 'fixed',
+      availability: 'in_stock',
+      region: ['Global'],
+      lastCheckedAt: nowIso,
+      staleAfterDays: 7,
+      active: true
+    };
+
+    const newLink: AffiliateLinkRecord = {
+      id: `link-${newId}`,
+      productId: newId,
+      network,
+      url: data.affiliateUrl,
+      relTag: 'sponsored nofollow noopener',
+      lastCheckedAt: nowIso,
+      staleAfterDays: 7,
+      clickCount: 0
+    };
+
+    this.products.unshift(newProduct);
+    this.offers.unshift(newOffer);
+    this.links.unshift(newLink);
+
+    return { success: true, product: newProduct };
+  }
+
+  public updateProduct(id: string, input: Partial<ProductInput>): { success: boolean; product?: Product; error?: string } {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index === -1) return { success: false, error: 'Product not found' };
+
+    const current = this.products[index];
+
+    // If slug changed, verify uniqueness
+    if (input.slug && input.slug !== current.slug) {
+      if (this.products.some(p => p.slug === input.slug && p.id !== id)) {
+        return { success: false, error: `Slug "${input.slug}" is already taken.` };
+      }
+      current.slug = input.slug;
+    }
+
+    if (input.title) current.name = input.title;
+    if (input.description) current.description = input.description;
+    if (input.brand !== undefined) current.brand = input.brand;
+    if (input.status) current.status = input.status;
+    if (input.bestFor) current.bestFor = input.bestFor;
+    if (input.notFor) current.notFor = input.notFor;
+    if (input.editorialBadge !== undefined) current.editorialBadge = input.editorialBadge as Product['editorialBadge'];
+    if (input.imageUrl) current.imageUrl = input.imageUrl;
+
+    current.updatedAt = new Date().toISOString();
+
+    // Update offer price if passed
+    const offer = this.offers.find(o => o.productId === id);
+    if (offer && input.priceMin !== undefined) {
+      offer.price = input.priceMin;
+      offer.lastCheckedAt = new Date().toISOString();
+    }
+
+    // Update link URL if passed
+    if (input.affiliateUrl) {
+      const link = this.links.find(l => l.productId === id);
+      if (link) {
+        link.url = input.affiliateUrl;
+        link.lastCheckedAt = new Date().toISOString();
+      }
+      if (offer) {
+        offer.affiliateUrl = input.affiliateUrl;
+      }
+    }
+
+    return { success: true, product: current };
+  }
+
+  public deleteProduct(id: string): boolean {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index === -1) return false;
+    this.products.splice(index, 1);
+    this.offers = this.offers.filter(o => o.productId !== id);
+    this.links = this.links.filter(l => l.productId !== id);
+    return true;
+  }
+
+  public toggleProductStatus(id: string, status: ProductStatus): Product | undefined {
+    const product = this.products.find(p => p.id === id);
+    if (!product) return undefined;
+    product.status = status;
+    product.updatedAt = new Date().toISOString();
+    return product;
+  }
+
+  public getOfferForProduct(productId: string): MerchantOffer | undefined {
+    return this.offers.find(o => o.productId === productId && o.active);
+  }
+
+  public getOffers(): MerchantOffer[] {
+    return this.offers;
+  }
+
+  // --- AFFILIATE LINKS & CLICK TRACKING ---
+  public getLinks(): (AffiliateLinkRecord & { productName: string; merchant: string })[] {
+    return this.links.map(link => {
+      const prod = this.products.find(p => p.id === link.productId);
+      const offer = this.offers.find(o => o.productId === link.productId);
+      return {
+        ...link,
+        productName: prod ? prod.name : 'Unknown Product',
+        merchant: offer ? offer.merchantName : link.network
+      };
+    });
+  }
+
+  public markLinkChecked(linkId: string): boolean {
+    const link = this.links.find(l => l.id === linkId);
+    if (!link) return false;
+    const now = new Date().toISOString();
+    link.lastCheckedAt = now;
+
+    const offer = this.offers.find(o => o.productId === link.productId);
+    if (offer) {
+      offer.lastCheckedAt = now;
+    }
+    return true;
+  }
+
+  public recordClick(linkIdOrProductId: string, referrer?: string, country: string = 'US'): string | null {
+    // Lookup link by linkId OR by productId
+    const link = this.links.find(l => l.id === linkIdOrProductId || l.productId === linkIdOrProductId);
+    if (!link) return null;
+
+    link.clickCount += 1;
+    this.clicks.push({
+      id: `click_${Date.now()}`,
+      linkId: link.id,
+      productId: link.productId,
+      ts: new Date().toISOString(),
+      referrer,
+      country
+    });
+
+    return link.url;
+  }
+
+  // --- CATEGORIES ---
+  public getCategories(): (CategoryRecord & { productCount: number })[] {
+    return this.categories.map(cat => ({
+      ...cat,
+      productCount: this.products.filter(p => p.category.toLowerCase() === cat.name.toLowerCase()).length
+    }));
+  }
+
+  public createCategory(input: CategoryInput): CategoryRecord {
+    const newCat: CategoryRecord = {
+      id: `cat-${Date.now()}`,
+      slug: input.slug,
+      name: input.name,
+      parentId: input.parentId,
+      sortOrder: input.sortOrder
+    };
+    this.categories.push(newCat);
+    return newCat;
+  }
+
+  public deleteCategory(id: string): boolean {
+    const idx = this.categories.findIndex(c => c.id === id);
+    if (idx === -1) return false;
+    this.categories.splice(idx, 1);
+    return true;
+  }
+
+  // --- OWN PRODUCTS ---
+  public getOwnProducts(): OwnedProduct[] {
+    return this.ownedProducts;
+  }
+
+  public updateOwnProduct(id: string, input: Partial<OwnProductInput>): OwnedProduct | undefined {
+    const p = this.ownedProducts.find(item => item.id === id);
+    if (!p) return undefined;
+    if (input.title) p.title = input.title;
+    if (input.price !== undefined) p.price = input.price;
+    if (input.deliveryInfo) p.tagline = input.deliveryInfo;
+    if (input.refundPolicy) p.refundPolicy = input.refundPolicy;
+    if (input.checkoutProvider) p.paymentProvider = input.checkoutProvider === 'lemonsqueezy' ? 'Lemon Squeezy' : input.checkoutProvider === 'paddle' ? 'Paddle' : 'Demo';
+    p.updatedAt = new Date().toISOString();
+    return p;
+  }
+
+  // --- ASSISTANT LOGS & HALLUCINATION ALARM ---
+  public logAssistantConversation(sessionId: string, userMessage: string, reply: string, referencedProductIds: string[]): AssistantLogRecord {
+    // Hallucination Alarm: check if any referenced product ID does NOT exist in catalog!
+    const catalogIds = new Set(this.products.map(p => p.id));
+    const hasUncatalogedItem = referencedProductIds.some(id => !catalogIds.has(id));
+
+    const log: AssistantLogRecord = {
+      id: `asst-${Date.now()}`,
+      ts: new Date().toISOString(),
+      sessionId,
+      userMessage,
+      assistantReply: reply,
+      productsReferenced: referencedProductIds,
+      isHallucination: hasUncatalogedItem
+    };
+
+    this.assistantLogs.unshift(log);
+    return log;
+  }
+
+  public getAssistantLogs(): AssistantLogRecord[] {
+    return this.assistantLogs;
+  }
+
+  // --- DASHBOARD STATS ---
+  public getDashboardStats(): DashboardStats {
+    const activeProducts = this.products.filter(p => p.status === 'active');
+    const now = Date.now();
+    const ms7d = 7 * 24 * 60 * 60 * 1000;
+    const ms30d = 30 * 24 * 60 * 60 * 1000;
+
+    const clicks7d = this.clicks.filter(c => (now - new Date(c.ts).getTime()) <= ms7d).length;
+    const clicks30d = this.clicks.filter(c => (now - new Date(c.ts).getTime()) <= ms30d).length;
+
+    // Top products by clicks
+    const productClickMap: Record<string, number> = {};
+    for (const link of this.links) {
+      productClickMap[link.productId] = link.clickCount;
+    }
+
+    const sortedByClicks = [...this.products]
+      .map(p => {
+        const offer = this.offers.find(o => o.productId === p.id);
+        return {
+          id: p.id,
+          name: p.name,
+          merchant: offer ? offer.merchantName : 'Partner',
+          clicks: productClickMap[p.id] || 0,
+          price: offer ? offer.price : 0
+        };
+      })
+      .sort((a, b) => b.clicks - a.clicks);
+
+    // Stale products
+    const staleProducts = this.products
+      .map(p => {
+        const offer = this.offers.find(o => o.productId === p.id);
+        if (!offer) return null;
+        const diffDays = Math.floor((now - new Date(offer.lastCheckedAt).getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays > offer.staleAfterDays) {
+          return {
+            id: p.id,
+            name: p.name,
+            lastCheckedAt: offer.lastCheckedAt,
+            daysAgo: diffDays
+          };
+        }
+        return null;
+      })
+      .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+    const conversations7d = this.assistantLogs.filter(l => (now - new Date(l.ts).getTime()) <= ms7d).length;
+    const hallucinationCount = this.assistantLogs.filter(l => l.isHallucination).length;
+
+    return {
+      totalActiveProducts: activeProducts.length,
+      clicksLast7d: clicks7d,
+      clicksLast30d: clicks30d,
+      topProduct: sortedByClicks[0],
+      topProducts: sortedByClicks.slice(0, 10),
+      staleProducts,
+      assistantConversations7d: conversations7d,
+      recentQuestions: this.assistantLogs.slice(0, 5).map(l => ({
+        question: l.userMessage,
+        ts: l.ts,
+        hallucination: l.isHallucination
+      })),
+      hallucinationCount
+    };
+  }
+}
+
+// Global Singleton to preserve repository mutations across Hot Reloads & Server Actions
+const globalForRepo = global as unknown as { catalogRepository: CatalogRepository };
+export const catalogRepository = globalForRepo.catalogRepository || new CatalogRepository();
+if (process.env.NODE_ENV !== 'production') globalForRepo.catalogRepository = catalogRepository;

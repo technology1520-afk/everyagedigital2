@@ -103,7 +103,7 @@ export function ProductCard({ item, showCompare = true, className = '' }: Produc
           <div className="flex items-center gap-2">
             {offer ? (
               <a
-                href={offer.affiliateUrl}
+                href={`/api/go/${product.id}`}
                 target="_blank"
                 rel="sponsored nofollow noopener"
                 className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors shadow-xs"

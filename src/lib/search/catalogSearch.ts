@@ -8,13 +8,12 @@ import {
   SourceEvidence 
 } from '../../types';
 import { 
-  PRODUCTS, 
-  MERCHANT_OFFERS, 
   OWNED_PRODUCTS, 
   COLLECTIONS, 
   BOOKS, 
   SOURCE_EVIDENCES 
 } from '../../data/seedCatalog';
+import { catalogRepository } from '../db/repository';
 import { getAffiliateAdapter, FreshnessResult } from '../affiliate/adapters';
 
 export interface EnrichedProduct {
@@ -32,7 +31,7 @@ export interface SearchResult {
 }
 
 export function getOfferForProduct(productId: string): MerchantOffer | undefined {
-  return MERCHANT_OFFERS.find(o => o.productId === productId && o.active);
+  return catalogRepository.getOfferForProduct(productId);
 }
 
 export function enrichProduct(product: Product): EnrichedProduct {
@@ -48,19 +47,20 @@ export function enrichProduct(product: Product): EnrichedProduct {
 }
 
 export function searchCatalog(params: FilterParams = {}): SearchResult {
-  let filtered = [...PRODUCTS];
+  const allActive = catalogRepository.getProducts({ status: 'active' });
+  let filtered = [...allActive];
 
   // 1. Text Query Search
   if (params.query && params.query.trim()) {
     const q = params.query.toLowerCase().trim();
     filtered = filtered.filter(p => {
       const matchName = p.name.toLowerCase().includes(q);
-      const matchBrand = p.brand.toLowerCase().includes(q);
+      const matchBrand = (p.brand || '').toLowerCase().includes(q);
       const matchDesc = p.description.toLowerCase().includes(q);
       const matchCat = p.category.toLowerCase().includes(q);
       const matchSub = p.subcategory.toLowerCase().includes(q);
       const matchCases = p.useCases.some(u => u.toLowerCase().includes(q));
-      const matchBest = p.bestFor.toLowerCase().includes(q);
+      const matchBest = (p.bestFor || '').toLowerCase().includes(q);
       return matchName || matchBrand || matchDesc || matchCat || matchSub || matchCases || matchBest;
     });
   }
@@ -75,7 +75,7 @@ export function searchCatalog(params: FilterParams = {}): SearchResult {
     filtered = filtered.filter(p => p.subcategory.toLowerCase() === params.subcategory!.toLowerCase());
   }
 
-  // 4. Product Type Filter (e.g. physical vs digital)
+  // 4. Product Type Filter
   if (params.productType && params.productType !== 'all') {
     filtered = filtered.filter(p => p.productType === params.productType);
   }
@@ -134,13 +134,13 @@ export function searchCatalog(params: FilterParams = {}): SearchResult {
       break;
     case 'relevance':
     default:
-      // Relevance leaves text match ranking order intact
       break;
   }
 
-  const allCategories = Array.from(new Set(PRODUCTS.map(p => p.category)));
-  const allMerchants = Array.from(new Set(MERCHANT_OFFERS.map(o => o.merchantName)));
-  const allPrices = MERCHANT_OFFERS.map(o => o.price);
+  const allCategories = Array.from(new Set(allActive.map(p => p.category)));
+  const allOffers = catalogRepository.getOffers();
+  const allMerchants = Array.from(new Set(allOffers.map(o => o.merchantName)));
+  const allPrices = allOffers.map(o => o.price);
   const minPrice = allPrices.length ? Math.min(...allPrices) : 0;
   const maxPrice = allPrices.length ? Math.max(...allPrices) : 500;
 
@@ -154,13 +154,13 @@ export function searchCatalog(params: FilterParams = {}): SearchResult {
 }
 
 export function getProductBySlug(slug: string): EnrichedProduct | undefined {
-  const product = PRODUCTS.find(p => p.slug === slug);
+  const product = catalogRepository.getProductBySlug(slug);
   if (!product) return undefined;
   return enrichProduct(product);
 }
 
 export function getProductById(id: string): EnrichedProduct | undefined {
-  const product = PRODUCTS.find(p => p.id === id);
+  const product = catalogRepository.getProductById(id);
   if (!product) return undefined;
   return enrichProduct(product);
 }
@@ -170,8 +170,9 @@ export function getSourceEvidenceForProduct(productId: string): SourceEvidence[]
 }
 
 export function getAllCategories(): { name: string; count: number; slug: string }[] {
+  const products = catalogRepository.getProducts({ status: 'active' });
   const counts: Record<string, number> = {};
-  for (const p of PRODUCTS) {
+  for (const p of products) {
     counts[p.category] = (counts[p.category] || 0) + 1;
   }
   return Object.entries(counts).map(([name, count]) => ({
@@ -182,8 +183,9 @@ export function getAllCategories(): { name: string; count: number; slug: string 
 }
 
 export function getAllMerchants(): { name: string; count: number; slug: string }[] {
+  const offers = catalogRepository.getOffers();
   const counts: Record<string, number> = {};
-  for (const o of MERCHANT_OFFERS) {
+  for (const o of offers) {
     counts[o.merchantName] = (counts[o.merchantName] || 0) + 1;
   }
   return Object.entries(counts).map(([name, count]) => ({
@@ -194,7 +196,7 @@ export function getAllMerchants(): { name: string; count: number; slug: string }
 }
 
 export function getDeals(): EnrichedProduct[] {
-  return PRODUCTS
+  return catalogRepository.getProducts({ status: 'active' })
     .map(enrichProduct)
     .filter(item => {
       if (!item.offer) return false;

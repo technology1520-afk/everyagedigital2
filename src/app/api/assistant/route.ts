@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { generateAssistantResponse } from '../../../lib/assistant/receptionist';
+import { catalogRepository } from '../../../lib/db/repository';
 
 const assistantQuerySchema = z.object({
   message: z.string().min(1).max(500),
@@ -30,6 +31,15 @@ export async function POST(request: Request) {
       productType,
       preferredMerchant
     });
+
+    // Log conversation to catalog repository for owner admin dashboard
+    const productIds = response.recommendedProducts.map(p => p.id);
+    catalogRepository.logAssistantConversation(
+      `sess_${Date.now()}`,
+      message,
+      response.reply,
+      productIds
+    );
 
     return NextResponse.json(response);
   } catch {
