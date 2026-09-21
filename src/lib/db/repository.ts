@@ -374,14 +374,19 @@ class CatalogRepository {
   }
 
   // --- AFFILIATE LINKS & CLICK TRACKING ---
-  public getLinks(): (AffiliateLinkRecord & { productName: string; merchant: string })[] {
+  public getLinks(): (AffiliateLinkRecord & { productName: string; merchant: string; isStale: boolean; daysAgo: number })[] {
+    const now = Date.now();
     return this.links.map(link => {
       const prod = this.products.find(p => p.id === link.productId);
       const offer = this.offers.find(o => o.productId === link.productId);
+      const checkedTime = new Date(link.lastCheckedAt).getTime();
+      const daysAgo = Math.floor((now - checkedTime) / (1000 * 60 * 60 * 24));
       return {
         ...link,
         productName: prod ? prod.name : 'Unknown Product',
-        merchant: offer ? offer.merchantName : link.network
+        merchant: offer ? offer.merchantName : link.network,
+        daysAgo,
+        isStale: daysAgo > link.staleAfterDays
       };
     });
   }

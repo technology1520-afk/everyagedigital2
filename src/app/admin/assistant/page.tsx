@@ -1,14 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { 
-  Bot, 
   ShieldCheck, 
   AlertOctagon, 
   CheckCircle2, 
-  Clock, 
-  MessageSquare,
-  PackageCheck,
-  ExternalLink
+  PackageCheck, 
+  ExternalLink 
 } from 'lucide-react';
 import { catalogRepository } from '../../../lib/db/repository';
 
@@ -60,7 +57,7 @@ export default function AdminAssistantLogsPage() {
                 : `ALERT: ${hallucinationCount} Ungrounded Reference(s) Detected!`}
             </div>
             <p className="leading-relaxed opacity-90">
-              The AI receptionist is strictly constrained to query existing catalog products via <code className="bg-white/60 px-1 py-0.5 rounded font-mono">catalogSearch</code> and never invents unlisted models, unverified prices, or fake reviews.
+              The AI receptionist is strictly constrained to query existing catalog products via <code className="bg-white/60 px-1 py-0.5 rounded font-mono">catalogSearch</code> and never invents unlisted models, unverified prices, or deceptive claims.
             </p>
           </div>
         </div>
@@ -103,7 +100,7 @@ export default function AdminAssistantLogsPage() {
 
                   {/* User Query */}
                   <td className="py-3 px-4 font-semibold text-neutral-900 max-w-xs">
-                    "{log.userMessage}"
+                    &ldquo;{log.userMessage}&rdquo;
                   </td>
 
                   {/* Sage Response Preview */}

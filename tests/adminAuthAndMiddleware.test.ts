@@ -1,0 +1,58 @@
+import { describe, it, expect } from 'vitest';
+import { 
+  createSessionToken, 
+  verifySessionToken, 
+  DEFAULT_ADMIN_EMAIL, 
+  ADMIN_COOKIE_NAME 
+} from '../src/lib/auth/adminAuth';
+import { middleware } from '../src/middleware';
+import { NextRequest } from 'next/server';
+
+describe('Master Prompt §3.1 & §13: Admin Auth & Route Protection', () => {
+  it('creates and verifies valid owner session tokens', () => {
+    const token = createSessionToken(DEFAULT_ADMIN_EMAIL);
+    expect(typeof token).toBe('string');
+
+    const session = verifySessionToken(token);
+    expect(session).not.toBeNull();
+    expect(session?.email).toBe(DEFAULT_ADMIN_EMAIL);
+    expect(session?.role).toBe('owner');
+  });
+
+  it('rejects invalid or corrupted session tokens', () => {
+    expect(verifySessionToken(undefined)).toBeNull();
+    expect(verifySessionToken('')).toBeNull();
+    expect(verifySessionToken('invalid-base64-random-string')).toBeNull();
+  });
+
+  it('middleware redirects unauthenticated requests to /admin/login', () => {
+    const request = new NextRequest('http://localhost:3000/admin/products');
+    const response = middleware(request);
+
+    // Should redirect (307 or 302/308 in Next.js redirect)
+    expect(response.status).toBe(307);
+    const location = response.headers.get('location');
+    expect(location).toContain('/admin/login');
+    expect(location).toContain('from=%2Fadmin%2Fproducts');
+  });
+
+  it('middleware permits unauthenticated access to /admin/login', () => {
+    const request = new NextRequest('http://localhost:3000/admin/login');
+    const response = middleware(request);
+
+    // NextResponse.next() returns 200 header flow
+    expect(response.status).toBe(200);
+  });
+
+  it('middleware allows authenticated owner session into /admin routes', () => {
+    const token = createSessionToken(DEFAULT_ADMIN_EMAIL);
+    const request = new NextRequest('http://localhost:3000/admin/products', {
+      headers: {
+        cookie: `${ADMIN_COOKIE_NAME}=${token}`
+      }
+    });
+
+    const response = middleware(request);
+    expect(response.status).toBe(200);
+  });
+});

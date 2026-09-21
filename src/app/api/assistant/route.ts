@@ -33,11 +33,11 @@ export async function POST(request: Request) {
     });
 
     // Log conversation to catalog repository for owner admin dashboard
-    const productIds = response.recommendedProducts.map(p => p.id);
+    const productIds = response.recommendations?.map(r => r.product.id) || [];
     catalogRepository.logAssistantConversation(
       `sess_${Date.now()}`,
       message,
-      response.reply,
+      response.content,
       productIds
     );
 

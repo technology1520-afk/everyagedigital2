@@ -2,21 +2,13 @@ import React from 'react';
 import Link from 'next/link';
 import { 
   Plus, 
-  Search, 
-  Filter, 
   ExternalLink, 
   Edit, 
   Trash2, 
-  Eye, 
-  CheckCircle, 
-  PauseCircle, 
-  Archive, 
-  Clock,
-  Layers
+  Clock
 } from 'lucide-react';
 import { catalogRepository } from '../../../lib/db/repository';
-import { toggleProductStatusAction, deleteProductAction } from '../../actions/admin';
-import { ProductStatus } from '../../../lib/db/schema';
+import { deleteProductAction } from '../../actions/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -90,18 +82,31 @@ export default async function AdminProductsPage({
           {/* Category Filter */}
           <div className="flex items-center gap-1.5 text-xs text-neutral-600">
             <span className="font-semibold text-neutral-800">Category:</span>
-            <select
-              defaultValue={categoryFilter}
-              onChange="location.href='/admin/products?category=' + this.value + '&status=' + encodeURIComponent('${statusFilter}')"
-              className="px-2.5 py-1.5 bg-[#F7F7F4] border border-neutral-200 rounded-lg text-xs font-medium text-neutral-800"
-            >
-              <option value="all">All Categories</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.name}>
+            <div className="flex items-center bg-[#F7F7F4] border border-neutral-200 rounded-lg p-0.5 text-xs overflow-x-auto">
+              <Link
+                href={`/admin/products?status=${statusFilter}&category=all&merchant=${merchantFilter}`}
+                className={`px-2.5 py-1 rounded capitalize font-medium transition-colors ${
+                  categoryFilter === 'all'
+                    ? 'bg-white text-neutral-900 shadow-2xs font-semibold'
+                    : 'text-neutral-600 hover:text-neutral-900'
+                }`}
+              >
+                All
+              </Link>
+              {categories.slice(0, 4).map(c => (
+                <Link
+                  key={c.id}
+                  href={`/admin/products?status=${statusFilter}&category=${encodeURIComponent(c.name)}&merchant=${merchantFilter}`}
+                  className={`px-2.5 py-1 rounded font-medium transition-colors truncate max-w-[140px] ${
+                    categoryFilter.toLowerCase() === c.name.toLowerCase()
+                      ? 'bg-white text-neutral-900 shadow-2xs font-semibold'
+                      : 'text-neutral-600 hover:text-neutral-900'
+                  }`}
+                >
                   {c.name}
-                </option>
+                </Link>
               ))}
-            </select>
+            </div>
           </div>
         </div>
 

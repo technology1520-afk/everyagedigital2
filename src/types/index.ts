@@ -44,7 +44,7 @@ export interface Product {
   altText: string;
   region: string[];
   language: string;
-  status: 'active' | 'archived' | 'draft';
+  status: 'active' | 'archived' | 'draft' | 'paused';
   editorialNotes: string;
   handsOnTested: boolean;
   editorialConfidence: 'High' | 'Verified' | 'Community Reviewed';

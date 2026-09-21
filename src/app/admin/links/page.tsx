@@ -1,12 +1,9 @@
 import React from 'react';
-import Link from 'next/link';
 import { 
-  Link2, 
   CheckCircle2, 
   AlertTriangle, 
   ExternalLink, 
   ShieldCheck, 
-  Clock,
   RotateCw
 } from 'lucide-react';
 import { catalogRepository } from '../../../lib/db/repository';
@@ -16,7 +13,6 @@ export const dynamic = 'force-dynamic';
 
 export default function AdminAffiliateLinksPage() {
   const links = catalogRepository.getLinks();
-  const now = Date.now();
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -43,7 +39,7 @@ export default function AdminAffiliateLinksPage() {
       <div className="p-4 bg-white rounded-xl border border-neutral-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
         <div className="space-y-1">
           <div className="font-semibold text-neutral-800">
-            Outbound Attribute Enforcement: <code className="bg-neutral-100 text-[#234F9E] px-1.5 py-0.5 rounded font-mono font-bold">rel="sponsored nofollow noopener"</code>
+            Outbound Attribute Enforcement: <code className="bg-neutral-100 text-[#234F9E] px-1.5 py-0.5 rounded font-mono font-bold">rel=&quot;sponsored nofollow noopener&quot;</code>
           </div>
           <p className="text-neutral-500">
             All outbound links on the storefront are strictly routed with the required sponsored relation and tracked via <code className="font-mono text-neutral-700">/api/go/[id]</code>.
@@ -86,9 +82,7 @@ export default function AdminAffiliateLinksPage() {
             </thead>
             <tbody className="divide-y divide-neutral-100">
               {links.map(link => {
-                const checkedTime = new Date(link.lastCheckedAt).getTime();
-                const daysAgo = Math.floor((now - checkedTime) / (1000 * 60 * 60 * 24));
-                const isStale = daysAgo > link.staleAfterDays;
+                const { daysAgo, isStale } = link;
 
                 // Mask display URL for security & compact display
                 let maskedUrl = link.url;

@@ -8,13 +8,11 @@ import {
   AlertTriangle, 
   Bot, 
   CheckCircle, 
-  ExternalLink,
-  ArrowRight,
-  ShieldAlert,
-  Clock
+  ArrowRight, 
+  ShieldAlert, 
+  Clock 
 } from 'lucide-react';
 import { catalogRepository } from '../../lib/db/repository';
-import { markLinkCheckedAction } from '../actions/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -277,7 +275,7 @@ export default function AdminDashboardPage() {
                 {stats.recentQuestions.map((q, idx) => (
                   <div key={idx} className="p-2.5 bg-[#F7F7F4] rounded text-xs text-neutral-700 flex items-start gap-2">
                     <span className="font-mono text-neutral-400 text-[10px] mt-0.5">#{idx + 1}</span>
-                    <span className="line-clamp-1 italic">"{q.question}"</span>
+                    <span className="line-clamp-1 italic">&ldquo;{q.question}&rdquo;</span>
                   </div>
                 ))}
               </div>

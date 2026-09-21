@@ -3,12 +3,8 @@ import Link from 'next/link';
 import { 
   FileBox, 
   ExternalLink, 
-  ShieldCheck, 
   CreditCard, 
-  DownloadCloud, 
-  Save,
-  CheckCircle2,
-  AlertCircle
+  Save
 } from 'lucide-react';
 import { catalogRepository } from '../../../lib/db/repository';
 import { updateOwnProductAction } from '../../actions/admin';
@@ -93,9 +89,9 @@ export default function AdminOwnProductsPage() {
                   <div className="flex items-center gap-2 text-xs text-neutral-500 mt-0.5 font-mono">
                     <span>/{p.slug}</span>
                     <span>•</span>
-                    <span className="text-[#234F9E] font-semibold">{p.format}</span>
+                    <span className="text-[#234F9E] font-semibold">{p.fileFormat}</span>
                     <span>•</span>
-                    <span>{p.pagesOrModules}</span>
+                    <span>{p.pageCountOrModules}</span>
                   </div>
                 </div>
               </div>

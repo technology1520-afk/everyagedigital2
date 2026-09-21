@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Layers, Plus, Trash2, ArrowUpRight, FolderTree } from 'lucide-react';
+import { Plus, Trash2, ArrowUpRight, FolderTree } from 'lucide-react';
 import { catalogRepository } from '../../../lib/db/repository';
 import { createCategoryAction, deleteCategoryAction } from '../../actions/admin';
 

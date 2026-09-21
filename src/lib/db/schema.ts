@@ -57,7 +57,7 @@ export const OwnProductInputSchema = z.object({
 export type OwnProductInput = z.infer<typeof OwnProductInputSchema>;
 
 export const AffiliateUrlValidationMap: Record<MerchantNetwork, RegExp> = {
-  amazon: /^https?:\/\/([a-zA-Z0-9-]+\.)?amazon\.[a-z.]+/i,
+  amazon: /^https?:\/\/(([a-zA-Z0-9-]+\.)?amazon\.[a-z.]+|amzn\.to)/i,
   gumroad: /^https?:\/\/([a-zA-Z0-9-]+\.)?gumroad\.com/i,
   clickbank: /^https?:\/\/([a-zA-Z0-9-]+\.)?clickbank\.net/i,
   impact: /^https?:\/\//i,
