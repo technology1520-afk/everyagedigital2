@@ -18,6 +18,8 @@ import { AffiliateDisclosure } from '../../../components/ui/AffiliateDisclosure'
 import { EvidencePanel } from '../../../components/ui/EvidencePanel';
 import { ProductCard } from '../../../components/ui/ProductCard';
 import { Breadcrumbs } from '../../../components/ui/Breadcrumbs';
+import { ProductGallery } from '../../../components/ui/ProductGallery';
+import { StickyProductCTA } from '../../../components/ui/StickyProductCTA';
 import { 
   ExternalLink, 
   Check, 
@@ -97,7 +99,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32 md:pb-12 space-y-10 sm:space-y-12">
       {/* Schema Script */}
       <script
         type="application/ld+json"
@@ -112,42 +114,32 @@ export default async function ProductPage({ params }: ProductPageProps) {
         ]}
       />
 
-      {/* Main Product Showcase */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left Col: Media & Quick Actions (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="relative aspect-4/3 sm:aspect-square w-full bg-[#F0F1ED] rounded-2xl overflow-hidden border border-[#E2E5EB] shadow-xs">
-            <img
-              src={product.imageUrl}
-              alt={product.altText}
-              className="w-full h-full object-cover"
-            />
-            {product.editorialBadge && (
-              <div className="absolute top-3 left-3 bg-[#F2EBDD] text-[#4A3B22] border border-[#E0D3BC] px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs">
-                <Award className="w-3.5 h-3.5 text-[#A15C00]" />
-                <span>{product.editorialBadge}</span>
-              </div>
-            )}
-          </div>
+      {/* Main Product Showcase - Tablet 60/40 split (md:col-span-7/md:col-span-5), Desktop 5/7 split */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 lg:gap-10">
+        {/* Gallery Col: 12 on phone, 7 on md (60%), 5 on lg */}
+        <div className="md:col-span-7 lg:col-span-5 space-y-4">
+          <ProductGallery
+            images={[
+              product.imageUrl,
+              product.imageUrl.includes('?') ? `${product.imageUrl}&auto=format&fit=crop&w=1000&q=80` : product.imageUrl
+            ]}
+            altText={product.altText}
+            editorialBadge={product.editorialBadge}
+            imageSource={product.imageSource}
+            imageLicense={product.imageLicense}
+          />
 
-          <div className="flex items-center justify-between text-xs text-neutral-500 px-1">
-            <span>Image Source: {product.imageSource}</span>
-            <span className="font-mono text-[11px] bg-neutral-200/60 px-1.5 py-0.5 rounded">
-              {product.imageLicense}
-            </span>
-          </div>
-
-          {/* Action buttons on desktop */}
-          <div className="flex items-center gap-3 pt-2">
-            <WishlistButton productId={product.id} variant="labeled" className="flex-1 justify-center py-2.5" />
-            <CompareButton productId={product.id} variant="labeled" className="flex-1 justify-center py-2.5" />
+          {/* Action buttons with touch targets >= 44px */}
+          <div className="flex items-center gap-3 pt-1">
+            <WishlistButton productId={product.id} variant="labeled" className="flex-1 justify-center py-2.5 min-h-[44px]" />
+            <CompareButton productId={product.id} variant="labeled" className="flex-1 justify-center py-2.5 min-h-[44px]" />
           </div>
         </div>
 
-        {/* Right Col: Product Information & Recommendation Analysis (7 cols) */}
-        <div className="lg:col-span-7 space-y-6">
+        {/* Info Col: 12 on phone, 5 on md (40%), 7 on lg */}
+        <div className="md:col-span-5 lg:col-span-7 space-y-6">
           <div>
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
               <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
                 {product.brand}
               </span>
@@ -157,7 +149,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </span>
             </div>
 
-            <h1 className="font-serif text-2xl sm:text-4xl font-bold text-neutral-900 leading-tight">
+            <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 leading-tight">
               {product.name}
             </h1>
 
@@ -167,7 +159,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           {/* Price & Primary Purchase Card */}
-          <div className="bg-white border border-[#E2E5EB] rounded-2xl p-6 space-y-4 shadow-xs">
+          <div className="bg-white border border-[#E2E5EB] rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
               <PriceStatus offer={offer} freshness={freshness} size="lg" />
               <FreshnessLabel freshness={freshness} />
@@ -180,13 +172,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
             )}
 
-            <div className="pt-2 flex flex-col sm:flex-row gap-3">
+            {/* Inline CTA (Tablet & Desktop only; Phone uses StickyProductCTA) */}
+            <div className="hidden md:flex flex-col sm:flex-row gap-3 pt-2">
               {offer ? (
                 <a
                   href={`/api/go/${product.id}`}
                   target="_blank"
                   rel="sponsored nofollow noopener"
-                  className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-sm font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors shadow-sm"
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-sm font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors shadow-sm min-h-[44px]"
                 >
                   <span>
                     {freshness?.isStale
@@ -324,13 +317,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
             {alternatives.map(item => (
               <ProductCard key={item.product.id} item={item} />
             ))}
           </div>
         </section>
       )}
+
+      {/* Sticky Bottom CTA on Phone (Hidden on md+) */}
+      <StickyProductCTA
+        productId={product.id}
+        productSlug={product.slug}
+        offer={offer}
+        freshness={freshness}
+      />
     </div>
   );
 }

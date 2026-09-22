@@ -114,7 +114,7 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto pb-20 lg:pb-0">
       {/* Top Banner / Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
         <div className="flex items-center gap-3">
@@ -479,6 +479,26 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Sticky Bottom Save Action on Mobile (lg:hidden) */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-neutral-200 p-3 px-4 z-30 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] pb-safe flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={() => setStatus('draft')}
+          className="touch-target px-3.5 py-2.5 rounded-xl text-xs font-medium border border-neutral-200 bg-[#F7F7F4] text-neutral-700 hover:bg-neutral-100 transition-colors min-h-[44px]"
+        >
+          Draft Mode
+        </button>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="touch-target flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] transition-colors shadow-xs disabled:opacity-50 min-h-[44px]"
+        >
+          <Save className="w-4 h-4" />
+          <span>{loading ? 'Saving...' : isEditing ? 'Update & Publish' : 'Publish Product'}</span>
+        </button>
       </div>
     </form>
   );

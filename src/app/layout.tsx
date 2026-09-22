@@ -4,6 +4,7 @@ import "./globals.css";
 import { WishlistProvider } from "../context/WishlistContext";
 import { SiteHeader } from "../components/ui/SiteHeader";
 import { SiteFooter } from "../components/ui/SiteFooter";
+import { MobileTabBar } from "../components/ui/MobileTabBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,16 +49,17 @@ export default function RootLayout({
         {/* Skip to Content for WCAG 2.2 AA Accessibility */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#1D438A] focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-hidden"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#234F9E] focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-hidden"
         >
           Skip to main content
         </a>
         <WishlistProvider>
           <SiteHeader />
-          <main id="main-content" className="flex-1">
+          <main id="main-content" className="flex-1 pb-16 md:pb-0">
             {children}
           </main>
           <SiteFooter />
+          <MobileTabBar />
         </WishlistProvider>
       </body>
     </html>

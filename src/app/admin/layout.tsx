@@ -15,6 +15,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { logoutAdminAction } from '../actions/admin';
+import { AdminMobileNav } from '../../components/admin/AdminMobileNav';
 
 export default function AdminLayout({
   children
@@ -23,8 +24,11 @@ export default function AdminLayout({
 }) {
   return (
     <div className="min-h-screen bg-[#F4F5F7] flex flex-col md:flex-row text-neutral-900 font-sans antialiased">
-      {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-[#151515] text-white flex-shrink-0 flex flex-col justify-between border-r border-neutral-800">
+      {/* Mobile Top Navigation & Drawer */}
+      <AdminMobileNav />
+
+      {/* Desktop Sidebar Navigation */}
+      <aside className="hidden md:flex md:w-64 bg-[#151515] text-white flex-shrink-0 flex-col justify-between border-r border-neutral-800">
         <div>
           {/* Brand Header */}
           <div className="p-5 border-b border-neutral-800 flex items-center justify-between">
@@ -131,36 +135,37 @@ export default function AdminLayout({
       {/* Main Administrative Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Dense Utility Top Bar */}
-        <header className="h-14 bg-white border-b border-neutral-200 px-6 flex items-center justify-between gap-4 sticky top-0 z-20">
-          <div className="flex items-center gap-4 flex-1 max-w-md">
+        <header className="h-14 bg-white border-b border-neutral-200 px-4 sm:px-6 flex items-center justify-between gap-3 sticky top-0 md:top-0 z-20">
+          <div className="flex items-center gap-3 flex-1 max-w-md">
             <div className="relative w-full">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type="search"
-                placeholder="Search catalog, links, merchants..."
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-md focus:outline-none focus:border-[#234F9E] focus:bg-white"
+                placeholder="Search catalog..."
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Compliance Guard Active</span>
             </div>
 
             <Link
               href="/admin/products/new"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md bg-[#234F9E] text-white hover:bg-[#193B7A] transition-colors shadow-xs"
+              className="touch-target inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-[#234F9E] text-white hover:bg-[#193B7A] transition-colors shadow-xs min-h-[40px]"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Add Product</span>
+              <span className="hidden sm:inline">Add Product</span>
+              <span className="sm:hidden">Add</span>
             </Link>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="p-6 md:p-8 flex-1">
+        <main className="p-4 sm:p-6 md:p-8 flex-1">
           {children}
         </main>
       </div>

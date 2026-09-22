@@ -35,7 +35,7 @@ export function WishlistButton({
         onClick={handleToggle}
         aria-label={isSaved ? 'Remove from saved list' : 'Save for later'}
         aria-pressed={isSaved}
-        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+        className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium border transition-colors cursor-pointer min-h-[44px] ${
           isSaved
             ? 'bg-amber-50 text-amber-900 border-amber-300'
             : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50'
@@ -53,10 +53,10 @@ export function WishlistButton({
       onClick={handleToggle}
       aria-label={isSaved ? 'Remove from saved list' : 'Save for later'}
       aria-pressed={isSaved}
-      className={`p-2 rounded-full border transition-colors cursor-pointer ${
+      className={`w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border transition-colors cursor-pointer ${
         isSaved
           ? 'bg-amber-50 text-amber-600 border-amber-300'
-          : 'bg-white/90 text-neutral-600 border-neutral-200/80 hover:bg-white hover:text-black shadow-xs'
+          : 'bg-white/90 text-neutral-600 border-neutral-200/80 hover:bg-white hover:text-black'
       } ${className}`}
     >
       <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-600 text-amber-600' : 'text-neutral-600'}`} />

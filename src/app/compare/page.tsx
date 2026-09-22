@@ -55,7 +55,7 @@ function CompareContent() {
             <button
               type="button"
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-[#E2E5EB] text-neutral-700 rounded-lg text-xs font-semibold hover:bg-neutral-50 transition-colors cursor-pointer"
+              className="touch-target inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-white border border-[#E2E5EB] text-neutral-700 rounded-xl text-xs font-semibold hover:bg-neutral-50 transition-colors cursor-pointer min-h-[44px]"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>{copied ? 'Link Copied!' : 'Share Comparison'}</span>
@@ -63,7 +63,7 @@ function CompareContent() {
             <button
               type="button"
               onClick={clearCompare}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-neutral-100 text-neutral-600 rounded-lg text-xs font-medium hover:bg-neutral-200 transition-colors cursor-pointer"
+              className="touch-target inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-neutral-100 text-neutral-600 rounded-xl text-xs font-medium hover:bg-neutral-200 transition-colors cursor-pointer min-h-[44px]"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear All</span>

@@ -53,7 +53,13 @@
   --font-editorial: var(--font-serif);
 }
 
-/* 2. PAGE BACKGROUND — subtle life (body) */
+/* Global Reset & Base */
+html {
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
 body {
   background:
     radial-gradient(1200px 400px at 80% -50px, rgba(35,79,158,0.06), transparent),
@@ -62,6 +68,31 @@ body {
   color: var(--text);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  max-width: 100vw;
+}
+
+/* Touch targets utility (minimum 44x44px for accessibility) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tap feedback */
+button:active,
+a:active {
+  opacity: 0.88;
+}
+
+/* Safe Area Inset Helpers */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 1rem);
+}
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 1rem);
 }
 
 /* Custom scrollbar and subtle selection */
@@ -85,22 +116,49 @@ textarea:focus-visible {
   font-family: var(--font-serif);
 }
 
-/* 3. HERO */
+/* 3. HERO (Mobile-first) */
 .hero {
   background: linear-gradient(135deg, #234F9E 0%, #193B7A 55%, #142F60 100%);
   color: #fff;
   border-radius: 12px;
-  padding: 48px 40px;
+  padding: 24px 20px;
   position: relative;
   overflow: hidden;
 }
 .hero::after {                      /* decorative circle, top-right */
   content: "";
-  position: absolute; right: -80px; top: -80px;
-  width: 320px; height: 320px; border-radius: 50%;
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
   background: rgba(255,255,255,0.07);
   pointer-events: none;
 }
+@media (min-width: 768px) {
+  .hero {
+    padding: 32px 28px;
+  }
+  .hero::after {
+    right: -60px;
+    top: -60px;
+    width: 240px;
+    height: 240px;
+  }
+}
+@media (min-width: 1024px) {
+  .hero {
+    padding: 48px 40px;
+  }
+  .hero::after {
+    right: -80px;
+    top: -80px;
+    width: 320px;
+    height: 320px;
+  }
+}
+
 .hero .eyebrow { color: #A9C4F2; }
 .hero h1 { color: #fff; }
 .hero p { color: #C9D6EE; }
@@ -109,11 +167,6 @@ textarea:focus-visible {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.25);
   color: #fff;
-}
-@media (max-width: 640px) {
-  .hero {
-    padding: 32px 20px;
-  }
 }
 
 .disclosure-banner {
@@ -127,9 +180,10 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 8px 12px;
+  min-height: 44px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
   transition: background .15s, color .15s, border-color .15s;
@@ -169,7 +223,8 @@ textarea:focus-visible {
   color: var(--accent); font-weight: 600;
 }
 .filter-link {
-  display: block; padding: 6px 10px;
+  display: block; padding: 10px 12px;
+  min-height: 44px;
   border-radius: 6px; color: var(--text-secondary);
   transition: background .15s, color .15s;
   text-decoration: none;
@@ -178,7 +233,7 @@ textarea:focus-visible {
 .filter-link.selected { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .filter-count { float: right; color: var(--soft); font-size: 11px; }  /* e.g. "(12)" */
 
-/* 6. PRODUCT CARDS — the most important upgrade */
+/* 6. PRODUCT CARDS */
 .product-card {
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -192,11 +247,24 @@ textarea:focus-visible {
 }
 .product-card:hover .product-title { color: var(--accent); }
 
+/* Mobile-first card price row: stacked on phone, row on sm+ */
 .card-price-row {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-top: 10px; padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid var(--border);
 }
+@media (min-width: 640px) {
+  .card-price-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+  }
+}
+
 .product-price { font-size: 16px; font-weight: 700; color: var(--text); }
 .price-stale  { color: var(--amber); font-style: italic; font-size: 13px; }
 .price-note   { font-size: 11px; color: var(--soft); }
@@ -204,7 +272,8 @@ textarea:focus-visible {
 .btn-view-deal {
   background: var(--accent); color: #fff;
   border-radius: 8px; font-weight: 600;
-  padding: 8px 16px;
+  padding: 10px 16px;
+  min-height: 44px;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -213,25 +282,44 @@ textarea:focus-visible {
 }
 .btn-view-deal:hover { background: var(--accent-hover); color: #fff; }
 
-/* 6c. Badge color families (replace the beige sameness) */
+/* 6c. Badge color families */
 .badge-top-pick   { background: var(--coral-soft);  color: var(--coral);  border: 1px solid #F5C6BC; }
 .badge-best-value { background: var(--amber-soft);  color: var(--amber);  border: 1px solid #E8D9AE; }
 .badge-new        { background: var(--success-soft);color: var(--success);border: 1px solid #BFE3CF; }
 .badge-digital    { background: var(--purple-soft); color: var(--purple); border: 1px solid #D9D2F5; }
 
-/* 6d. Merchant chips — full color */
+/* 6d. Merchant chips */
 .chip-amazon  { background: var(--amazon-navy); color: var(--amazon-orange); }
 .chip-gumroad { background: var(--gumroad-pink); color: #40202F; }
 .chip-owned   { background: var(--purple); color: #fff; }
 
 /* 6e. Digital vs physical thumb signal */
-.thumb-digital { border-bottom: 3px solid var(--purple); }  /* + existing radius */
+.thumb-digital { border-bottom: 3px solid var(--purple); }
 
 /* 6f. Results bar */
 .results-bar { background: var(--surface-muted); border-radius: 8px; padding: 8px 16px; }
 
-/* 7. FOOTER — anchor the page */
-.site-footer { background: #151515; color: #B9BFC9; padding: 40px; margin-top: 64px; }
+/* 7. FOOTER */
+.site-footer { background: #151515; color: #B9BFC9; padding: 32px 20px; margin-top: 48px; }
+@media (min-width: 768px) {
+  .site-footer { padding: 40px; margin-top: 64px; }
+}
 .site-footer h5 { color: #fff; font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-.site-footer a { color: #8FA8D6; text-decoration: none; }
+.site-footer a { color: #8FA8D6; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
 .site-footer a:hover { color: #fff; }
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .product-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}

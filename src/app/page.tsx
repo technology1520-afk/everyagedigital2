@@ -63,14 +63,14 @@ export default function HomePage() {
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
                   href="/shop"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-[#234F9E] text-xs sm:text-sm font-semibold hover:bg-neutral-100 transition-colors"
+                  className="touch-target inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-[#234F9E] text-xs sm:text-sm font-semibold hover:bg-neutral-100 transition-colors min-h-[44px]"
                 >
                   <span>Start browsing</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/assistant"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 border border-white/25 text-white text-xs sm:text-sm font-semibold hover:bg-white/20 transition-colors"
+                  className="touch-target inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 border border-white/25 text-white text-xs sm:text-sm font-semibold hover:bg-white/20 transition-colors min-h-[44px]"
                 >
                   <Sparkles className="w-4 h-4 text-[#A9C4F2]" />
                   <span>Ask the shopping assistant</span>
@@ -80,7 +80,7 @@ export default function HomePage() {
 
             {/* Right Column: Search Form Inside Hero */}
             <div className="lg:col-span-5 w-full">
-              <div className="bg-white/5 border border-white/15 p-5 sm:p-6 rounded-2xl backdrop-blur-xs">
+              <div className="bg-white/5 border border-white/15 p-4 sm:p-6 rounded-2xl backdrop-blur-xs">
                 <span className="text-xs font-mono uppercase tracking-wider text-[#A9C4F2] font-semibold block mb-2">
                   Instant Catalog Search
                 </span>
@@ -90,11 +90,11 @@ export default function HomePage() {
                     type="text"
                     name="q"
                     placeholder="Search ergonomic mouse, habit books..."
-                    className="w-full pl-10 pr-24 py-3 rounded-xl text-xs sm:text-sm focus:outline-hidden"
+                    className="w-full pl-10 pr-24 py-3 rounded-xl text-xs sm:text-sm focus:outline-hidden min-h-[44px]"
                   />
                   <button
                     type="submit"
-                    className="absolute right-1.5 px-3.5 py-1.5 bg-white text-[#234F9E] text-xs font-semibold rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer"
+                    className="absolute right-1.5 px-3.5 py-2 bg-white text-[#234F9E] text-xs font-semibold rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer min-h-[36px]"
                   >
                     Search
                   </button>
@@ -107,7 +107,7 @@ export default function HomePage() {
                     <Link
                       key={term}
                       href={`/search?q=${encodeURIComponent(term)}`}
-                      className="text-[11px] text-[#C9D6EE] hover:text-white bg-white/10 border border-white/15 rounded-full px-2.5 py-0.5 hover:bg-white/20 transition-colors"
+                      className="text-[11px] text-[#C9D6EE] hover:text-white bg-white/10 border border-white/15 rounded-full px-2.5 py-1 hover:bg-white/20 transition-colors"
                     >
                       {term}
                     </Link>
@@ -142,7 +142,7 @@ export default function HomePage() {
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
-              className="p-3 bg-white rounded-xl border border-neutral-200/80 hover:border-[#234F9E]/50 transition-colors flex flex-col justify-between group"
+              className="p-3 bg-white rounded-xl border border-neutral-200/80 hover:border-[#234F9E]/50 transition-colors flex flex-col justify-between group min-h-[64px]"
             >
               <span className="text-xs font-bold text-neutral-800 group-hover:text-[#234F9E] transition-colors">
                 {cat.name}
@@ -171,14 +171,14 @@ export default function HomePage() {
           </div>
           <Link
             href="/shop?sort=editorial_picks"
-            className="text-xs font-semibold text-[#234F9E] hover:underline flex items-center gap-1"
+            className="text-xs font-semibold text-[#234F9E] hover:underline flex items-center gap-1 touch-target"
           >
             <span>View All ({featuredSearch.total})</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           {featuredProducts.map(item => (
             <ProductCard key={item.product.id} item={item} />
           ))}

@@ -124,10 +124,125 @@ export default async function AdminProductsPage({
         </Link>
       </div>
 
-      {/* Products Table */}
-      <div className="bg-white rounded-xl border border-neutral-200/80 shadow-xs overflow-hidden">
+      {/* Mobile Stacked Cards (Phone) */}
+      <div className="md:hidden space-y-3">
+        {products.length === 0 ? (
+          <div className="p-8 text-center bg-white rounded-xl border border-neutral-200 text-xs text-neutral-500">
+            No products found matching the current filters.
+          </div>
+        ) : (
+          products.map(p => {
+            const offer = offers.find(o => o.productId === p.id);
+            const link = links.find(l => l.productId === p.id);
+            const clickCount = link ? link.clickCount : 0;
+
+            return (
+              <div
+                key={p.id}
+                className="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-xs space-y-3"
+              >
+                {/* Header: Thumbnail, Title, Status */}
+                <div className="flex items-start gap-3">
+                  <img
+                    src={p.imageUrl}
+                    alt={p.name}
+                    className="w-14 h-14 rounded-lg object-cover bg-neutral-100 border border-neutral-200 shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-[10px] font-mono uppercase text-neutral-400 font-semibold">
+                        {p.category}
+                      </span>
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          p.status === 'active'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : p.status === 'draft'
+                            ? 'bg-amber-100 text-amber-800'
+                            : p.status === 'paused'
+                            ? 'bg-neutral-100 text-neutral-700'
+                            : 'bg-rose-100 text-rose-800'
+                        }`}
+                      >
+                        {p.status}
+                      </span>
+                    </div>
+
+                    <h3 className="font-semibold text-xs text-neutral-900 line-clamp-2 mt-0.5">
+                      {p.name}
+                    </h3>
+                    <div className="text-[11px] font-mono text-neutral-400 truncate mt-0.5">
+                      /{p.slug}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Details row: Merchant, Price, Clicks */}
+                <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-[#F7F7F4] rounded-lg text-xs">
+                  <div>
+                    <span className="text-[10px] text-neutral-500 block">Merchant</span>
+                    <span className="font-semibold text-neutral-800 truncate block">
+                      {offer ? offer.merchantName : 'Direct'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-neutral-500 block">Price</span>
+                    <span className="font-mono font-bold text-neutral-900 block">
+                      ${offer ? offer.price.toFixed(2) : '0.00'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-neutral-500 block">Clicks</span>
+                    <span className="font-mono font-bold text-[#234F9E] block">
+                      {clickCount}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions row with touch targets >= 44px */}
+                <div className="flex items-center gap-2 pt-1 border-t border-neutral-100">
+                  <Link
+                    href={`/product/${p.slug}`}
+                    target="_blank"
+                    className="touch-target flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-700 text-xs font-semibold hover:bg-neutral-50 min-h-[44px]"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>View</span>
+                  </Link>
+
+                  <Link
+                    href={`/admin/products/${p.id}/edit`}
+                    className="touch-target flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] min-h-[44px]"
+                  >
+                    <Edit className="w-3.5 h-3.5" />
+                    <span>Edit</span>
+                  </Link>
+
+                  <form
+                    action={async () => {
+                      'use server';
+                      deleteProductAction(p.id);
+                    }}
+                  >
+                    <button
+                      type="submit"
+                      aria-label={`Delete ${p.name}`}
+                      className="touch-target w-11 h-11 flex items-center justify-center rounded-xl border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 min-h-[44px]"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </form>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop/Tablet Products Table (hidden on phone, visible md+) */}
+      <div className="hidden md:block bg-white rounded-xl border border-neutral-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
+          <table className="w-full text-left border-collapse text-xs min-w-[700px]">
             <thead>
               <tr className="border-b border-neutral-200 bg-[#F7F7F4] text-neutral-500 font-semibold uppercase tracking-wider text-[10px]">
                 <th className="py-3 px-4">Item</th>
@@ -197,72 +312,72 @@ export default async function AdminProductsPage({
                           className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                             p.status === 'active'
                               ? 'bg-emerald-100 text-emerald-800'
-                              : p.status === 'draft'
-                              ? 'bg-amber-100 text-amber-800'
-                              : p.status === 'paused'
-                              ? 'bg-neutral-100 text-neutral-700'
-                              : 'bg-rose-100 text-rose-800'
-                          }`}
+                            : p.status === 'draft'
+                            ? 'bg-amber-100 text-amber-800'
+                            : p.status === 'paused'
+                            ? 'bg-neutral-100 text-neutral-700'
+                            : 'bg-rose-100 text-rose-800'
+                        }`}
+                      >
+                        {p.status}
+                      </span>
+                    </td>
+
+                    {/* Clicks */}
+                    <td className="py-3 px-4 font-mono font-bold text-neutral-900 whitespace-nowrap">
+                      {clickCount}
+                    </td>
+
+                    {/* Updated Date */}
+                    <td className="py-3 px-4 text-neutral-400 text-[11px] whitespace-nowrap">
+                      {new Date(p.updatedAt).toLocaleDateString()}
+                    </td>
+
+                    {/* Action buttons */}
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link
+                          href={`/product/${p.slug}`}
+                          target="_blank"
+                          title="View on Storefront"
+                          className="touch-target p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
                         >
-                          {p.status}
-                        </span>
-                      </td>
+                          <ExternalLink className="w-4 h-4" />
+                        </Link>
 
-                      {/* Clicks */}
-                      <td className="py-3 px-4 font-mono font-bold text-neutral-900 whitespace-nowrap">
-                        {clickCount}
-                      </td>
+                        <Link
+                          href={`/admin/products/${p.id}/edit`}
+                          title="Edit Product"
+                          className="touch-target p-2 text-neutral-600 hover:text-[#234F9E] rounded-lg hover:bg-neutral-100 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Link>
 
-                      {/* Updated Date */}
-                      <td className="py-3 px-4 text-neutral-400 text-[11px] whitespace-nowrap">
-                        {new Date(p.updatedAt).toLocaleDateString()}
-                      </td>
-
-                      {/* Action buttons */}
-                      <td className="py-3 px-4 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <Link
-                            href={`/product/${p.slug}`}
-                            target="_blank"
-                            title="View on Storefront"
-                            className="p-1.5 text-neutral-400 hover:text-neutral-900 rounded hover:bg-neutral-100 transition-colors"
+                        {/* Soft Delete */}
+                        <form
+                          action={async () => {
+                            'use server';
+                            deleteProductAction(p.id);
+                          }}
+                        >
+                          <button
+                            type="submit"
+                            title="Delete Product"
+                            className="touch-target p-2 text-neutral-400 hover:text-rose-600 rounded-lg hover:bg-neutral-100 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
                           >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </Link>
-
-                          <Link
-                            href={`/admin/products/${p.id}/edit`}
-                            title="Edit Product"
-                            className="p-1.5 text-neutral-600 hover:text-[#234F9E] rounded hover:bg-neutral-100 transition-colors"
-                          >
-                            <Edit className="w-3.5 h-3.5" />
-                          </Link>
-
-                          {/* Soft Delete */}
-                          <form
-                            action={async () => {
-                              'use server';
-                              deleteProductAction(p.id);
-                            }}
-                          >
-                            <button
-                              type="submit"
-                              title="Delete Product"
-                              className="p-1.5 text-neutral-400 hover:text-rose-600 rounded hover:bg-neutral-100 transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </form>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
+    </div>
     </div>
   );
 }

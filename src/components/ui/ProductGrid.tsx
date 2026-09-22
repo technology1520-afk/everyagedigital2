@@ -24,16 +24,19 @@ export function ProductGrid({
     );
   }
 
+  // Mobile: 2 cols (gap 12px / gap-3)
+  // Tablet: 3 cols (gap 16px / gap-4)
+  // Desktop: 3-4 cols (gap 20px / gap-5)
   const colClasses = {
-    2: 'grid grid-cols-1 sm:grid-cols-2 gap-6',
-    3: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6',
-    4: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'
+    2: 'grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-2 lg:gap-5',
+    3: 'grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3 lg:gap-5',
+    4: 'grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5'
   };
 
   return (
     <div className={colClasses[columns]}>
-      {items.map(item => (
-        <ProductCard key={item.product.id} item={item} />
+      {items.map((item, idx) => (
+        <ProductCard key={item.product.id} item={item} priority={idx < 2} />
       ))}
     </div>
   );

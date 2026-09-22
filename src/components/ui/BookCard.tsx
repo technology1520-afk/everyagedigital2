@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Book } from '../../types';
 import { MerchantBadge } from './MerchantBadge';
 import { WishlistButton } from './WishlistButton';
@@ -10,9 +11,10 @@ import { BookOpen, ExternalLink, CheckCircle } from 'lucide-react';
 interface BookCardProps {
   book: Book;
   className?: string;
+  priority?: boolean;
 }
 
-export function BookCard({ book, className = '' }: BookCardProps) {
+export function BookCard({ book, className = '', priority = false }: BookCardProps) {
   const isAmazon = book.merchant === 'Amazon';
 
   return (
@@ -20,31 +22,33 @@ export function BookCard({ book, className = '' }: BookCardProps) {
       className={`product-card group bg-white overflow-hidden flex flex-col justify-between ${className}`}
     >
       <div className="relative aspect-3/2 w-full bg-[#F0F1ED] overflow-hidden">
-        <Link href={`/books/${book.slug}`} className="block w-full h-full">
-          <img
+        <Link href={`/books/${book.slug}`} className="block w-full h-full relative">
+          <Image
             src={book.coverImage}
             alt={book.title}
-            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
-            loading="lazy"
+            fill
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            priority={priority}
+            className="object-cover group-hover:scale-102 transition-transform duration-300"
           />
         </Link>
-        <div className="absolute top-2.5 left-2.5 bg-neutral-900/80 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded flex items-center gap-1.5">
+        <div className="absolute top-2.5 left-2.5 bg-neutral-900/80 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded flex items-center gap-1.5 z-10">
           <BookOpen className="w-3 h-3 text-amber-400" />
-          {book.format}
+          <span>{book.format}</span>
         </div>
         <div className="absolute top-2.5 right-2.5 z-10">
           <WishlistButton bookId={book.id} />
         </div>
       </div>
 
-      <div className="p-5 flex-1 flex flex-col justify-between">
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between text-xs text-neutral-500 mb-1">
             <span>By {book.author}</span>
             <MerchantBadge merchant={book.merchant} />
           </div>
 
-          <h3 className="font-semibold text-base text-neutral-900 leading-snug">
+          <h3 className="font-semibold text-sm sm:text-base text-neutral-900 leading-snug">
             <Link href={`/books/${book.slug}`} className="product-title transition-colors">
               {book.title}
             </Link>
@@ -78,19 +82,19 @@ export function BookCard({ book, className = '' }: BookCardProps) {
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <a
               href={book.affiliateUrl}
               target="_blank"
               rel="sponsored nofollow noopener"
-              className="flex-1 btn-view-deal py-2 px-3 text-xs font-semibold gap-1.5"
+              className="flex-1 btn-view-deal py-2.5 px-3 text-xs font-semibold gap-1.5 justify-center min-h-[44px]"
             >
               <span>{isAmazon ? 'View on Amazon' : 'View Book'}</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-80" />
             </a>
             <Link
               href={`/books/${book.slug}`}
-              className="py-2 px-3 rounded-lg text-xs font-medium text-neutral-700 hover:bg-neutral-100 border border-neutral-200 transition-colors"
+              className="touch-target py-2.5 px-3 rounded-lg text-xs font-medium text-neutral-700 hover:bg-neutral-100 border border-neutral-200 transition-colors text-center min-h-[44px]"
             >
               Summary
             </Link>
