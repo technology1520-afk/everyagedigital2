@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Collection } from '../../types';
@@ -13,7 +15,7 @@ export function CollectionCard({ collection, className = '' }: CollectionCardPro
 
   return (
     <article
-      className={`group bg-white border border-[#E2E5EB] rounded-xl overflow-hidden hover:border-[#1D438A]/50 transition-all hover:shadow-md flex flex-col justify-between ${className}`}
+      className={`product-card group bg-white overflow-hidden flex flex-col justify-between ${className}`}
     >
       <div className="relative aspect-16/9 w-full bg-[#F0F1ED] overflow-hidden">
         <img
@@ -33,8 +35,8 @@ export function CollectionCard({ collection, className = '' }: CollectionCardPro
           <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-medium">
             Curated Collection
           </span>
-          <h3 className="font-semibold text-lg text-neutral-900 leading-snug mt-1 group-hover:text-[#1D438A] transition-colors">
-            <Link href={`/collection/${collection.slug}`}>
+          <h3 className="font-semibold text-lg text-neutral-900 leading-snug mt-1">
+            <Link href={`/collection/${collection.slug}`} className="product-title transition-colors">
               {collection.title}
             </Link>
           </h3>
@@ -55,7 +57,7 @@ export function CollectionCard({ collection, className = '' }: CollectionCardPro
           )}
         </div>
 
-        <div className="mt-5 pt-3 border-t border-neutral-100 flex items-center justify-between text-xs font-semibold text-[#1D438A]">
+        <div className="mt-5 pt-3 border-t border-neutral-100 flex items-center justify-between text-xs font-semibold text-[#234F9E]">
           <span>Explore Collection</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </div>

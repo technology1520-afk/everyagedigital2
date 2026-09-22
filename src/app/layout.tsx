@@ -44,7 +44,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#F7F7F4] text-[#151515]">
+      <body className="min-h-full flex flex-col text-[#151515]">
         {/* Skip to Content for WCAG 2.2 AA Accessibility */}
         <a
           href="#main-content"

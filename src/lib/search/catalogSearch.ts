@@ -27,6 +27,9 @@ export interface SearchResult {
   total: number;
   availableCategories: string[];
   availableMerchants: string[];
+  categoryCounts?: Record<string, number>;
+  typeCounts?: Record<string, number>;
+  merchantCounts?: Record<string, number>;
   priceRange: { min: number; max: number };
 }
 
@@ -144,11 +147,36 @@ export function searchCatalog(params: FilterParams = {}): SearchResult {
   const minPrice = allPrices.length ? Math.min(...allPrices) : 0;
   const maxPrice = allPrices.length ? Math.max(...allPrices) : 500;
 
+  const categoryCounts: Record<string, number> = {};
+  for (const p of allActive) {
+    categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
+  }
+
+  const typeCounts: Record<string, number> = {
+    physical: 0,
+    digital: 0,
+    pdf_guide: 0
+  };
+  for (const p of allActive) {
+    typeCounts[p.productType] = (typeCounts[p.productType] || 0) + 1;
+  }
+
+  const merchantCounts: Record<string, number> = {};
+  for (const p of allActive) {
+    const offer = getOfferForProduct(p.id);
+    if (offer) {
+      merchantCounts[offer.merchantName] = (merchantCounts[offer.merchantName] || 0) + 1;
+    }
+  }
+
   return {
     items: enriched,
     total: enriched.length,
     availableCategories: allCategories,
     availableMerchants: allMerchants,
+    categoryCounts,
+    typeCounts,
+    merchantCounts,
     priceRange: { min: Math.floor(minPrice), max: Math.ceil(maxPrice) }
   };
 }

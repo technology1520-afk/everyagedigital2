@@ -1,18 +1,31 @@
 @import "tailwindcss";
 
 :root {
+  /* CORE (unchanged) */
   --background: #F7F7F4;
   --surface: #FFFFFF;
   --surface-muted: #F0F1ED;
   --text: #151515;
-  --text-secondary: #566173;
-  --border: #E2E5EB;
-  --accent: #1D438A;
-  --accent-hover: #153266;
-  --success: #18794E;
+  --text-secondary: #667085;
+  --border: #E4E7EC;
+
+  /* PRIMARY ACCENT — buttons, links, active states */
+  --accent: #234F9E;
+  --accent-hover: #193B7A;
+  --accent-soft: #E8EEF9;
+
+  /* SEMANTIC ACCENT FAMILIES — each with a job */
+  --coral: #E8604C;        --coral-soft: #FDEDEA;   /* Top Pick badges */
+  --amber: #B7791F;        --amber-soft: #FBF3DF;   /* Best Value, stale prices, featured */
+  --featured: #F2EBDD;
+  --success: #18794E;      --success-soft: #E6F4EC; /* in-stock, positive deltas */
+  --purple: #6D5BD0;       --purple-soft: #EFEDFB;  /* digital products ONLY */
+  --gumroad-pink: #FF90E8;                          /* Gumroad merchant chip */
+  --amazon-navy: #232F3E;  --amazon-orange: #FF9900; /* Amazon merchant chip */
+
+  --soft: #667085;
   --warning: #A15C00;
   --danger: #B42318;
-  --featured: #F2EBDD;
   --font-serif: "Newsreader", "Georgia", "Cambria", serif;
 }
 
@@ -25,15 +38,27 @@
   --color-border-subtle: var(--border);
   --color-brand-accent: var(--accent);
   --color-brand-accent-hover: var(--accent-hover);
+  --color-brand-accent-soft: var(--accent-soft);
+  --color-brand-coral: var(--coral);
+  --color-brand-coral-soft: var(--coral-soft);
+  --color-brand-amber: var(--amber);
+  --color-brand-amber-soft: var(--amber-soft);
   --color-brand-success: var(--success);
+  --color-brand-success-soft: var(--success-soft);
+  --color-brand-purple: var(--purple);
+  --color-brand-purple-soft: var(--purple-soft);
   --color-brand-warning: var(--warning);
   --color-brand-danger: var(--danger);
   --color-brand-featured: var(--featured);
   --font-editorial: var(--font-serif);
 }
 
+/* 2. PAGE BACKGROUND — subtle life (body) */
 body {
-  background-color: var(--background);
+  background:
+    radial-gradient(1200px 400px at 80% -50px, rgba(35,79,158,0.06), transparent),
+    radial-gradient(900px 300px at 10% -30px, rgba(183,121,31,0.05), transparent),
+    var(--background);
   color: var(--text);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
@@ -41,8 +66,8 @@ body {
 
 /* Custom scrollbar and subtle selection */
 ::selection {
-  background-color: #DDE5F5;
-  color: #151515;
+  background-color: var(--accent-soft);
+  color: var(--accent);
 }
 
 /* Focus styles for WCAG 2.2 AA accessibility */
@@ -59,3 +84,154 @@ textarea:focus-visible {
 .font-editorial {
   font-family: var(--font-serif);
 }
+
+/* 3. HERO */
+.hero {
+  background: linear-gradient(135deg, #234F9E 0%, #193B7A 55%, #142F60 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {                      /* decorative circle, top-right */
+  content: "";
+  position: absolute; right: -80px; top: -80px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  pointer-events: none;
+}
+.hero .eyebrow { color: #A9C4F2; }
+.hero h1 { color: #fff; }
+.hero p { color: #C9D6EE; }
+.hero input::placeholder { color: #A9C4F2; }
+.hero input {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+}
+@media (max-width: 640px) {
+  .hero {
+    padding: 32px 20px;
+  }
+}
+
+.disclosure-banner {
+  background: var(--amber-soft);
+  border: 1px solid #E8D9AE;
+  color: #7A5A10;
+}
+
+/* 4. NAV */
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background .15s, color .15s, border-color .15s;
+  text-decoration: none;
+}
+.nav-item:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.nav-item.active {
+  background: var(--accent);
+  color: #fff;
+}
+.nav-item.active svg {
+  color: #fff;
+}
+.nav-item.active:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+.nav-item.ai-assistant {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #D9D2F5;
+}
+.nav-item.ai-assistant svg {
+  color: var(--purple);
+}
+.nav-item.ai-assistant:hover {
+  background: #E5E0F8;
+  color: var(--purple);
+}
+
+/* 5. SIDEBAR FILTERS */
+.filters-card h4 {           /* section labels: CATEGORY, FORMAT / TYPE */
+  font-size: 11px; letter-spacing: 0.08em;
+  color: var(--accent); font-weight: 600;
+}
+.filter-link {
+  display: block; padding: 6px 10px;
+  border-radius: 6px; color: var(--text-secondary);
+  transition: background .15s, color .15s;
+  text-decoration: none;
+}
+.filter-link:hover  { background: var(--accent-soft); color: var(--accent); }
+.filter-link.selected { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.filter-count { float: right; color: var(--soft); font-size: 11px; }  /* e.g. "(12)" */
+
+/* 6. PRODUCT CARDS — the most important upgrade */
+.product-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(35,79,158,0.12);
+}
+.product-card:hover .product-title { color: var(--accent); }
+
+.card-price-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.product-price { font-size: 16px; font-weight: 700; color: var(--text); }
+.price-stale  { color: var(--amber); font-style: italic; font-size: 13px; }
+.price-note   { font-size: 11px; color: var(--soft); }
+
+.btn-view-deal {
+  background: var(--accent); color: #fff;
+  border-radius: 8px; font-weight: 600;
+  padding: 8px 16px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.btn-view-deal:hover { background: var(--accent-hover); color: #fff; }
+
+/* 6c. Badge color families (replace the beige sameness) */
+.badge-top-pick   { background: var(--coral-soft);  color: var(--coral);  border: 1px solid #F5C6BC; }
+.badge-best-value { background: var(--amber-soft);  color: var(--amber);  border: 1px solid #E8D9AE; }
+.badge-new        { background: var(--success-soft);color: var(--success);border: 1px solid #BFE3CF; }
+.badge-digital    { background: var(--purple-soft); color: var(--purple); border: 1px solid #D9D2F5; }
+
+/* 6d. Merchant chips — full color */
+.chip-amazon  { background: var(--amazon-navy); color: var(--amazon-orange); }
+.chip-gumroad { background: var(--gumroad-pink); color: #40202F; }
+.chip-owned   { background: var(--purple); color: #fff; }
+
+/* 6e. Digital vs physical thumb signal */
+.thumb-digital { border-bottom: 3px solid var(--purple); }  /* + existing radius */
+
+/* 6f. Results bar */
+.results-bar { background: var(--surface-muted); border-radius: 8px; padding: 8px 16px; }
+
+/* 7. FOOTER — anchor the page */
+.site-footer { background: #151515; color: #B9BFC9; padding: 40px; margin-top: 64px; }
+.site-footer h5 { color: #fff; font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.site-footer a { color: #8FA8D6; text-decoration: none; }
+.site-footer a:hover { color: #fff; }

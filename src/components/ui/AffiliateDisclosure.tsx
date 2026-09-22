@@ -17,18 +17,18 @@ export function AffiliateDisclosure({
     return (
       <aside
         aria-label="Affiliate Disclosure"
-        className={`bg-[#F2EBDD]/60 border border-[#E4D7C0] px-4 py-3 rounded-lg text-xs text-[#564935] flex items-start gap-2.5 ${className}`}
+        className={`disclosure-banner px-4 py-3 rounded-xl text-xs flex items-start gap-2.5 ${className}`}
       >
-        <Info className="w-4 h-4 text-[#8C6D3B] shrink-0 mt-0.5" />
+        <Info className="w-4 h-4 text-[#B7791F] shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="font-semibold text-[#382E1E]">Editorial Transparency:</strong>{' '}
+          <strong className="font-semibold text-[#151515]">Editorial Transparency:</strong>{' '}
           EveryAge Digital is reader-supported. When you purchase through links on our site, we may earn an affiliate commission at no extra cost to you.
           {isAmazon && (
-            <span className="block mt-1 font-medium text-[#2E2517]">
+            <span className="block mt-1 font-medium text-[#151515]">
               As an Amazon Associate I earn from qualifying purchases.
             </span>
           )}
-          {' '}<Link href="/affiliate-disclosure" className="underline hover:text-black ml-1">Learn about our evaluation methodology & disclosure policy &rarr;</Link>
+          {' '}<Link href="/affiliate-disclosure" className="underline hover:text-black ml-1 font-medium">Learn about our evaluation methodology & disclosure policy &rarr;</Link>
         </div>
       </aside>
     );

@@ -60,20 +60,20 @@ export function SiteHeader() {
           <nav className="hidden md:flex items-center gap-1 lg:gap-2" aria-label="Main Navigation">
             {navLinks.map(link => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+              const classes = [
+                'nav-item',
+                isActive ? 'active' : '',
+                link.highlight ? 'ai-assistant' : ''
+              ].filter(Boolean).join(' ');
+
               return (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
-                    isActive
-                      ? 'bg-neutral-200/80 text-neutral-900 font-semibold'
-                      : link.highlight
-                      ? 'text-[#1D438A] bg-[#1D438A]/10 hover:bg-[#1D438A]/15 font-semibold'
-                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/50'
-                  }`}
+                  className={classes}
                 >
-                  <link.icon className={`w-3.5 h-3.5 ${link.highlight ? 'text-[#1D438A]' : 'text-neutral-500'}`} />
-                  {link.name}
+                  <link.icon className="w-3.5 h-3.5" />
+                  <span>{link.name}</span>
                 </Link>
               );
             })}
@@ -114,7 +114,7 @@ export function SiteHeader() {
           >
             <Scale className="w-4 h-4" />
             {totalCompare > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-[#1D438A] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 bg-[#234F9E] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                 {totalCompare}
               </span>
             )}
@@ -136,17 +136,26 @@ export function SiteHeader() {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-[#E2E5EB] bg-white px-4 py-4 space-y-2 shadow-lg">
-          {navLinks.map(link => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-800 hover:bg-[#F7F7F4]"
-            >
-              <link.icon className="w-4 h-4 text-neutral-500" />
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map(link => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+            const classes = [
+              'nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium',
+              isActive ? 'active' : '',
+              link.highlight ? 'ai-assistant' : ''
+            ].filter(Boolean).join(' ');
+
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={classes}
+              >
+                <link.icon className="w-4 h-4" />
+                <span>{link.name}</span>
+              </Link>
+            );
+          })}
           <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
             <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:underline">
               About Us

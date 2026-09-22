@@ -17,7 +17,7 @@ export function BookCard({ book, className = '' }: BookCardProps) {
 
   return (
     <article
-      className={`group bg-white border border-[#E2E5EB] rounded-xl overflow-hidden hover:border-[#1D438A]/50 transition-all hover:shadow-md flex flex-col justify-between ${className}`}
+      className={`product-card group bg-white overflow-hidden flex flex-col justify-between ${className}`}
     >
       <div className="relative aspect-3/2 w-full bg-[#F0F1ED] overflow-hidden">
         <Link href={`/books/${book.slug}`} className="block w-full h-full">
@@ -44,8 +44,8 @@ export function BookCard({ book, className = '' }: BookCardProps) {
             <MerchantBadge merchant={book.merchant} />
           </div>
 
-          <h3 className="font-semibold text-base text-neutral-900 leading-snug group-hover:text-[#1D438A] transition-colors">
-            <Link href={`/books/${book.slug}`}>
+          <h3 className="font-semibold text-base text-neutral-900 leading-snug">
+            <Link href={`/books/${book.slug}`} className="product-title transition-colors">
               {book.title}
             </Link>
           </h3>
@@ -70,7 +70,7 @@ export function BookCard({ book, className = '' }: BookCardProps) {
 
         <div className="mt-5 pt-3 border-t border-neutral-100 flex flex-col gap-3">
           <div className="flex items-baseline justify-between">
-            <span className="text-base font-bold text-neutral-900">
+            <span className="text-base font-bold text-neutral-900 product-price">
               ${book.price.toFixed(2)}
             </span>
             <span className="text-[11px] text-neutral-500">
@@ -83,7 +83,7 @@ export function BookCard({ book, className = '' }: BookCardProps) {
               href={book.affiliateUrl}
               target="_blank"
               rel="sponsored nofollow noopener"
-              className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors shadow-xs"
+              className="flex-1 btn-view-deal py-2 px-3 text-xs font-semibold gap-1.5"
             >
               <span>{isAmazon ? 'View on Amazon' : 'View Book'}</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-80" />

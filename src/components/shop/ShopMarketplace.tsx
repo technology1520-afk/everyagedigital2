@@ -37,9 +37,9 @@ export function ShopMarketplace({
       <Breadcrumbs items={[{ label: 'Shop Marketplace' }]} />
 
       {/* Title Header & Search Bar */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#E2E5EB]">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#E4E7EC]">
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-[#1D438A] font-semibold">
+          <span className="text-xs font-mono uppercase tracking-widest text-[#234F9E] font-semibold">
             Catalog Marketplace
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-neutral-900 mt-1">
@@ -58,7 +58,7 @@ export function ShopMarketplace({
             value={filters.query || ''}
             onChange={e => setFilters({ ...filters, query: e.target.value })}
             placeholder="Search items, brands, use cases..."
-            className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#E2E5EB] rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#1D438A]"
+            className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#E4E7EC] rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#234F9E]"
           />
         </div>
       </div>
@@ -74,13 +74,16 @@ export function ShopMarketplace({
             onChange={setFilters}
             availableCategories={searchResult.availableCategories}
             availableMerchants={searchResult.availableMerchants}
+            categoryCounts={searchResult.categoryCounts}
+            typeCounts={searchResult.typeCounts}
+            merchantCounts={searchResult.merchantCounts}
           />
         </div>
 
         {/* Products Column */}
         <div className="lg:col-span-3 space-y-6">
           {/* Controls Bar: Item count + Sorting */}
-          <div className="bg-white p-3.5 rounded-xl border border-[#E2E5EB] flex items-center justify-between">
+          <div className="results-bar border border-[#E4E7EC] flex items-center justify-between">
             <span className="text-xs font-semibold text-neutral-700">
               Showing <span className="text-neutral-900 font-bold">{searchResult.total}</span> curated item{searchResult.total === 1 ? '' : 's'}
             </span>
