@@ -69,15 +69,15 @@ export function FilterBottomSheet({
         role="dialog"
         aria-modal="true"
         aria-label="Filter Options"
-        className="relative bg-white rounded-t-2xl max-h-[85vh] flex flex-col shadow-2xl z-10 animate-in slide-in-from-bottom duration-250"
+        className="relative bg-[var(--surface)] text-[var(--text)] rounded-t-2xl max-h-[85vh] flex flex-col shadow-2xl z-10 animate-in slide-in-from-bottom duration-250 border-t border-[var(--border)]"
       >
         {/* Drag Handle & Top Bar */}
-        <div className="pt-3 pb-2 px-5 border-b border-neutral-100 flex flex-col items-center">
-          <div className="w-12 h-1.5 bg-neutral-300 rounded-full mb-3" />
+        <div className="pt-3 pb-2 px-5 border-b border-[var(--border)] flex flex-col items-center">
+          <div className="w-12 h-1.5 bg-[var(--border)] rounded-full mb-3" />
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-neutral-900">Catalog Filters</span>
-              <span className="text-xs bg-[#234F9E] text-white px-2 py-0.5 rounded-full font-semibold">
+              <span className="font-bold text-sm text-[var(--text)]">Catalog Filters</span>
+              <span className="text-xs bg-[var(--accent)] text-white px-2 py-0.5 rounded-full font-semibold">
                 {totalResults} items
               </span>
             </div>
@@ -85,7 +85,7 @@ export function FilterBottomSheet({
               type="button"
               onClick={onClose}
               aria-label="Close filters"
-              className="touch-target p-2 text-neutral-500 hover:text-neutral-900 rounded-full cursor-pointer"
+              className="touch-target p-2 text-[var(--text-secondary)] hover:text-[var(--text)] rounded-full cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -102,25 +102,25 @@ export function FilterBottomSheet({
             categoryCounts={categoryCounts}
             typeCounts={typeCounts}
             merchantCounts={merchantCounts}
-            className="border-0 p-0 shadow-none"
+            className="border-0 p-0 shadow-none bg-transparent"
           />
         </div>
 
         {/* Bottom Sticky Action Bar */}
-        <div className="p-4 border-t border-neutral-100 bg-white flex items-center gap-3 pb-safe">
+        <div className="p-4 border-t border-[var(--border)] bg-[var(--surface)] flex items-center gap-3 pb-safe">
           <button
             type="button"
             onClick={() => {
               onChange({ query: filters.query, sortBy: filters.sortBy });
             }}
-            className="touch-target flex-1 py-3 rounded-xl border border-neutral-300 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
+            className="touch-target flex-1 py-3 rounded-xl border border-[var(--border)] text-xs font-semibold text-[var(--text)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer"
           >
             Reset All
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="touch-target flex-2 py-3 rounded-xl bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+            className="touch-target flex-2 py-3 rounded-xl bg-[var(--accent)] text-white text-xs font-semibold hover:bg-[var(--accent-hover)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <Check className="w-4 h-4" />
             <span>Apply Filters ({totalResults})</span>

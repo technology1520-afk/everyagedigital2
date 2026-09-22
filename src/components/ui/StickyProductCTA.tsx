@@ -31,11 +31,11 @@ export function StickyProductCTA({
 
   return (
     <div
-      className="md:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#E4E7EC] p-3 px-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]"
+      className="md:hidden fixed bottom-14 left-0 right-0 z-30 bg-[var(--surface)]/95 backdrop-blur-md border-t border-[var(--border)] p-3 px-4 shadow-[0_-4px_12px_rgba(0,0,0,0.15)] transition-colors duration-150"
       aria-label="Sticky Purchase Bar"
     >
       {/* Affiliate micro-text above button */}
-      <p className="text-[10px] text-neutral-500 text-center mb-1.5 leading-none">
+      <p className="text-[10px] text-[var(--text-secondary)] text-center mb-1.5 leading-none">
         {isAmazon
           ? 'As an Amazon Associate I earn from qualifying purchases'
           : 'Direct partner referral link'}
@@ -44,18 +44,18 @@ export function StickyProductCTA({
       <div className="flex items-center justify-between gap-3">
         <div>
           {freshness?.isStale ? (
-            <span className="text-xs italic text-amber-700 font-semibold">Live price check</span>
+            <span className="text-xs italic text-[var(--amber)] font-semibold">Live price check</span>
           ) : offer ? (
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-neutral-900">${offer.price.toFixed(2)}</span>
+              <span className="text-lg font-bold text-[var(--text)]">${offer.price.toFixed(2)}</span>
               {offer.originalPrice && offer.originalPrice > offer.price && (
-                <span className="text-xs text-neutral-400 line-through">
+                <span className="text-xs text-[var(--text-secondary)] line-through">
                   ${offer.originalPrice.toFixed(2)}
                 </span>
               )}
             </div>
           ) : (
-            <span className="text-xs text-neutral-400">Direct Resource</span>
+            <span className="text-xs text-[var(--text-secondary)]">Direct Resource</span>
           )}
         </div>
 
@@ -65,7 +65,7 @@ export function StickyProductCTA({
               href={`/api/go/${productId}`}
               target="_blank"
               rel="sponsored nofollow noopener"
-              className="touch-target inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] transition-colors shadow-xs min-h-[44px]"
+              className="touch-target inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[var(--accent)] text-white text-xs font-semibold hover:bg-[var(--accent-hover)] transition-colors shadow-xs min-h-[44px]"
             >
               <span>{getCtaText()}</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-80" />
@@ -73,7 +73,7 @@ export function StickyProductCTA({
           ) : (
             <Link
               href={`/product/${productSlug}`}
-              className="touch-target inline-flex items-center justify-center px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-semibold min-h-[44px]"
+              className="touch-target inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--text)] text-[var(--background)] text-xs font-semibold min-h-[44px]"
             >
               Learn More
             </Link>

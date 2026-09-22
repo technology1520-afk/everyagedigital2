@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { MobileSearchToggle } from './MobileSearchToggle';
+import { ThemeToggle } from './ThemeToggle';
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -64,16 +65,15 @@ export function SiteHeader() {
     { name: 'Collections', href: '/collection/home-office-starter-kit', icon: Compass },
     { name: 'Books & Guides', href: '/books', icon: BookOpen },
     { name: 'Deals', href: '/deals', icon: Flame },
-    { name: 'Our Products', href: '/shop/own-products', icon: ShoppingBag },
-    { name: 'AI Assistant', href: '/assistant', icon: Sparkles, highlight: true }
+    { name: 'AI Assistant', href: '/assistant', icon: Sparkles, highlight: true },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#F7F7F4]/90 backdrop-blur-md border-b border-[#E4E7EC]">
+    <header className="sticky top-0 z-40 w-full bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)] transition-colors duration-150">
       {/* Top micro announcement / transparency notice */}
-      <div className="bg-[#151515] text-white py-1 px-4 text-center text-[11px] font-medium tracking-wide flex items-center justify-center gap-2">
+      <div className="bg-[#151515] text-white dark:bg-[#1C1F27] dark:text-[var(--text)] dark:border-b dark:border-[var(--border)] py-1 px-4 text-center text-[11px] font-medium tracking-wide flex items-center justify-center gap-2 transition-colors duration-150">
         <span className="truncate">Independent editorial commerce. Direct merchant links. Zero sponsored bias.</span>
-        <Link href="/methodology" className="underline text-neutral-300 hover:text-white text-[10px] shrink-0">
+        <Link href="/methodology" className="underline text-neutral-300 dark:text-[var(--text-secondary)] hover:text-white text-[10px] shrink-0">
           Methodology &rarr;
         </Link>
       </div>
@@ -82,10 +82,10 @@ export function SiteHeader() {
         {/* Logo & Brand Identity */}
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-baseline gap-2 group touch-target">
-            <span className="font-serif text-2xl font-bold tracking-tight text-neutral-900 group-hover:text-[#234F9E] transition-colors">
+            <span className="font-serif text-2xl font-bold tracking-tight text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
               EveryAge
             </span>
-            <span className="text-xs font-mono uppercase tracking-widest text-[#234F9E] font-semibold bg-[#234F9E]/10 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-mono uppercase tracking-widest text-[var(--accent)] font-semibold bg-[var(--accent-soft)] px-1.5 py-0.5 rounded">
               Digital
             </span>
           </Link>
@@ -123,17 +123,20 @@ export function SiteHeader() {
           <Link
             href="/search"
             aria-label="Search catalog"
-            className="hidden md:flex p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 rounded-full transition-colors items-center gap-1.5 text-xs font-medium touch-target"
+            className="hidden md:flex p-2 text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--surface-muted)] rounded-full transition-colors items-center gap-1.5 text-xs font-medium touch-target"
           >
             <Search className="w-4 h-4" />
-            <span className="hidden lg:inline text-neutral-500">Search</span>
+            <span className="hidden lg:inline text-[var(--text-secondary)]">Search</span>
           </Link>
+
+          {/* Light / Dark Theme Toggle */}
+          <ThemeToggle />
 
           {/* Wishlist Icon */}
           <Link
             href="/wishlist"
             aria-label={mounted && totalSaved > 0 ? `Saved items (${totalSaved})` : 'Saved items'}
-            className="touch-target relative p-2.5 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 rounded-full transition-colors"
+            className="touch-target relative p-2.5 text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--surface-muted)] rounded-full transition-colors"
           >
             <Bookmark className="w-5 h-5 md:w-4 md:h-4" />
             {mounted && totalSaved > 0 && (
@@ -147,11 +150,11 @@ export function SiteHeader() {
           <Link
             href="/compare"
             aria-label={mounted && totalCompare > 0 ? `Compare products (${totalCompare})` : 'Compare products'}
-            className="touch-target relative p-2.5 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 rounded-full transition-colors"
+            className="touch-target relative p-2.5 text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--surface-muted)] rounded-full transition-colors"
           >
             <Scale className="w-5 h-5 md:w-4 md:h-4" />
             {mounted && totalCompare > 0 && (
-              <span className="absolute top-1.5 right-1.5 md:top-0.5 md:right-0.5 bg-[#234F9E] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+              <span className="absolute top-1.5 right-1.5 md:top-0.5 md:right-0.5 bg-[var(--accent)] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                 {totalCompare}
               </span>
             )}
@@ -163,7 +166,7 @@ export function SiteHeader() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle secondary navigation"
             aria-expanded={mobileMenuOpen}
-            className="touch-target md:hidden p-2.5 text-neutral-700 hover:bg-neutral-200/60 rounded-lg cursor-pointer transition-colors"
+            className="touch-target md:hidden p-2.5 text-[var(--text)] hover:bg-[var(--surface-muted)] rounded-lg cursor-pointer transition-colors"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -178,10 +181,10 @@ export function SiteHeader() {
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-[#E4E7EC] p-5 space-y-4 shadow-xl z-40 max-h-[calc(100vh-80px)] overflow-y-auto animate-in slide-in-from-top-2 duration-200">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[var(--surface)] border-b border-[var(--border)] p-5 space-y-4 shadow-xl z-40 max-h-[calc(100vh-80px)] overflow-y-auto animate-in slide-in-from-top-2 duration-200">
             {/* Primary Destinations in drawer */}
             <div className="space-y-1">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 font-semibold px-3 block mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] font-semibold px-3 block mb-1">
                 Explore Catalog
               </span>
               {navLinks.map(link => {
@@ -193,10 +196,10 @@ export function SiteHeader() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`touch-target w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-colors ${
                       isActive
-                        ? 'bg-[#234F9E] text-white font-semibold'
+                        ? 'bg-[var(--accent)] text-white font-semibold'
                         : link.highlight
-                        ? 'bg-[#EFEDFB] text-[#6D5BD0] border border-[#D9D2F5]'
-                        : 'text-neutral-800 hover:bg-[#F7F7F4]'
+                        ? 'bg-[var(--purple-soft)] text-[var(--purple)] border border-[var(--purple)]/20'
+                        : 'text-[var(--text)] hover:bg-[var(--surface-muted)]'
                     }`}
                   >
                     <link.icon className="w-4 h-4" />
@@ -207,40 +210,40 @@ export function SiteHeader() {
             </div>
 
             {/* Secondary Editorial & Info Links */}
-            <div className="pt-3 border-t border-neutral-100 space-y-1">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 font-semibold px-3 block mb-1">
+            <div className="pt-3 border-t border-[var(--border)] space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] font-semibold px-3 block mb-1">
                 Editorial & Standards
               </span>
               <Link
                 href="/about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-neutral-700 hover:bg-[#F7F7F4]"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-[var(--text)] hover:bg-[var(--surface-muted)]"
               >
-                <Info className="w-4 h-4 text-neutral-400" />
+                <Info className="w-4 h-4 text-[var(--text-secondary)]" />
                 <span>About EveryAge Digital</span>
               </Link>
               <Link
                 href="/methodology"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-neutral-700 hover:bg-[#F7F7F4]"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-[var(--text)] hover:bg-[var(--surface-muted)]"
               >
-                <ShieldCheck className="w-4 h-4 text-neutral-400" />
+                <ShieldCheck className="w-4 h-4 text-[var(--text-secondary)]" />
                 <span>Vetting Methodology & Testing</span>
               </Link>
               <Link
                 href="/affiliate-disclosure"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-neutral-700 hover:bg-[#F7F7F4]"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-[var(--text)] hover:bg-[var(--surface-muted)]"
               >
-                <FileText className="w-4 h-4 text-neutral-400" />
+                <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
                 <span>Full Affiliate Disclosure</span>
               </Link>
               <Link
                 href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-neutral-500 hover:bg-[#F7F7F4]"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]"
               >
-                <span className="w-2 h-2 rounded-full bg-[#234F9E]" />
+                <span className="w-2 h-2 rounded-full bg-[var(--accent)]" />
                 <span>Owner Control Center</span>
               </Link>
             </div>

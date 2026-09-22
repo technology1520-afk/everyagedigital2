@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* CORE (unchanged) */
   --background: #F7F7F4;
@@ -27,6 +29,29 @@
   --warning: #A15C00;
   --danger: #B42318;
   --font-serif: "Newsreader", "Georgia", "Cambria", serif;
+}
+
+.dark {
+  --background: #14161C;        /* deep slate, not pure black */
+  --surface: #1C1F27;           /* cards */
+  --surface-muted: #22262F;
+  --text: #F2F3F5;
+  --text-secondary: #9AA3B2;
+  --border: #2A2F3A;
+
+  --accent: #6D96E8;            /* brighter blue for dark bg contrast */
+  --accent-hover: #89AAEF;
+  --accent-soft: #1D2A44;
+
+  --coral: #F08A78;             --coral-soft: #2C1D1A;
+  --amber: #E0B25C;             --amber-soft: #2A2318;
+  --success: #4FC48D;           --success-soft: #17281F;
+  --purple: #9D8DF0;            --purple-soft: #232036;
+  --featured: #262A35;
+
+  --soft: #9AA3B2;
+  --warning: #E0B25C;
+  --danger: #F08A78;
 }
 
 @theme {
@@ -125,6 +150,11 @@ textarea:focus-visible {
   position: relative;
   overflow: hidden;
 }
+
+.dark .hero {
+  background: linear-gradient(135deg, #193B7A 0%, #142F60 55%, #0E2143 100%);
+}
+
 .hero::after {                      /* decorative circle, top-right */
   content: "";
   position: absolute;
@@ -171,8 +201,8 @@ textarea:focus-visible {
 
 .disclosure-banner {
   background: var(--amber-soft);
-  border: 1px solid #E8D9AE;
-  color: #7A5A10;
+  border: 1px solid var(--border);
+  color: var(--amber);
 }
 
 /* 4. NAV */
@@ -283,14 +313,15 @@ textarea:focus-visible {
 .btn-view-deal:hover { background: var(--accent-hover); color: #fff; }
 
 /* 6c. Badge color families */
-.badge-top-pick   { background: var(--coral-soft);  color: var(--coral);  border: 1px solid #F5C6BC; }
-.badge-best-value { background: var(--amber-soft);  color: var(--amber);  border: 1px solid #E8D9AE; }
-.badge-new        { background: var(--success-soft);color: var(--success);border: 1px solid #BFE3CF; }
-.badge-digital    { background: var(--purple-soft); color: var(--purple); border: 1px solid #D9D2F5; }
+.badge-top-pick   { background: var(--coral-soft);  color: var(--coral);  border: 1px solid var(--border); }
+.badge-best-value { background: var(--amber-soft);  color: var(--amber);  border: 1px solid var(--border); }
+.badge-new        { background: var(--success-soft);color: var(--success);border: 1px solid var(--border); }
+.badge-digital    { background: var(--purple-soft); color: var(--purple); border: 1px solid var(--border); }
 
 /* 6d. Merchant chips */
 .chip-amazon  { background: var(--amazon-navy); color: var(--amazon-orange); }
-.chip-gumroad { background: var(--gumroad-pink); color: #40202F; }
+.chip-gumroad { background: var(--gumroad-pink); color: #301824; }
+.dark .chip-gumroad { background: var(--gumroad-pink); color: #180913; font-weight: 600; }
 .chip-owned   { background: var(--purple); color: #fff; }
 
 /* 6e. Digital vs physical thumb signal */
@@ -301,6 +332,7 @@ textarea:focus-visible {
 
 /* 7. FOOTER */
 .site-footer { background: #151515; color: #B9BFC9; padding: 32px 20px; margin-top: 48px; }
+.dark .site-footer { background: #111317; border-top: 1px solid var(--border); }
 @media (min-width: 768px) {
   .site-footer { padding: 40px; margin-top: 64px; }
 }

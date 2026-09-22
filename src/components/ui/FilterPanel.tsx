@@ -62,18 +62,18 @@ export function FilterPanel({
   );
 
   return (
-    <aside className={`filters-card bg-white border border-[#E4E7EC] rounded-xl p-5 space-y-6 ${className}`}>
+    <aside className={`filters-card bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 space-y-6 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
-        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-900">
-          <Filter className="w-3.5 h-3.5 text-[#234F9E]" />
+      <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--text)]">
+          <Filter className="w-3.5 h-3.5 text-[var(--accent)]" />
           <span>Filters</span>
         </div>
         {hasActiveFilters && (
           <button
             type="button"
             onClick={clearAll}
-            className="text-[11px] text-[#234F9E] hover:underline flex items-center gap-1 cursor-pointer font-medium"
+            className="text-[11px] text-[var(--accent)] hover:underline flex items-center gap-1 cursor-pointer font-medium"
           >
             <X className="w-3 h-3" />
             Reset all
@@ -83,12 +83,12 @@ export function FilterPanel({
 
       {/* Editorial Pick Toggle */}
       <div>
-        <label className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-neutral-800">
+        <label className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-[var(--text)]">
           <input
             type="checkbox"
             checked={Boolean(filters.editorialPickOnly)}
             onChange={e => onChange({ ...filters, editorialPickOnly: e.target.checked || undefined })}
-            className="rounded border-neutral-300 text-[#234F9E] focus:ring-[#234F9E]"
+            className="rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
           />
           <span>Editorial Picks Only</span>
         </label>
@@ -167,7 +167,7 @@ export function FilterPanel({
       <div>
         <div className="flex items-center justify-between mb-2">
           <h4>MAX BUDGET</h4>
-          <span className="text-xs font-medium text-neutral-700">
+          <span className="text-xs font-medium text-[var(--text-secondary)]">
             {filters.maxPrice ? `$${filters.maxPrice}` : 'Any'}
           </span>
         </div>
@@ -181,9 +181,9 @@ export function FilterPanel({
             const val = Number(e.target.value);
             onChange({ ...filters, maxPrice: val >= 400 ? undefined : val });
           }}
-          className="w-full accent-[#234F9E] cursor-pointer"
+          className="w-full accent-[var(--accent)] cursor-pointer"
         />
-        <div className="flex justify-between text-[10px] text-neutral-400 mt-1">
+        <div className="flex justify-between text-[10px] text-[var(--text-secondary)] mt-1">
           <span>$15</span>
           <span>$200</span>
           <span>$400+</span>

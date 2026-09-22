@@ -48,11 +48,11 @@ export function ProductCard({
 
   return (
     <article
-      className={`product-card group relative bg-white overflow-hidden flex flex-col justify-between ${className}`}
+      className={`product-card group relative bg-[var(--surface)] overflow-hidden flex flex-col justify-between ${className}`}
     >
       {/* Top Media & Actions (Square on phone, 4:3 on tablet/desktop) */}
       <div
-        className={`relative aspect-square sm:aspect-4/3 w-full bg-[#F0F1ED] overflow-hidden ${
+        className={`relative aspect-square sm:aspect-4/3 w-full bg-[var(--surface-muted)] overflow-hidden ${
           isDigital ? 'thumb-digital' : ''
         }`}
       >
@@ -91,29 +91,29 @@ export function ProductCard({
       <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
         <div>
           {/* Metadata Row */}
-          <div className="flex items-center justify-between gap-1 text-xs text-neutral-500 mb-1">
-            <span className="font-mono uppercase tracking-wider text-[10px] sm:text-[11px] font-medium text-neutral-400 truncate">
+          <div className="flex items-center justify-between gap-1 text-xs text-[var(--text-secondary)] mb-1">
+            <span className="font-mono uppercase tracking-wider text-[10px] sm:text-[11px] font-medium text-[var(--text-secondary)] truncate">
               {product.brand}
             </span>
             {offer && <MerchantBadge merchant={offer.merchantName} />}
           </div>
 
           {/* Title */}
-          <h3 className="font-semibold text-xs sm:text-base text-neutral-900 leading-snug line-clamp-2">
+          <h3 className="font-semibold text-xs sm:text-base text-[var(--text)] leading-snug line-clamp-2">
             <Link href={`/product/${product.slug}`} className="product-title focus:outline-hidden transition-colors">
               {product.name}
             </Link>
           </h3>
 
           {/* Description (visible on sm+) */}
-          <p className="hidden sm:block mt-2 text-xs text-neutral-600 line-clamp-2 leading-relaxed">
+          <p className="hidden sm:block mt-2 text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
             {product.description}
           </p>
 
           {/* Best for highlight (visible on sm+) */}
           {product.bestFor && (
-            <div className="hidden sm:block mt-2.5 py-1.5 px-2 bg-[#F7F7F4] rounded text-[11px] text-neutral-700 border border-neutral-200/60 line-clamp-1">
-              <strong className="text-neutral-900 font-medium">Best for:</strong> {product.bestFor}
+            <div className="hidden sm:block mt-2.5 py-1.5 px-2 bg-[var(--surface-muted)] rounded text-[11px] text-[var(--text)] border border-[var(--border)] line-clamp-1">
+              <strong className="text-[var(--text)] font-medium">Best for:</strong> {product.bestFor}
             </div>
           )}
         </div>
@@ -160,7 +160,7 @@ export function ProductCard({
           </div>
 
           {/* Affiliate disclosure micro-text under the button */}
-          <p className="text-[9px] sm:text-[10px] text-neutral-400 text-right mt-1 sm:mt-1.5 leading-tight">
+          <p className="text-[9px] sm:text-[10px] text-[var(--text-secondary)] text-right mt-1 sm:mt-1.5 leading-tight">
             {isAmazon
               ? 'Paid Amazon link'
               : 'Direct merchant link'}
