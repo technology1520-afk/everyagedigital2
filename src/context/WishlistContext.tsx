@@ -19,54 +19,45 @@ interface WishlistContextType {
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const [savedProductIds, setSavedProductIds] = useState<string[]>(() => {
-    if (typeof window === 'undefined') return [];
+  const [savedProductIds, setSavedProductIds] = useState<string[]>([]);
+  const [savedBookIds, setSavedBookIds] = useState<string[]>([]);
+  const [compareProductIds, setCompareProductIds] = useState<string[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load from localStorage only after initial client mount to ensure SSR matches client hydration
+  useEffect(() => {
     try {
       const savedProds = localStorage.getItem('ead_saved_products');
-      return savedProds ? JSON.parse(savedProds) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [savedBookIds, setSavedBookIds] = useState<string[]>(() => {
-    if (typeof window === 'undefined') return [];
-    try {
+      if (savedProds) setSavedProductIds(JSON.parse(savedProds));
       const savedBks = localStorage.getItem('ead_saved_books');
-      return savedBks ? JSON.parse(savedBks) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [compareProductIds, setCompareProductIds] = useState<string[]>(() => {
-    if (typeof window === 'undefined') return [];
-    try {
+      if (savedBks) setSavedBookIds(JSON.parse(savedBks));
       const compProds = localStorage.getItem('ead_compare_products');
-      return compProds ? JSON.parse(compProds) : [];
-    } catch {
-      return [];
-    }
-  });
+      if (compProds) setCompareProductIds(JSON.parse(compProds));
+    } catch {}
+    setIsLoaded(true);
+  }, []);
 
-  // Sync to localStorage when state changes
+  // Sync to localStorage only after initial client load is complete
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem('ead_saved_products', JSON.stringify(savedProductIds));
     } catch {}
-  }, [savedProductIds]);
+  }, [savedProductIds, isLoaded]);
 
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem('ead_saved_books', JSON.stringify(savedBookIds));
     } catch {}
-  }, [savedBookIds]);
+  }, [savedBookIds, isLoaded]);
 
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem('ead_compare_products', JSON.stringify(compareProductIds));
     } catch {}
-  }, [compareProductIds]);
+  }, [compareProductIds, isLoaded]);
 
   const toggleSaveProduct = (productId: string) => {
     setSavedProductIds(prev => 

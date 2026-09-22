@@ -132,7 +132,7 @@ export function SiteHeader() {
           {/* Wishlist Icon */}
           <Link
             href="/wishlist"
-            aria-label={`Saved items (${totalSaved})`}
+            aria-label={mounted && totalSaved > 0 ? `Saved items (${totalSaved})` : 'Saved items'}
             className="touch-target relative p-2.5 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 rounded-full transition-colors"
           >
             <Bookmark className="w-5 h-5 md:w-4 md:h-4" />
@@ -146,7 +146,7 @@ export function SiteHeader() {
           {/* Compare Drawer Link */}
           <Link
             href="/compare"
-            aria-label={`Compare products (${totalCompare})`}
+            aria-label={mounted && totalCompare > 0 ? `Compare products (${totalCompare})` : 'Compare products'}
             className="touch-target relative p-2.5 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 rounded-full transition-colors"
           >
             <Scale className="w-5 h-5 md:w-4 md:h-4" />
