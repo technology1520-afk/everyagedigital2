@@ -1,4 +1,4 @@
-import { Product } from '../../types';
+import { Product, MerchantOffer, MerchantName } from '../../types';
 import { ProductInput } from './schema';
 
 export const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1587829741301-dc798b83add3';
@@ -39,13 +39,13 @@ export function sanitizeAffiliateUrl(url?: string | null): string {
 }
 
 /**
- * Validates and converts price values into positive finite numbers or null.
- * Prevents NaN or negative bound errors.
+ * Validates and converts price values into positive finite numbers or null/fallback.
+ * Prevents NaN, negative numbers, or invalid string errors.
  */
-export function sanitizePriceBound(val?: number | string | null): number | null {
-  if (val === undefined || val === null || val === '') return null;
+export function sanitizePriceBound(val?: number | string | null, fallback: number | null = null): number | null {
+  if (val === undefined || val === null || val === '') return fallback;
   const num = typeof val === 'number' ? val : Number(val);
-  if (isNaN(num) || num < 0 || !isFinite(num)) return null;
+  if (isNaN(num) || num < 0 || !isFinite(num)) return fallback;
   return Math.round(num * 100) / 100;
 }
 
@@ -133,6 +133,59 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
 }
 
 /**
+ * Maps a Supabase 'products' table row to a MerchantOffer.
+ * Guarantees numeric prices with 0 fallback to prevent NaN warnings.
+ */
+export function mapSupabaseRowToOffer(row: SupabaseProductRow): MerchantOffer {
+  let merchantName: MerchantName = 'Direct Brand';
+  const rawMerchant = (row.merchant_id as string) || '';
+  const merchantLower = rawMerchant.toLowerCase();
+  if (merchantLower.includes('amazon')) {
+    merchantName = 'Amazon';
+  } else if (merchantLower.includes('gumroad')) {
+    merchantName = 'Gumroad';
+  } else if (merchantLower.includes('lemon')) {
+    merchantName = 'Lemon Squeezy';
+  } else if (merchantLower.includes('paddle')) {
+    merchantName = 'Paddle';
+  } else if (merchantLower.includes('impact')) {
+    merchantName = 'Impact';
+  } else if (merchantLower.includes('clickbank')) {
+    merchantName = 'ClickBank';
+  } else if (merchantLower.includes('shareasale')) {
+    merchantName = 'ShareASale';
+  } else if (merchantLower.includes('cj')) {
+    merchantName = 'CJ';
+  } else {
+    merchantName = 'Direct Brand';
+  }
+
+  const safeUrl = sanitizeAffiliateUrl(row.affiliate_url);
+  const price = sanitizePriceBound(row.price_min, 0) ?? 0;
+  const originalPrice = sanitizePriceBound(row.price_max, null) ?? undefined;
+  const nowIso = new Date().toISOString();
+
+  return {
+    id: `off-${row.id}`,
+    productId: row.id,
+    merchantName,
+    providerName: rawMerchant || merchantName,
+    affiliateProgram: `prog-${merchantLower.includes('amazon') ? 'amazon' : merchantLower.includes('gumroad') ? 'gumroad' : 'direct'}`,
+    originalUrl: safeUrl,
+    affiliateUrl: safeUrl,
+    currency: (row.currency || 'USD').trim().toUpperCase(),
+    price,
+    originalPrice,
+    priceType: 'fixed',
+    availability: 'in_stock',
+    region: ['Global', 'US'],
+    lastCheckedAt: row.updated_at || row.created_at || nowIso,
+    staleAfterDays: 7,
+    active: row.status === 'active'
+  };
+}
+
+/**
  * Maps frontend ProductInput to a Supabase 'products' table row for insertion.
  * Sets category_id and merchant_id safely to null by default to avoid FK violations
  * when referenced tables don't yet contain the IDs.
@@ -155,8 +208,8 @@ export function mapProductInputToSupabaseRow(input: ProductInput, id: string): R
     brand: input.brand?.trim() || null,
     category_id: null,
     merchant_id: null,
-    price_min: sanitizePriceBound(input.priceMin),
-    price_max: sanitizePriceBound(input.priceMax),
+    price_min: sanitizePriceBound(input.priceMin, 0) ?? 0,
+    price_max: sanitizePriceBound(input.priceMax, null),
     currency: (input.currency || 'USD').trim().toUpperCase(),
     image_url: safeImageUrl,
     status: input.status || 'draft',
@@ -186,8 +239,8 @@ export function mapProductUpdateToSupabaseRow(input: Partial<ProductInput>): Rec
   if (input.slug !== undefined) row.slug = input.slug;
   if (input.description !== undefined) row.description = input.description;
   if (input.brand !== undefined) row.brand = input.brand?.trim() || null;
-  if (input.priceMin !== undefined) row.price_min = sanitizePriceBound(input.priceMin);
-  if (input.priceMax !== undefined) row.price_max = sanitizePriceBound(input.priceMax);
+  if (input.priceMin !== undefined) row.price_min = sanitizePriceBound(input.priceMin, 0) ?? 0;
+  if (input.priceMax !== undefined) row.price_max = sanitizePriceBound(input.priceMax, null);
   if (input.currency !== undefined) row.currency = (input.currency || 'USD').trim().toUpperCase();
   if (input.imageUrl !== undefined) row.image_url = sanitizeValidUrl(input.imageUrl, null);
   if (input.status !== undefined) row.status = input.status;

@@ -26,6 +26,7 @@ import { isSupabaseConfigured, getSupabaseEnv } from '../supabase/config';
 import { getSupabaseAdminClient } from '../supabase/server';
 import { 
   mapSupabaseRowToProduct, 
+  mapSupabaseRowToOffer,
   mapProductInputToSupabaseRow, 
   mapProductUpdateToSupabaseRow,
   sanitizeValidUrl,
@@ -227,6 +228,50 @@ class CatalogRepository {
     return list;
   }
 
+  /**
+   * Ensures a corresponding MerchantOffer and AffiliateLinkRecord exist in memory
+   * for a product fetched from Supabase, guaranteeing valid numeric prices and affiliate URLs.
+   */
+  public ensureOfferForSupabaseProduct(row: SupabaseProductRow): MerchantOffer {
+    const existingIdx = this.offers.findIndex(o => o.productId === row.id);
+    const offer = mapSupabaseRowToOffer(row);
+    if (existingIdx >= 0) {
+      this.offers[existingIdx] = offer;
+    } else {
+      this.offers.unshift(offer);
+    }
+
+    const existingLinkIdx = this.links.findIndex(l => l.productId === row.id);
+    let network: MerchantNetwork = 'direct';
+    const merchantLower = (row.merchant_id || '').toLowerCase();
+    if (merchantLower.includes('amazon')) network = 'amazon';
+    else if (merchantLower.includes('gumroad')) network = 'gumroad';
+
+    const safeUrl = sanitizeAffiliateUrl(row.affiliate_url);
+    const linkRecord: AffiliateLinkRecord = {
+      id: `link-${row.id}`,
+      productId: row.id,
+      network,
+      url: safeUrl,
+      relTag: 'sponsored nofollow noopener',
+      lastCheckedAt: row.updated_at || row.created_at || new Date().toISOString(),
+      staleAfterDays: 7,
+      clickCount: 0
+    };
+
+    if (existingLinkIdx >= 0) {
+      this.links[existingLinkIdx] = {
+        ...this.links[existingLinkIdx],
+        url: safeUrl,
+        network
+      };
+    } else {
+      this.links.unshift(linkRecord);
+    }
+
+    return offer;
+  }
+
   public getProductByIdSync(id: string): Product | undefined {
     return this.products.find(p => p.id === id);
   }
@@ -242,7 +287,9 @@ class CatalogRepository {
           .maybeSingle();
 
         if (!error && data) {
-          const product = mapSupabaseRowToProduct(data as SupabaseProductRow);
+          const row = data as SupabaseProductRow;
+          this.ensureOfferForSupabaseProduct(row);
+          const product = mapSupabaseRowToProduct(row);
           const idx = this.products.findIndex(p => p.id === id);
           if (idx >= 0) this.products[idx] = product;
           else this.products.unshift(product);
@@ -270,7 +317,9 @@ class CatalogRepository {
           .maybeSingle();
 
         if (!error && data) {
-          const product = mapSupabaseRowToProduct(data as SupabaseProductRow);
+          const row = data as SupabaseProductRow;
+          this.ensureOfferForSupabaseProduct(row);
+          const product = mapSupabaseRowToProduct(row);
           const idx = this.products.findIndex(p => p.id === product.id || p.slug === slug);
           if (idx >= 0) this.products[idx] = product;
           else this.products.unshift(product);
@@ -295,7 +344,10 @@ class CatalogRepository {
         if (error) {
           console.error('[CatalogRepository] getAllProducts error from Supabase:', error.message);
         } else if (data && data.length > 0) {
-          const mapped = data.map((row) => mapSupabaseRowToProduct(row as SupabaseProductRow));
+          const mapped = data.map((row) => {
+            this.ensureOfferForSupabaseProduct(row as SupabaseProductRow);
+            return mapSupabaseRowToProduct(row as SupabaseProductRow);
+          });
           for (const p of mapped) {
             const idx = this.products.findIndex(existing => existing.id === p.id);
             if (idx >= 0) this.products[idx] = p;

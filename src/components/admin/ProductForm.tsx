@@ -28,8 +28,20 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
   const [description, setDescription] = useState(initialData?.description || '');
   const [categoryId, setCategoryId] = useState(initialData?.categoryId || categories[0]?.name || 'Desk Setup & Lighting');
   const [merchantId, setMerchantId] = useState(initialData?.merchantId || 'Amazon');
-  const [priceMin, setPriceMin] = useState<number>(initialData?.priceMin ?? 99);
-  const [priceMax, setPriceMax] = useState<number>(initialData?.priceMax ?? 129);
+  const [priceMin, setPriceMin] = useState<number | string>(() => {
+    if (initialData?.priceMin !== undefined && initialData?.priceMin !== null) {
+      const num = Number(initialData.priceMin);
+      return !isNaN(num) ? num : 0;
+    }
+    return 99;
+  });
+  const [priceMax, setPriceMax] = useState<number | string>(() => {
+    if (initialData?.priceMax !== undefined && initialData?.priceMax !== null) {
+      const num = Number(initialData.priceMax);
+      return !isNaN(num) ? num : '';
+    }
+    return 129;
+  });
   const [currency] = useState(initialData?.currency || 'USD');
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80');
   const [affiliateUrl, setAffiliateUrl] = useState(initialData?.affiliateUrl || 'https://www.amazon.com/dp/B00EXAMPLE?tag=everyagedigital-20');
@@ -62,14 +74,17 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
     setError(null);
     setLoading(true);
 
+    const cleanMin = priceMin === '' || isNaN(Number(priceMin)) ? 0 : Math.max(0, Number(priceMin));
+    const cleanMax = priceMax === '' || isNaN(Number(priceMax)) ? undefined : Math.max(0, Number(priceMax));
+
     const payload: ProductInput = {
       title,
       slug,
       description,
       categoryId,
       merchantId,
-      priceMin: Number(priceMin),
-      priceMax: priceMax ? Number(priceMax) : undefined,
+      priceMin: cleanMin,
+      priceMax: cleanMax,
       currency,
       imageUrl,
       affiliateUrl,
@@ -421,8 +436,16 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                   type="number"
                   step="0.01"
                   required
-                  value={priceMin}
-                  onChange={e => setPriceMin(parseFloat(e.target.value))}
+                  value={priceMin === 0 ? 0 : priceMin || ''}
+                  onChange={e => {
+                    const val = e.target.value;
+                    if (val === '') {
+                      setPriceMin('');
+                    } else {
+                      const num = parseFloat(val);
+                      setPriceMin(isNaN(num) ? 0 : num);
+                    }
+                  }}
                   className="w-full px-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
                 />
               </div>
@@ -434,8 +457,16 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                 <input
                   type="number"
                   step="0.01"
-                  value={priceMax}
-                  onChange={e => setPriceMax(parseFloat(e.target.value))}
+                  value={priceMax === 0 ? 0 : priceMax || ''}
+                  onChange={e => {
+                    const val = e.target.value;
+                    if (val === '') {
+                      setPriceMax('');
+                    } else {
+                      const num = parseFloat(val);
+                      setPriceMax(isNaN(num) ? '' : num);
+                    }
+                  }}
                   className="w-full px-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
                 />
               </div>

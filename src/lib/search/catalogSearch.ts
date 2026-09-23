@@ -49,8 +49,8 @@ export function enrichProduct(product: Product): EnrichedProduct {
   return { product, offer, freshness };
 }
 
-export function searchCatalog(params: FilterParams = {}): SearchResult {
-  const allActive = catalogRepository.getProducts({ status: 'active' });
+export function searchCatalog(params: FilterParams = {}, sourceProducts?: Product[]): SearchResult {
+  const allActive = sourceProducts ?? catalogRepository.getProducts({ status: 'active' });
   let filtered = [...allActive];
 
   // 1. Text Query Search
@@ -141,7 +141,8 @@ export function searchCatalog(params: FilterParams = {}): SearchResult {
   }
 
   const allCategories = Array.from(new Set(allActive.map(p => p.category)));
-  const allOffers = catalogRepository.getOffers();
+  const productOffers = allActive.map(p => getOfferForProduct(p.id)).filter(Boolean) as MerchantOffer[];
+  const allOffers = productOffers.length > 0 ? productOffers : catalogRepository.getOffers();
   const allMerchants = Array.from(new Set(allOffers.map(o => o.merchantName)));
   const allPrices = allOffers.map(o => o.price);
   const minPrice = allPrices.length ? Math.min(...allPrices) : 0;
@@ -179,6 +180,11 @@ export function searchCatalog(params: FilterParams = {}): SearchResult {
     merchantCounts,
     priceRange: { min: Math.floor(minPrice), max: Math.ceil(maxPrice) }
   };
+}
+
+export async function searchCatalogAsync(params: FilterParams = {}): Promise<SearchResult> {
+  const products = await catalogRepository.getAllProducts({ status: 'active' });
+  return searchCatalog(params, products);
 }
 
 export function getProductBySlug(slug: string): EnrichedProduct | undefined {
@@ -222,6 +228,19 @@ export function getAllCategories(): { name: string; count: number; slug: string 
   }));
 }
 
+export async function getAllCategoriesAsync(): Promise<{ name: string; count: number; slug: string }[]> {
+  const products = await catalogRepository.getAllProducts({ status: 'active' });
+  const counts: Record<string, number> = {};
+  for (const p of products) {
+    counts[p.category] = (counts[p.category] || 0) + 1;
+  }
+  return Object.entries(counts).map(([name, count]) => ({
+    name,
+    count,
+    slug: name.toLowerCase().replace(/\s+/g, '-')
+  }));
+}
+
 export function getAllMerchants(): { name: string; count: number; slug: string }[] {
   const offers = catalogRepository.getOffers();
   const counts: Record<string, number> = {};
@@ -235,8 +254,36 @@ export function getAllMerchants(): { name: string; count: number; slug: string }
   }));
 }
 
+export async function getAllMerchantsAsync(): Promise<{ name: string; count: number; slug: string }[]> {
+  const products = await catalogRepository.getAllProducts({ status: 'active' });
+  const counts: Record<string, number> = {};
+  for (const p of products) {
+    const offer = getOfferForProduct(p.id);
+    if (offer) {
+      counts[offer.merchantName] = (counts[offer.merchantName] || 0) + 1;
+    }
+  }
+  return Object.entries(counts).map(([name, count]) => ({
+    name,
+    count,
+    slug: name.toLowerCase().replace(/\s+/g, '-')
+  }));
+}
+
 export function getDeals(): EnrichedProduct[] {
   return catalogRepository.getProducts({ status: 'active' })
+    .map(enrichProduct)
+    .filter(item => {
+      if (!item.offer) return false;
+      const hasDiscount = item.offer.originalPrice && item.offer.originalPrice > item.offer.price;
+      const isBestValue = item.product.editorialBadge === 'Best Value';
+      return hasDiscount || isBestValue;
+    });
+}
+
+export async function getDealsAsync(): Promise<EnrichedProduct[]> {
+  const products = await catalogRepository.getAllProducts({ status: 'active' });
+  return products
     .map(enrichProduct)
     .filter(item => {
       if (!item.offer) return false;

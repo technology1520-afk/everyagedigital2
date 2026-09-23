@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { FilterParams } from '../../types';
+import { FilterParams, Product } from '../../types';
 import { searchCatalog } from '../../lib/search/catalogSearch';
 import { ProductGrid } from '../ui/ProductGrid';
 import { FilterPanel } from '../ui/FilterPanel';
@@ -12,12 +12,14 @@ import { Breadcrumbs } from '../ui/Breadcrumbs';
 import { Search, Filter, X, Check } from 'lucide-react';
 
 interface ShopMarketplaceProps {
+  initialProducts?: Product[];
   initialCategory?: string;
   initialMerchant?: string;
   initialQuery?: string;
 }
 
 export function ShopMarketplace({
+  initialProducts,
   initialCategory,
   initialMerchant,
   initialQuery
@@ -32,8 +34,8 @@ export function ShopMarketplace({
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
 
   const searchResult = useMemo(() => {
-    return searchCatalog(filters);
-  }, [filters]);
+    return searchCatalog(filters, initialProducts);
+  }, [filters, initialProducts]);
 
   // Active filter count for badge
   const activeFilters = useMemo(() => {

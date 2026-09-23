@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { 
   mapSupabaseRowToProduct, 
+  mapSupabaseRowToOffer,
   mapProductInputToSupabaseRow, 
   mapProductUpdateToSupabaseRow,
   sanitizeValidUrl,
@@ -129,5 +130,27 @@ describe('Supabase Product Row Mapper', () => {
     });
     expect(product.imageUrl).toBe('https://images.unsplash.com/photo-1587829741301-dc798b83add3');
     expect(() => new URL(product.imageUrl)).not.toThrow();
+  });
+
+  it('safely maps Supabase row to MerchantOffer defaulting NaN/invalid prices to 0', () => {
+    const row = {
+      id: 'prod-offer-1',
+      slug: 'prod-offer-1',
+      title: 'Supabase Offer Product',
+      description: 'Product with pricing test',
+      merchant_id: 'Amazon',
+      price_min: 'NaN',
+      price_max: undefined,
+      affiliate_url: 'https://amazon.com/dp/test'
+    };
+
+    const offer = mapSupabaseRowToOffer(row);
+    expect(offer.id).toBe('off-prod-offer-1');
+    expect(offer.productId).toBe('prod-offer-1');
+    expect(offer.merchantName).toBe('Amazon');
+    expect(offer.price).toBe(0);
+    expect(isNaN(offer.price)).toBe(false);
+    expect(offer.originalPrice).toBeUndefined();
+    expect(offer.affiliateUrl).toBe('https://amazon.com/dp/test');
   });
 });

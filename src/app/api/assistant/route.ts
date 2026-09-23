@@ -24,6 +24,9 @@ export async function POST(request: Request) {
     }
 
     const { message, category, maxBudget, productType, preferredMerchant } = validated.data;
+    // Hydrate repository cache with live products if in Supabase mode
+    await catalogRepository.getAllProducts({ status: 'active' });
+
     const response = generateAssistantResponse({
       userMessage: message,
       category,

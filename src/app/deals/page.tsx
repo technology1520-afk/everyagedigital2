@@ -1,18 +1,21 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { getDeals } from '../../lib/search/catalogSearch';
+import { getDealsAsync } from '../../lib/search/catalogSearch';
 import { ProductGrid } from '../../components/ui/ProductGrid';
 import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
 import { Flame, ShieldCheck } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Verified Deals & Best Value Recommendations',
   description: 'Hand-vetted deals, discounts, and high-utility everyday items with verified pricing history.'
 };
 
-export default function DealsPage() {
-  const deals = getDeals();
+export default async function DealsPage() {
+  const deals = await getDealsAsync();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">

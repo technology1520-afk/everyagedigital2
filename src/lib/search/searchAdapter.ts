@@ -1,5 +1,6 @@
 import { FilterParams } from '../../types';
-import { SearchResult, searchCatalog } from './catalogSearch';
+import { SearchResult, searchCatalog, searchCatalogAsync } from './catalogSearch';
+import { catalogRepository } from '../db/repository';
 
 export interface SearchAdapter {
   providerName: string;
@@ -12,6 +13,9 @@ export class MemorySearchAdapter implements SearchAdapter {
   providerName = 'PostgreSQL In-Memory Emulation';
 
   async search(params: FilterParams): Promise<SearchResult> {
+    if (catalogRepository.getBackendMode().mode === 'supabase') {
+      return searchCatalogAsync(params);
+    }
     return searchCatalog(params);
   }
 }
@@ -20,9 +24,8 @@ export class PostgresFullTextSearchAdapter implements SearchAdapter {
   providerName = 'PostgreSQL Full-Text Search';
 
   async search(params: FilterParams): Promise<SearchResult> {
-    // When DATABASE_URL is present, executes native SQL websearch_to_tsquery:
-    // SELECT * FROM products WHERE to_tsvector('english', title || ' ' || description) @@ websearch_to_tsquery($1)
-    return searchCatalog(params);
+    // When in Postgres / Supabase mode, query live products
+    return searchCatalogAsync(params);
   }
 }
 
@@ -35,7 +38,7 @@ export class MeilisearchAdapter implements SearchAdapter {
       return fallback.search(params);
     }
     // Live Meilisearch client query would be executed here
-    return searchCatalog(params);
+    return searchCatalogAsync(params);
   }
 }
 
@@ -43,7 +46,7 @@ export class TypesenseAdapter implements SearchAdapter {
   providerName = 'Typesense Search Adapter';
 
   async search(params: FilterParams): Promise<SearchResult> {
-    return searchCatalog(params);
+    return searchCatalogAsync(params);
   }
 }
 

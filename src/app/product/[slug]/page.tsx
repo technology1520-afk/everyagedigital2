@@ -7,6 +7,7 @@ import {
   getProductBySlugAsync,
   getSourceEvidenceForProduct, 
   searchCatalog, 
+  searchCatalogAsync,
   getAllCollections 
 } from '../../../lib/search/catalogSearch';
 import { PRODUCTS } from '../../../data/seedCatalog';
@@ -32,12 +33,11 @@ import {
   Info 
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  return PRODUCTS.map(p => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
@@ -69,8 +69,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const isAmazon = offer?.merchantName === 'Amazon';
 
   // Alternatives / Related in category
-  const alternatives = searchCatalog({ category: product.category })
-    .items.filter(item => item.product.id !== product.id)
+  const alternativesRes = await searchCatalogAsync({ category: product.category });
+  const alternatives = alternativesRes.items
+    .filter(item => item.product.id !== product.id)
     .slice(0, 3);
 
   // Find related collection if any

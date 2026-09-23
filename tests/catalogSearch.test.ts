@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { searchCatalog, getProductBySlug, getDeals } from '../src/lib/search/catalogSearch';
+import { 
+  searchCatalog, 
+  searchCatalogAsync,
+  getProductBySlug, 
+  getDeals,
+  getDealsAsync,
+  getAllCategoriesAsync
+} from '../src/lib/search/catalogSearch';
 import { PRODUCTS } from '../src/data/seedCatalog';
 
 describe('Catalog Search & Filtering', () => {
@@ -83,6 +90,38 @@ describe('Catalog Search & Filtering', () => {
       const hasDiscount = d.offer?.originalPrice && d.offer.originalPrice > d.offer.price;
       const isBestValue = d.product.editorialBadge === 'Best Value';
       expect(hasDiscount || isBestValue).toBe(true);
+    }
+  });
+
+  it('supports searching with explicit sourceProducts', () => {
+    const customList = [PRODUCTS[0]];
+    const result = searchCatalog({}, customList);
+    expect(result.total).toBe(1);
+    expect(result.items[0].product.id).toBe(PRODUCTS[0].id);
+  });
+
+  it('searchCatalogAsync queries live products and returns search results', async () => {
+    const result = await searchCatalogAsync();
+    expect(result.total).toBeGreaterThan(0);
+    expect(result.items.length).toBeGreaterThan(0);
+    expect(result.availableCategories.length).toBeGreaterThan(0);
+  });
+
+  it('getAllCategoriesAsync returns categories correctly', async () => {
+    const categories = await getAllCategoriesAsync();
+    expect(categories.length).toBeGreaterThan(0);
+    for (const c of categories) {
+      expect(c.name).toBeTruthy();
+      expect(c.count).toBeGreaterThan(0);
+      expect(c.slug).toBeTruthy();
+    }
+  });
+
+  it('getDealsAsync returns verified deals correctly', async () => {
+    const deals = await getDealsAsync();
+    expect(deals.length).toBeGreaterThan(0);
+    for (const d of deals) {
+      expect(d.offer).toBeDefined();
     }
   });
 });

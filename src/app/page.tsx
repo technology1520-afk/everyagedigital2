@@ -10,9 +10,11 @@ import {
 } from 'lucide-react';
 import { 
   searchCatalog, 
+  searchCatalogAsync,
   getAllCollections, 
   getAllBooks, 
   getAllCategories, 
+  getAllCategoriesAsync,
   getAllOwnedProducts 
 } from '../lib/search/catalogSearch';
 import { ProductCard } from '../components/ui/ProductCard';
@@ -21,12 +23,15 @@ import { BookCard } from '../components/ui/BookCard';
 import { AffiliateDisclosure } from '../components/ui/AffiliateDisclosure';
 import { EmailSignup } from '../components/ui/EmailSignup';
 
-export default function HomePage() {
-  const featuredSearch = searchCatalog({ editorialPickOnly: true, sortBy: 'editorial_picks' });
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function HomePage() {
+  const featuredSearch = await searchCatalogAsync({ editorialPickOnly: true, sortBy: 'editorial_picks' });
   const featuredProducts = featuredSearch.items.slice(0, 4);
   const collections = getAllCollections().slice(0, 3);
   const books = getAllBooks().slice(0, 3);
-  const categories = getAllCategories();
+  const categories = (await getAllCategoriesAsync()) || getAllCategories();
   const ownedProducts = getAllOwnedProducts();
 
   const searchExamples = [
