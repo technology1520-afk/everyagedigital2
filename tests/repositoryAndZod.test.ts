@@ -101,4 +101,11 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
     expect(deleted).toBe(true);
     expect(catalogRepository.getProductById(id)).toBeUndefined();
   });
+
+  it('correctly reports current repository backend mode and diagnostics', () => {
+    const backend = catalogRepository.getBackendMode();
+    expect(backend).toBeDefined();
+    expect(['supabase', 'in-memory-mock']).toContain(backend.mode);
+    expect(backend.details).toBeTruthy();
+  });
 });

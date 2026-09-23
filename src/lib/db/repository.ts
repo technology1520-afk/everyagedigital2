@@ -22,6 +22,7 @@ import {
   validateAffiliateUrlForNetwork, 
   MerchantNetwork 
 } from './schema';
+import { isSupabaseConfigured, getSupabaseEnv } from '../supabase/config';
 
 export interface AffiliateLinkRecord {
   id: string;
@@ -87,6 +88,30 @@ class CatalogRepository {
 
   constructor() {
     this.reset();
+    if (process.env.NODE_ENV !== 'test') {
+      const backend = this.getBackendMode();
+      console.log(`[CatalogRepository] Backend mode: ${backend.mode} (${backend.details})`);
+    }
+  }
+
+  public getBackendMode(): { mode: 'supabase' | 'in-memory-mock'; details: string } {
+    const env = getSupabaseEnv();
+    if (isSupabaseConfigured()) {
+      return {
+        mode: 'supabase',
+        details: `Connected to Supabase at ${env.url}`
+      };
+    }
+    if (env.hasValidUrl && !env.hasValidAnonKey) {
+      return {
+        mode: 'in-memory-mock',
+        details: `Supabase URL is present (${env.url}) but anon key is missing or set to placeholder. Operating in fallback in-memory mode.`
+      };
+    }
+    return {
+      mode: 'in-memory-mock',
+      details: 'Operating in local in-memory catalog mode with seed data.'
+    };
   }
 
   public reset() {
