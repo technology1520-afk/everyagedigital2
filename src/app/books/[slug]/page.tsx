@@ -1,6 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import { getBookBySlug, getProductById } from '../../../lib/search/catalogSearch';
 import { BOOKS } from '../../../data/seedCatalog';
 import { MerchantBadge } from '../../../components/ui/MerchantBadge';
@@ -49,6 +50,20 @@ export default async function BookDetailPage({ params }: BookPageProps) {
     .map(id => getProductById(id))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
+  const getDifficultyPill = (difficulty: string) => {
+    switch (difficulty.toLowerCase()) {
+      case 'beginner':
+        return 'bg-[var(--success-soft)] text-[var(--success)] border border-[var(--success)]/20';
+      case 'comprehensive':
+      case 'intermediate':
+        return 'bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/20';
+      case 'advanced':
+        return 'bg-[var(--coral-soft)] text-[var(--coral)] border border-[var(--coral)]/20';
+      default:
+        return 'bg-[var(--surface-muted)] text-[var(--text-secondary)] border border-[var(--border)]';
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
       <Breadcrumbs
@@ -61,21 +76,32 @@ export default async function BookDetailPage({ params }: BookPageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left Column: Book Cover & Actions */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="relative aspect-3/2 sm:aspect-4/3 w-full bg-[#F0F1ED] rounded-2xl overflow-hidden border border-[#E2E5EB] shadow-xs">
-            <img
-              src={book.coverImage}
-              alt={book.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-3 left-3 bg-neutral-900/80 backdrop-blur-xs text-white text-xs font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5">
+          <div className="relative aspect-[2/3] max-w-sm mx-auto w-full bg-[var(--surface-muted)] rounded-2xl overflow-hidden border border-[var(--border)] p-4 shadow-xs flex items-center justify-center">
+            <div className="w-full h-full relative">
+              <Image
+                src={book.coverImage}
+                alt={book.title}
+                fill
+                sizes="(max-width: 1024px) 320px, 380px"
+                priority
+                className="object-contain"
+              />
+            </div>
+            <div className="absolute top-3 left-3 bg-neutral-900/80 backdrop-blur-xs text-white text-xs font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5 z-10">
               <BookOpen className="w-3.5 h-3.5 text-amber-400" />
               <span>{book.format}</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-neutral-500 px-1">
+          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)] px-1">
             <span>License: {book.imageLicense}</span>
-            <span className="font-mono text-[11px]">Difficulty: {book.difficulty}</span>
+            <span
+              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyPill(
+                book.difficulty
+              )}`}
+            >
+              {book.difficulty}
+            </span>
           </div>
 
           <div className="pt-2">
@@ -87,31 +113,31 @@ export default async function BookDetailPage({ params }: BookPageProps) {
         <div className="lg:col-span-7 space-y-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-mono uppercase tracking-wider text-neutral-400">
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)]">
                 Authored by {book.author}
               </span>
               <MerchantBadge merchant={book.merchant} />
             </div>
 
-            <h1 className="font-serif text-2xl sm:text-4xl font-bold text-neutral-900 leading-tight">
+            <h1 className="font-serif text-2xl sm:text-4xl font-bold text-[var(--text)] leading-tight">
               {book.title}
             </h1>
 
-            <p className="mt-4 text-sm text-neutral-700 leading-relaxed">
+            <p className="mt-4 text-sm text-[var(--text-secondary)] leading-relaxed">
               {book.description}
             </p>
           </div>
 
           {/* Offer & Link Card */}
-          <div className="bg-white border border-[#E2E5EB] rounded-2xl p-6 space-y-4 shadow-xs">
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-baseline justify-between">
               <div>
-                <span className="text-2xl font-bold text-neutral-900">
+                <span className="text-2xl font-bold text-[var(--text)]">
                   ${book.price.toFixed(2)}
                 </span>
-                <span className="text-xs text-neutral-500 ml-1 uppercase">{book.currency}</span>
+                <span className="text-xs text-[var(--text-secondary)] ml-1 uppercase">{book.currency}</span>
               </div>
-              <span className="text-xs text-neutral-400 flex items-center gap-1">
+              <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
                 Verified {new Date(book.lastCheckedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </span>
@@ -122,7 +148,7 @@ export default async function BookDetailPage({ params }: BookPageProps) {
                 href={book.affiliateUrl}
                 target="_blank"
                 rel="sponsored nofollow noopener"
-                className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-sm font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors shadow-sm"
+                className="w-full btn-view-deal justify-center py-3.5 px-6 rounded-xl text-sm font-semibold gap-2 shadow-sm"
               >
                 <span>{isAmazon ? 'View Book at Amazon' : 'Visit Book Merchant'}</span>
                 <ExternalLink className="w-4 h-4 opacity-80" />
@@ -133,25 +159,25 @@ export default async function BookDetailPage({ params }: BookPageProps) {
           </div>
 
           {/* Target Audience */}
-          <div className="bg-[#F7F7F4] border border-[#E2E5EB] rounded-xl p-5">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-900 mb-1.5">
-              <Target className="w-4 h-4 text-[#1D438A]" />
+          <div className="bg-[var(--surface-muted)] border border-[var(--border)] rounded-xl p-5">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--text)] mb-1.5">
+              <Target className="w-4 h-4 text-[var(--accent)]" />
               <span>Who Should Read This</span>
             </div>
-            <p className="text-xs text-neutral-700 leading-relaxed">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
               {book.targetAudience}
             </p>
           </div>
 
           {/* Key Learnings */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text)]">
               Core Lessons & Frameworks:
             </h3>
-            <ul className="space-y-2.5 text-xs text-neutral-700">
+            <ul className="space-y-2.5 text-xs text-[var(--text-secondary)]">
               {book.keyLearnings.map((learning, idx) => (
-                <li key={idx} className="flex items-start gap-2.5 bg-white p-3 rounded-lg border border-neutral-200/70">
-                  <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <li key={idx} className="flex items-start gap-2.5 bg-[var(--surface)] p-3 rounded-lg border border-[var(--border)]">
+                  <Check className="w-4 h-4 text-[var(--success)] shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{learning}</span>
                 </li>
               ))}
@@ -162,12 +188,12 @@ export default async function BookDetailPage({ params }: BookPageProps) {
 
       {/* Companion Physical Products */}
       {relatedProducts.length > 0 && (
-        <section className="pt-8 border-t border-[#E2E5EB] space-y-6">
+        <section className="pt-8 border-t border-[var(--border)] space-y-6">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-neutral-900">
+            <h2 className="font-serif text-2xl font-bold text-[var(--text)]">
               Recommended Companion Tools
             </h2>
-            <p className="text-xs text-neutral-500 mt-1">
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
               Physical gear and systems that help implement the principles in this book.
             </p>
           </div>
