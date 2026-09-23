@@ -53,4 +53,43 @@ describe('Master Prompt §10 & §13: Click Redirect Flow (/api/go/[id])', () => 
     const location = response.headers.get('location');
     expect(location).toContain('/shop');
   });
+
+  it('rejects unsafe protocol (javascript:, data:) and falls back to safe storefront redirect', async () => {
+    const rawLinks = (catalogRepository as any).links;
+    const originalUrl = rawLinks[0].url;
+    rawLinks[0].url = 'javascript:alert("hacked")';
+
+    try {
+      const request = new NextRequest(`http://localhost:3000/api/go/${rawLinks[0].productId}`);
+      const response = await GET(request, {
+        params: Promise.resolve({ id: rawLinks[0].productId })
+      });
+
+      expect(response.status).toBe(302);
+      const location = response.headers.get('location');
+      expect(location).toContain('/shop?utm_source=unsafe_protocol');
+      expect(location).not.toContain('javascript:');
+    } finally {
+      rawLinks[0].url = originalUrl;
+    }
+  });
+
+  it('rejects malformed URLs and falls back gracefully', async () => {
+    const rawLinks = (catalogRepository as any).links;
+    const originalUrl = rawLinks[0].url;
+    rawLinks[0].url = 'ht!tp://:::invalid-url';
+
+    try {
+      const request = new NextRequest(`http://localhost:3000/api/go/${rawLinks[0].productId}`);
+      const response = await GET(request, {
+        params: Promise.resolve({ id: rawLinks[0].productId })
+      });
+
+      expect(response.status).toBe(302);
+      const location = response.headers.get('location');
+      expect(location).toContain('/shop?utm_source=invalid_url');
+    } finally {
+      rawLinks[0].url = originalUrl;
+    }
+  });
 });

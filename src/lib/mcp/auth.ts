@@ -1,6 +1,9 @@
 // Authentication, Rate Limiting, and Credential Sanitization for EveryAge Digital MCP Server
 
-export const DEFAULT_MCP_TOKEN = process.env.ADMIN_MCP_TOKEN || 'test-mcp-token-2026-everyage-digital-secret';
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Default fallback token is strictly disallowed in production
+export const DEFAULT_MCP_TOKEN = process.env.ADMIN_MCP_TOKEN || (isProduction ? '' : 'test-mcp-token-2026-everyage-digital-secret');
 
 interface RateLimitBucket {
   count: number;
@@ -35,9 +38,9 @@ export function verifyMcpAuth(authHeader?: string | null): { authenticated: bool
   }
 
   const token = parts[1];
-  const expectedToken = process.env.ADMIN_MCP_TOKEN || DEFAULT_MCP_TOKEN;
+  const expectedToken = process.env.ADMIN_MCP_TOKEN || (process.env.NODE_ENV === 'production' ? '' : DEFAULT_MCP_TOKEN);
 
-  if (token !== expectedToken) {
+  if (!expectedToken || token !== expectedToken) {
     return { authenticated: false, error: 'unauthorized' };
   }
 

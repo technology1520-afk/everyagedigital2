@@ -26,7 +26,19 @@ export async function GET(
     return NextResponse.redirect(`${origin}/shop?utm_source=redirect_missing&id=${encodeURIComponent(id)}`, 302);
   }
 
-  // 4. Return compliant 302 redirect with no-cache headers to prevent caching clicks
+  // 4. Sanitize Redirection Protocol: strictly enforce http: or https:
+  try {
+    const parsedUrl = new URL(targetUrl);
+    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+      const origin = request.nextUrl.origin;
+      return NextResponse.redirect(`${origin}/shop?utm_source=unsafe_protocol&id=${encodeURIComponent(id)}`, 302);
+    }
+  } catch {
+    const origin = request.nextUrl.origin;
+    return NextResponse.redirect(`${origin}/shop?utm_source=invalid_url&id=${encodeURIComponent(id)}`, 302);
+  }
+
+  // 5. Return compliant 302 redirect with no-cache headers to prevent caching clicks
   const response = NextResponse.redirect(targetUrl, 302);
   response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   response.headers.set('Pragma', 'no-cache');

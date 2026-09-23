@@ -7,7 +7,8 @@ import {
   ADMIN_COOKIE_NAME, 
   DEFAULT_ADMIN_EMAIL, 
   DEFAULT_ADMIN_PASSWORD, 
-  createSessionToken 
+  createSessionToken,
+  checkAdminAuth 
 } from '../../lib/auth/adminAuth';
 import { catalogRepository } from '../../lib/db/repository';
 import { 
@@ -19,6 +20,14 @@ import {
   OwnProductInput, 
   OwnProductInputSchema 
 } from '../../lib/db/schema';
+
+// Helper guard to enforce owner authentication on mutating server actions
+async function assertAdmin() {
+  const isAuthorized = await checkAdminAuth();
+  if (!isAuthorized) {
+    throw new Error('Unauthorized: Admin access required.');
+  }
+}
 
 // 1. Owner Login Action
 export async function loginAdminAction(formData: FormData) {
@@ -32,7 +41,7 @@ export async function loginAdminAction(formData: FormData) {
   const cleanEmail = email.trim().toLowerCase();
   const validEmail = DEFAULT_ADMIN_EMAIL.toLowerCase();
 
-  if (cleanEmail !== validEmail || password !== DEFAULT_ADMIN_PASSWORD) {
+  if (!validEmail || !DEFAULT_ADMIN_PASSWORD || cleanEmail !== validEmail || password !== DEFAULT_ADMIN_PASSWORD) {
     return { success: false, error: 'Invalid owner credentials.' };
   }
 
@@ -58,6 +67,7 @@ export async function logoutAdminAction() {
 
 // 3. Create Product Action
 export async function createProductAction(input: ProductInput) {
+  await assertAdmin();
   const parsed = ProductInputSchema.safeParse(input);
   if (!parsed.success) {
     return { 
@@ -83,6 +93,7 @@ export async function createProductAction(input: ProductInput) {
 
 // 4. Update Product Action
 export async function updateProductAction(id: string, input: Partial<ProductInput>) {
+  await assertAdmin();
   const result = await catalogRepository.updateProduct(id, input);
   if (result.success) {
     revalidatePath('/admin');
@@ -98,6 +109,7 @@ export async function updateProductAction(id: string, input: Partial<ProductInpu
 
 // 5. Delete Product Action
 export async function deleteProductAction(id: string) {
+  await assertAdmin();
   const success = await catalogRepository.deleteProduct(id);
   if (success) {
     revalidatePath('/admin');
@@ -109,6 +121,7 @@ export async function deleteProductAction(id: string) {
 
 // 6. Toggle Product Status (Draft/Active/Paused/Archived)
 export async function toggleProductStatusAction(id: string, status: ProductStatus) {
+  await assertAdmin();
   const updated = await catalogRepository.toggleProductStatus(id, status);
   if (updated) {
     revalidatePath('/admin');
@@ -132,6 +145,7 @@ export async function markLinkCheckedAction(linkId: string) {
 
 // 8. Create Category
 export async function createCategoryAction(input: CategoryInput) {
+  await assertAdmin();
   const parsed = CategoryInputSchema.safeParse(input);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0]?.message || 'Invalid category input' };
@@ -145,6 +159,7 @@ export async function createCategoryAction(input: CategoryInput) {
 
 // 9. Delete Category
 export async function deleteCategoryAction(id: string) {
+  await assertAdmin();
   const success = catalogRepository.deleteCategory(id);
   if (success) {
     revalidatePath('/admin/categories');
@@ -156,6 +171,7 @@ export async function deleteCategoryAction(id: string) {
 
 // 10. Update Own Product
 export async function updateOwnProductAction(id: string, input: Partial<OwnProductInput>) {
+  await assertAdmin();
   const parsed = OwnProductInputSchema.partial().safeParse(input);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0]?.message || 'Invalid input' };

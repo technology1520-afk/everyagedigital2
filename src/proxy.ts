@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_COOKIE_NAME, verifySessionToken } from './lib/auth/adminAuth';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect /admin routes
@@ -29,6 +29,9 @@ export function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+// Backwards-compatible alias for tests and legacy callers
+export const middleware = proxy;
 
 export const config = {
   matcher: ['/admin/:path*']

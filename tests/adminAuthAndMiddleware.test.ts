@@ -3,9 +3,11 @@ import {
   createSessionToken, 
   verifySessionToken, 
   DEFAULT_ADMIN_EMAIL, 
-  ADMIN_COOKIE_NAME 
+  ADMIN_COOKIE_NAME,
+  checkAdminAuth 
 } from '../src/lib/auth/adminAuth';
-import { middleware } from '../src/middleware';
+import { createProductAction } from '../src/app/actions/admin';
+import { proxy as middleware } from '../src/proxy';
 import { NextRequest } from 'next/server';
 
 describe('Master Prompt §3.1 & §13: Admin Auth & Route Protection', () => {
@@ -54,5 +56,51 @@ describe('Master Prompt §3.1 & §13: Admin Auth & Route Protection', () => {
 
     const response = middleware(request);
     expect(response.status).toBe(200);
+  });
+
+  it('rejects tampered session payload or signature (HMAC-SHA256 integrity)', () => {
+    const validToken = createSessionToken(DEFAULT_ADMIN_EMAIL);
+    const [payload, signature] = validToken.split('.');
+    expect(payload).toBeDefined();
+    expect(signature).toBeDefined();
+
+    // 1. Tampering payload must fail verification
+    const fakePayload = Buffer.from(JSON.stringify({ email: 'attacker@evil.com', role: 'owner', timestamp: Date.now() })).toString('base64url');
+    expect(verifySessionToken(`${fakePayload}.${signature}`)).toBeNull();
+
+    // 2. Tampering signature must fail verification
+    const tamperedSig = signature.slice(0, -4) + 'abcd';
+    expect(verifySessionToken(`${payload}.${tamperedSig}`)).toBeNull();
+
+    // 3. Different length signature must fail cleanly (timingSafeEqual guard)
+    expect(verifySessionToken(`${payload}.shortsig`)).toBeNull();
+    expect(verifySessionToken(`${payload}.${signature}extralongstring`)).toBeNull();
+
+    // 4. Invalid delimiters or parts count
+    expect(verifySessionToken(`${payload}.${signature}.extrapart`)).toBeNull();
+    expect(verifySessionToken(`${payload}`)).toBeNull();
+  });
+
+  it('checkAdminAuth returns false when unauthenticated', async () => {
+    const isAuth = await checkAdminAuth();
+    expect(isAuth).toBe(false);
+  });
+
+  it('server action rejects unauthorized mutations by throwing Error', async () => {
+    await expect(
+      createProductAction({
+        title: 'Unauthorized Test Product',
+        slug: 'unauthorized-test-product',
+        description: 'Should fail authentication guard',
+        categoryId: 'Smart Audio & Microphones',
+        merchantId: 'Amazon',
+        priceMin: 10,
+        currency: 'USD',
+        imageUrl: 'https://example.com/img.png',
+        affiliateUrl: 'https://amazon.com/dp/test',
+        status: 'draft',
+        isOwned: false
+      })
+    ).rejects.toThrow('Unauthorized: Admin access required.');
   });
 });

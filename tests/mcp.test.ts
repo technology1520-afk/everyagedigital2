@@ -4,7 +4,7 @@ import { catalogRepository } from '../src/lib/db/repository';
 import { searchCatalog } from '../src/lib/search/catalogSearch';
 import { POST, GET } from '../src/app/api/mcp/route';
 import { MCP_TOOLS } from '../src/lib/mcp/tools';
-import { DEFAULT_MCP_TOKEN, resetMcpRateLimits, sanitizeErrorMessage } from '../src/lib/mcp/auth';
+import { DEFAULT_MCP_TOKEN, resetMcpRateLimits, sanitizeErrorMessage, verifyMcpAuth } from '../src/lib/mcp/auth';
 
 describe('Master MCP Server Specification & Verification', () => {
   const validToken = DEFAULT_MCP_TOKEN;
@@ -329,5 +329,24 @@ describe('Master MCP Server Specification & Verification', () => {
     expect(sanitized).not.toContain('sk-ant-12345abcdef');
     expect(sanitized).not.toContain('ghp_99999999');
     expect(sanitized).toContain('[REDACTED]');
+  });
+
+  it('prohibits default fallback MCP token in production', () => {
+    const originalEnv = process.env.NODE_ENV;
+    const originalToken = process.env.ADMIN_MCP_TOKEN;
+
+    try {
+      (process.env as any).NODE_ENV = 'production';
+      delete process.env.ADMIN_MCP_TOKEN;
+
+      const result = verifyMcpAuth('Bearer test-mcp-token-2026-everyage-digital-secret');
+      expect(result.authenticated).toBe(false);
+      expect(result.error).toBe('unauthorized');
+    } finally {
+      (process.env as any).NODE_ENV = originalEnv;
+      if (originalToken !== undefined) {
+        process.env.ADMIN_MCP_TOKEN = originalToken;
+      }
+    }
   });
 });

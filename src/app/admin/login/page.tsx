@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
                 type="email"
                 name="email"
                 required
-                defaultValue="admin@everyagedigital.com"
+                defaultValue={process.env.NODE_ENV === 'production' ? '' : 'admin@everyagedigital.com'}
                 placeholder="admin@everyagedigital.com"
                 className="w-full pl-9 pr-3 py-2 text-sm bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white text-neutral-900"
               />
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
                 type="password"
                 name="password"
                 required
-                defaultValue="admin12345"
+                defaultValue={process.env.NODE_ENV === 'production' ? '' : 'admin12345'}
                 placeholder="••••••••••••"
                 className="w-full pl-9 pr-3 py-2 text-sm bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white text-neutral-900"
               />
@@ -102,15 +102,17 @@ export default function AdminLoginPage() {
         </form>
 
         {/* Development Credential Helper */}
-        <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 text-[11px] text-neutral-600 space-y-1">
-          <div className="flex items-center gap-1.5 font-semibold text-neutral-800">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Owner Pre-Configured Access</span>
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 text-[11px] text-neutral-600 space-y-1">
+            <div className="flex items-center gap-1.5 font-semibold text-neutral-800">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Owner Pre-Configured Access</span>
+            </div>
+            <p>
+              Default: <code className="bg-neutral-200 px-1 py-0.5 rounded text-neutral-900 font-mono">admin@everyagedigital.com</code> / <code className="bg-neutral-200 px-1 py-0.5 rounded text-neutral-900 font-mono">admin12345</code>
+            </p>
           </div>
-          <p>
-            Default: <code className="bg-neutral-200 px-1 py-0.5 rounded text-neutral-900 font-mono">admin@everyagedigital.com</code> / <code className="bg-neutral-200 px-1 py-0.5 rounded text-neutral-900 font-mono">admin12345</code>
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );
