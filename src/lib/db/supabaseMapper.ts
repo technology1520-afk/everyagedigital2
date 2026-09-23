@@ -1,6 +1,54 @@
 import { Product } from '../../types';
 import { ProductInput } from './schema';
 
+export const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1587829741301-dc798b83add3';
+export const DEFAULT_FALLBACK_AFFILIATE_URL = 'https://www.amazon.com?tag=everyagedigital-20';
+
+/**
+ * Validates and safely normalizes any URL.
+ * Prevents TypeError crashes from `new URL(...)` across storefront components and affiliate adapters.
+ */
+export function sanitizeValidUrl(url?: string | null, fallback?: string | null): string | null {
+  if (!url || typeof url !== 'string') return fallback || null;
+  const trimmed = url.trim();
+  if (
+    !trimmed || 
+    trimmed.toLowerCase() === 'placeholder' || 
+    trimmed.toLowerCase() === 'undefined' ||
+    trimmed.toLowerCase() === 'null' ||
+    trimmed.startsWith('PASTE_YOUR_')
+  ) {
+    return fallback || null;
+  }
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.toString();
+    }
+    return fallback || null;
+  } catch {
+    return fallback || null;
+  }
+}
+
+/**
+ * Safely sanitizes affiliate outbound URLs, guaranteeing a valid parsable URL.
+ */
+export function sanitizeAffiliateUrl(url?: string | null): string {
+  return sanitizeValidUrl(url, DEFAULT_FALLBACK_AFFILIATE_URL) || DEFAULT_FALLBACK_AFFILIATE_URL;
+}
+
+/**
+ * Validates and converts price values into positive finite numbers or null.
+ * Prevents NaN or negative bound errors.
+ */
+export function sanitizePriceBound(val?: number | string | null): number | null {
+  if (val === undefined || val === null || val === '') return null;
+  const num = typeof val === 'number' ? val : Number(val);
+  if (isNaN(num) || num < 0 || !isFinite(num)) return null;
+  return Math.round(num * 100) / 100;
+}
+
 export interface SupabaseProductRow {
   id: string;
   slug: string;
@@ -13,6 +61,7 @@ export interface SupabaseProductRow {
   price_max?: number | string | null;
   currency?: string | null;
   image_url?: string | null;
+  affiliate_url?: string | null;
   status?: string | null;
   is_owned?: boolean | null;
   rating_display?: number | string | null;
@@ -49,23 +98,25 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     status = row.status;
   }
 
+  const safeImageUrl = sanitizeValidUrl(row.image_url, DEFAULT_FALLBACK_IMAGE) || DEFAULT_FALLBACK_IMAGE;
+
   return {
     id: row.id,
-    slug: row.slug,
+    slug: row.slug || `product-${row.id}`,
     name: row.title || 'Untitled Product',
-    brand: row.brand || 'EveryAge Curated',
+    brand: row.brand?.trim() || 'EveryAge Curated',
     description: row.description || '',
     productType: isOwned ? 'digital' : 'physical',
     category: row.category_id || 'General',
     subcategory: 'General',
     useCases: ['Daily productivity', 'Everyday utility'],
-    bestFor: row.best_for || 'Shoppers looking for reliable tested essentials.',
-    notFor: row.not_for || 'Users seeking cheap disposable alternatives.',
+    bestFor: row.best_for?.trim() || 'Shoppers looking for reliable tested essentials.',
+    notFor: row.not_for?.trim() || 'Users seeking cheap disposable alternatives.',
     features: features.length > 0 ? features : ['Editorial vetted', 'Verified merchant warranty'],
     benefits: ['High durability', 'Direct merchant fulfillment'],
     limitations: limitations.length > 0 ? limitations : ['Standard merchant shipping policies apply'],
     sourceProvider: (row.merchant_id as string) || 'merchant_direct',
-    imageUrl: row.image_url || 'https://images.unsplash.com/photo-1587829741301-dc798b83add3',
+    imageUrl: safeImageUrl,
     imageSource: 'Merchant Verified',
     imageLicense: 'Official Affiliate Feed',
     altText: row.title || 'Product Image',
@@ -85,6 +136,7 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
  * Maps frontend ProductInput to a Supabase 'products' table row for insertion.
  * Sets category_id and merchant_id safely to null by default to avoid FK violations
  * when referenced tables don't yet contain the IDs.
+ * Sanitizes all prices and URLs to prevent runtime crashes.
  */
 export function mapProductInputToSupabaseRow(input: ProductInput, id: string): Record<string, unknown> {
   const extra = input as unknown as Record<string, unknown>;
@@ -93,23 +145,25 @@ export function mapProductInputToSupabaseRow(input: ProductInput, id: string): R
     ? extra.limitations 
     : (input.notFor ? [input.notFor] : []);
 
+  const safeImageUrl = sanitizeValidUrl(input.imageUrl, null);
+
   return {
     id,
     slug: input.slug,
     title: input.title,
     description: input.description,
-    brand: input.brand || null,
+    brand: input.brand?.trim() || null,
     category_id: null,
     merchant_id: null,
-    price_min: input.priceMin !== undefined ? Number(input.priceMin) : null,
-    price_max: input.priceMax !== undefined ? Number(input.priceMax) : null,
-    currency: input.currency || 'USD',
-    image_url: input.imageUrl || null,
+    price_min: sanitizePriceBound(input.priceMin),
+    price_max: sanitizePriceBound(input.priceMax),
+    currency: (input.currency || 'USD').trim().toUpperCase(),
+    image_url: safeImageUrl,
     status: input.status || 'draft',
     is_owned: Boolean(input.isOwned),
-    editorial_badge: input.editorialBadge || null,
-    best_for: input.bestFor || null,
-    not_for: input.notFor || null,
+    editorial_badge: input.editorialBadge?.trim() || null,
+    best_for: input.bestFor?.trim() || null,
+    not_for: input.notFor?.trim() || null,
     features,
     limitations,
     created_at: new Date().toISOString(),
@@ -119,6 +173,7 @@ export function mapProductInputToSupabaseRow(input: ProductInput, id: string): R
 
 /**
  * Maps partial ProductInput to a Supabase 'products' table row for updates.
+ * Sanitizes all prices and URLs to prevent database or parser errors.
  */
 export function mapProductUpdateToSupabaseRow(input: Partial<ProductInput>): Record<string, unknown> {
   const row: Record<string, unknown> = {
@@ -130,16 +185,16 @@ export function mapProductUpdateToSupabaseRow(input: Partial<ProductInput>): Rec
   if (input.title !== undefined) row.title = input.title;
   if (input.slug !== undefined) row.slug = input.slug;
   if (input.description !== undefined) row.description = input.description;
-  if (input.brand !== undefined) row.brand = input.brand || null;
-  if (input.priceMin !== undefined) row.price_min = Number(input.priceMin);
-  if (input.priceMax !== undefined) row.price_max = input.priceMax ? Number(input.priceMax) : null;
-  if (input.currency !== undefined) row.currency = input.currency;
-  if (input.imageUrl !== undefined) row.image_url = input.imageUrl || null;
+  if (input.brand !== undefined) row.brand = input.brand?.trim() || null;
+  if (input.priceMin !== undefined) row.price_min = sanitizePriceBound(input.priceMin);
+  if (input.priceMax !== undefined) row.price_max = sanitizePriceBound(input.priceMax);
+  if (input.currency !== undefined) row.currency = (input.currency || 'USD').trim().toUpperCase();
+  if (input.imageUrl !== undefined) row.image_url = sanitizeValidUrl(input.imageUrl, null);
   if (input.status !== undefined) row.status = input.status;
   if (input.isOwned !== undefined) row.is_owned = Boolean(input.isOwned);
-  if (input.editorialBadge !== undefined) row.editorial_badge = input.editorialBadge || null;
-  if (input.bestFor !== undefined) row.best_for = input.bestFor || null;
-  if (input.notFor !== undefined) row.not_for = input.notFor || null;
+  if (input.editorialBadge !== undefined) row.editorial_badge = input.editorialBadge?.trim() || null;
+  if (input.bestFor !== undefined) row.best_for = input.bestFor?.trim() || null;
+  if (input.notFor !== undefined) row.not_for = input.notFor?.trim() || null;
   if (extra.features !== undefined) row.features = extra.features;
   if (extra.limitations !== undefined) row.limitations = extra.limitations;
 

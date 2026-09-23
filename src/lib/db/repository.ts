@@ -28,8 +28,13 @@ import {
   mapSupabaseRowToProduct, 
   mapProductInputToSupabaseRow, 
   mapProductUpdateToSupabaseRow,
+  sanitizeValidUrl,
+  sanitizeAffiliateUrl,
+  sanitizePriceBound,
   SupabaseProductRow
 } from './supabaseMapper';
+
+const TABLE_PRODUCTS = 'products';
 
 export interface AffiliateLinkRecord {
   id: string;
@@ -231,7 +236,7 @@ class CatalogRepository {
       try {
         const supabase = getSupabaseAdminClient();
         const { data, error } = await supabase
-          .from('products')
+          .from(TABLE_PRODUCTS)
           .select('*')
           .eq('id', id)
           .maybeSingle();
@@ -259,7 +264,7 @@ class CatalogRepository {
       try {
         const supabase = getSupabaseAdminClient();
         const { data, error } = await supabase
-          .from('products')
+          .from(TABLE_PRODUCTS)
           .select('*')
           .eq('slug', slug)
           .maybeSingle();
@@ -282,7 +287,7 @@ class CatalogRepository {
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
-        let query = supabase.from('products').select('*');
+        let query = supabase.from(TABLE_PRODUCTS).select('*');
         if (filter?.status && filter.status !== 'all') {
           query = query.eq('status', filter.status);
         }
@@ -366,6 +371,11 @@ class CatalogRepository {
     const newId = `prod-${Date.now()}`;
     const nowIso = new Date().toISOString();
 
+    const safeAffiliateUrl = sanitizeAffiliateUrl(data.affiliateUrl);
+    const safePriceMin = sanitizePriceBound(data.priceMin) ?? 0;
+    const safePriceMax = sanitizePriceBound(data.priceMax) ?? undefined;
+    const safeImageUrl = sanitizeValidUrl(data.imageUrl, 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=800&q=80')!;
+
     const newProduct: Product = {
       id: newId,
       slug: data.slug,
@@ -382,7 +392,7 @@ class CatalogRepository {
       benefits: ['High durability', 'Direct merchant fulfillment'],
       limitations: data.notFor ? [data.notFor] : ['Standard merchant shipping policies apply'],
       sourceProvider: merchantName,
-      imageUrl: data.imageUrl || 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=800&q=80',
+      imageUrl: safeImageUrl,
       imageSource: 'Brand Press Kit',
       imageLicense: 'Official Affiliate Feed',
       altText: data.title,
@@ -403,11 +413,11 @@ class CatalogRepository {
       merchantName: merchantName as MerchantName,
       providerName: merchantName,
       affiliateProgram: `prog-${network}`,
-      originalUrl: data.affiliateUrl,
-      affiliateUrl: data.affiliateUrl,
-      currency: data.currency,
-      price: data.priceMin || 0,
-      originalPrice: data.priceMax,
+      originalUrl: safeAffiliateUrl,
+      affiliateUrl: safeAffiliateUrl,
+      currency: (data.currency || 'USD').trim().toUpperCase(),
+      price: safePriceMin,
+      originalPrice: safePriceMax,
       priceType: 'fixed',
       availability: 'in_stock',
       region: ['Global'],
@@ -420,7 +430,7 @@ class CatalogRepository {
       id: `link-${newId}`,
       productId: newId,
       network,
-      url: data.affiliateUrl,
+      url: safeAffiliateUrl,
       relTag: 'sponsored nofollow noopener',
       lastCheckedAt: nowIso,
       staleAfterDays: 7,
@@ -432,7 +442,7 @@ class CatalogRepository {
       try {
         const supabase = getSupabaseAdminClient();
         const { data: existing } = await supabase
-          .from('products')
+          .from(TABLE_PRODUCTS)
           .select('id')
           .eq('slug', data.slug)
           .maybeSingle();
@@ -442,7 +452,7 @@ class CatalogRepository {
         }
 
         const dbRow = mapProductInputToSupabaseRow(data, newId);
-        const { error: sbError } = await supabase.from('products').insert(dbRow);
+        const { error: sbError } = await supabase.from(TABLE_PRODUCTS).insert(dbRow);
         if (sbError) {
           console.error('[CatalogRepository] Supabase createProduct insert error:', sbError);
           return { success: false, error: sbError.message };
@@ -486,26 +496,28 @@ class CatalogRepository {
     if (input.bestFor) current.bestFor = input.bestFor;
     if (input.notFor) current.notFor = input.notFor;
     if (input.editorialBadge !== undefined) current.editorialBadge = input.editorialBadge as Product['editorialBadge'];
-    if (input.imageUrl) current.imageUrl = input.imageUrl;
+    if (input.imageUrl) current.imageUrl = sanitizeValidUrl(input.imageUrl, current.imageUrl) || current.imageUrl;
 
     current.updatedAt = new Date().toISOString();
 
     // Update offer price if passed
     const offer = this.offers.find(o => o.productId === id);
     if (offer && input.priceMin !== undefined) {
-      offer.price = input.priceMin;
+      const parsedPrice = sanitizePriceBound(input.priceMin);
+      if (parsedPrice !== null) offer.price = parsedPrice;
       offer.lastCheckedAt = new Date().toISOString();
     }
 
     // Update link URL if passed
     if (input.affiliateUrl) {
+      const safeAffUrl = sanitizeAffiliateUrl(input.affiliateUrl);
       const link = this.links.find(l => l.productId === id);
       if (link) {
-        link.url = input.affiliateUrl;
+        link.url = safeAffUrl;
         link.lastCheckedAt = new Date().toISOString();
       }
       if (offer) {
-        offer.affiliateUrl = input.affiliateUrl;
+        offer.affiliateUrl = safeAffUrl;
       }
     }
 
@@ -515,7 +527,7 @@ class CatalogRepository {
         const supabase = getSupabaseAdminClient();
         const updateRow = mapProductUpdateToSupabaseRow(input);
         const { error: sbError } = await supabase
-          .from('products')
+          .from(TABLE_PRODUCTS)
           .update(updateRow)
           .eq('id', id);
 
@@ -537,7 +549,7 @@ class CatalogRepository {
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
-        const { error: sbError } = await supabase.from('products').delete().eq('id', id);
+        const { error: sbError } = await supabase.from(TABLE_PRODUCTS).delete().eq('id', id);
         if (sbError) {
           console.error('[CatalogRepository] Supabase deleteProduct error:', sbError);
           return false;

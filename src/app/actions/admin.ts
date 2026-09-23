@@ -73,6 +73,10 @@ export async function createProductAction(input: ProductInput) {
     revalidatePath('/admin/links');
     revalidatePath('/shop');
     revalidatePath('/');
+    if (result.product?.slug) {
+      const cleanSlug = result.product.slug.replace(/^\/+/, '');
+      revalidatePath(`/product/${cleanSlug}`);
+    }
   }
   return result;
 }

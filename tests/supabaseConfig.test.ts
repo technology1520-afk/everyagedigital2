@@ -63,4 +63,38 @@ describe('Supabase Environment Configuration & Validator', () => {
     expect(adminConfig.url).toBe('https://wlfwdbusmzgdiryhtdki.supabase.co');
     expect(adminConfig.key).toBe('valid-service-role-jwt-token');
   });
+
+  it('sanitizes trailing slashes, /rest/v1 paths, and surrounding quotes to ensure bare URL', () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = '"https://wlfwdbusmzgdiryhtdki.supabase.co/rest/v1/"';
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = '"valid-anon-key-12345"';
+
+    const env = getSupabaseEnv();
+    expect(env.url).toBe('https://wlfwdbusmzgdiryhtdki.supabase.co');
+    expect(env.anonKey).toBe('valid-anon-key-12345');
+
+    const config = validateSupabaseConfig(false);
+    expect(config.url).toBe('https://wlfwdbusmzgdiryhtdki.supabase.co');
+    expect(config.url).not.toContain('/rest/v1');
+    expect(config.url.endsWith('/')).toBe(false);
+  });
+
+  it('guarantees getSupabaseServerClient and getSupabaseAdminClient create queries without double rest path', async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://wlfwdbusmzgdiryhtdki.supabase.co/rest/v1/';
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'valid-anon-key-12345';
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'valid-service-role-key-12345';
+
+    const { getSupabaseServerClient, getSupabaseAdminClient } = await import('../src/lib/supabase/server');
+
+    const serverClient = getSupabaseServerClient();
+    const adminClient = getSupabaseAdminClient();
+
+    // Verify generated query URL doesn't have duplicate /rest/v1/rest/v1
+    const serverQueryUrl = serverClient.from('products').url.toString();
+    const adminQueryUrl = adminClient.from('products').url.toString();
+
+    expect(serverQueryUrl).toBe('https://wlfwdbusmzgdiryhtdki.supabase.co/rest/v1/products');
+    expect(adminQueryUrl).toBe('https://wlfwdbusmzgdiryhtdki.supabase.co/rest/v1/products');
+    expect(serverQueryUrl).not.toContain('/rest/v1/rest/v1');
+    expect(adminQueryUrl).not.toContain('/rest/v1/rest/v1');
+  });
 });

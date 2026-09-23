@@ -2,7 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { 
   mapSupabaseRowToProduct, 
   mapProductInputToSupabaseRow, 
-  mapProductUpdateToSupabaseRow 
+  mapProductUpdateToSupabaseRow,
+  sanitizeValidUrl,
+  sanitizeAffiliateUrl,
+  sanitizePriceBound
 } from '../src/lib/db/supabaseMapper';
 
 describe('Supabase Product Row Mapper', () => {
@@ -101,5 +104,30 @@ describe('Supabase Product Row Mapper', () => {
     expect(payload.price_min).toBe(89.00);
     expect(payload.updated_at).toBeDefined();
     expect(payload.description).toBeUndefined();
+  });
+
+  it('safely normalizes URLs and price bounds avoiding URL parser crashes', () => {
+    // Test URL sanitization
+    expect(sanitizeValidUrl('not-a-valid-url', 'https://example.com/fallback.jpg')).toBe('https://example.com/fallback.jpg');
+    expect(sanitizeValidUrl('placeholder', 'https://example.com/fallback.jpg')).toBe('https://example.com/fallback.jpg');
+    expect(sanitizeValidUrl('https://example.com/image.png')).toBe('https://example.com/image.png');
+    expect(sanitizeAffiliateUrl('not-a-url')).toBe('https://www.amazon.com?tag=everyagedigital-20');
+
+    // Test Price bound sanitization
+    expect(sanitizePriceBound('99.99')).toBe(99.99);
+    expect(sanitizePriceBound(-10)).toBeNull();
+    expect(sanitizePriceBound('not-a-number')).toBeNull();
+    expect(sanitizePriceBound(undefined)).toBeNull();
+
+    // Test row mapper with invalid URL
+    const product = mapSupabaseRowToProduct({
+      id: 'prod-broken-url',
+      slug: 'broken-url-prod',
+      title: 'Broken URL Product',
+      description: 'Product description',
+      image_url: 'invalid:url:pattern'
+    });
+    expect(product.imageUrl).toBe('https://images.unsplash.com/photo-1587829741301-dc798b83add3');
+    expect(() => new URL(product.imageUrl)).not.toThrow();
   });
 });
