@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import { 
   getCollectionBySlug, 
   getProductById, 
-  getAllBooks 
+  getAllBooks,
+  getAllBooksAsync
 } from '../../../lib/search/catalogSearch';
 import { COLLECTIONS } from '../../../data/seedCatalog';
 import { ProductCard } from '../../../components/ui/ProductCard';
@@ -12,6 +13,9 @@ import { BookCard } from '../../../components/ui/BookCard';
 import { AffiliateDisclosure } from '../../../components/ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../../../components/ui/Breadcrumbs';
 import { Check, Calendar } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 interface CollectionPageProps {
   params: Promise<{ slug: string }>;
@@ -51,7 +55,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   // Resolve books in collection
-  const allBooks = getAllBooks();
+  const allBooks = await getAllBooksAsync();
   const books = (collection.bookIds || [])
     .map(id => allBooks.find(b => b.id === id))
     .filter((book): book is NonNullable<typeof book> => Boolean(book));

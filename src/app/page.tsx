@@ -13,6 +13,7 @@ import {
   searchCatalogAsync,
   getAllCollections, 
   getAllBooks, 
+  getAllBooksAsync,
   getAllCategories, 
   getAllCategoriesAsync,
   getAllOwnedProducts 
@@ -30,7 +31,7 @@ export default async function HomePage() {
   const featuredSearch = await searchCatalogAsync({ editorialPickOnly: true, sortBy: 'editorial_picks' });
   const featuredProducts = featuredSearch.items.slice(0, 4);
   const collections = getAllCollections().slice(0, 3);
-  const books = getAllBooks().slice(0, 3);
+  const books = (await getAllBooksAsync()).slice(0, 3);
   const categories = (await getAllCategoriesAsync()) || getAllCategories();
   const ownedProducts = getAllOwnedProducts();
 

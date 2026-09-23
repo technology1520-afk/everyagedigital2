@@ -301,12 +301,114 @@ export function getCollectionBySlug(slug: string): Collection | undefined {
   return COLLECTIONS.find(c => c.slug === slug);
 }
 
+/**
+ * Unifies a Product (and its associated MerchantOffer) into the Book view model
+ * used by BookCard and /books detail pages.
+ */
+export function mapProductToBook(product: Product, offer?: MerchantOffer): Book {
+  const formatFeature = product.features.find(f => f.toLowerCase().startsWith('format:'));
+  let format: Book['format'] = 'Paperback / Hardcover';
+  if (formatFeature) {
+    const rawFormat = formatFeature.replace(/^format:\s*/i, '').trim();
+    if (rawFormat.toLowerCase().includes('kindle') || rawFormat.toLowerCase().includes('ebook')) {
+      format = 'Ebook / Kindle';
+    } else if (rawFormat.toLowerCase().includes('audio')) {
+      format = 'Audiobook';
+    } else if (rawFormat.toLowerCase().includes('pdf')) {
+      format = 'PDF Digital';
+    }
+  }
+
+  const diffFeature = product.features.find(f => f.toLowerCase().startsWith('difficulty:'));
+  let difficulty: Book['difficulty'] = 'Beginner';
+  if (diffFeature) {
+    const rawDiff = diffFeature.replace(/^difficulty:\s*/i, '').trim().toLowerCase();
+    if (rawDiff.includes('comprehensive')) difficulty = 'Comprehensive';
+    else if (rawDiff.includes('intermediate')) difficulty = 'Intermediate';
+    else difficulty = 'Beginner';
+  } else if (product.editorialBadge === 'Editor’s Choice' || product.editorialBadge === 'Best Value') {
+    difficulty = 'Comprehensive';
+  }
+
+  const keyLearnings = product.features.filter(
+    f => !f.toLowerCase().startsWith('format:') && !f.toLowerCase().startsWith('difficulty:')
+  );
+
+  return {
+    id: product.id,
+    slug: product.slug,
+    title: product.name,
+    author: product.brand || 'EveryAge Editorial',
+    format,
+    description: product.description,
+    coverImage: product.imageUrl,
+    imageLicense: product.imageLicense || 'Official Publisher Feed',
+    merchant: (offer?.merchantName as Book['merchant']) || 'Amazon',
+    affiliateUrl: offer?.affiliateUrl || product.officialUrl || 'https://www.amazon.com?tag=everyagedigital-20',
+    owned: product.productType === 'digital',
+    price: offer?.price ?? 19.99,
+    currency: offer?.currency || 'USD',
+    lastCheckedAt: offer?.lastCheckedAt || product.updatedAt,
+    disclosureRequired: true,
+    status: product.status === 'active' ? 'active' : 'archived',
+    difficulty,
+    targetAudience: product.bestFor || 'Readers seeking enduring practical knowledge and focused discipline.',
+    keyLearnings: keyLearnings.length > 0 ? keyLearnings : [product.bestFor || 'Proven practical guidance vetted by our editorial team.'],
+    relatedProductIds: []
+  };
+}
+
+/**
+ * Helper to identify book products from the unified catalog or Supabase.
+ */
+export function isBookProduct(p: Product): boolean {
+  return (
+    p.category === 'Books & Guides' ||
+    p.productType === 'book' ||
+    p.category.toLowerCase().includes('book') ||
+    p.features.some(f => {
+      const lower = f.toLowerCase();
+      return lower.startsWith('format:') && (
+        lower.includes('book') ||
+        lower.includes('paperback') ||
+        lower.includes('hardcover') ||
+        lower.includes('kindle') ||
+        lower.includes('audio') ||
+        lower.includes('pdf')
+      );
+    })
+  );
+}
+
 export function getAllBooks(): Book[] {
+  return BOOKS;
+}
+
+export async function getAllBooksAsync(): Promise<Book[]> {
+  const allProducts = await catalogRepository.getAllProducts({ status: 'active' });
+  const bookProducts = allProducts.filter(isBookProduct);
+
+  if (bookProducts.length > 0) {
+    return bookProducts.map(p => {
+      const offer = catalogRepository.getOfferForProduct(p.id);
+      return mapProductToBook(p, offer);
+    });
+  }
+
   return BOOKS;
 }
 
 export function getBookBySlug(slug: string): Book | undefined {
   return BOOKS.find(b => b.slug === slug);
+}
+
+export async function getBookBySlugAsync(slug: string): Promise<Book | undefined> {
+  const product = await catalogRepository.getProductBySlug(slug);
+  if (product && isBookProduct(product)) {
+    const offer = catalogRepository.getOfferForProduct(product.id);
+    return mapProductToBook(product, offer);
+  }
+  return getBookBySlug(slug);
 }
 
 export function getAllOwnedProducts(): OwnedProduct[] {

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "seed:books": "node --env-file=.env.local scripts/seedBooks.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.0",

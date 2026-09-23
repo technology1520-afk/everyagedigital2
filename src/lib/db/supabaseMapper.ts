@@ -62,6 +62,7 @@ export interface SupabaseProductRow {
   currency?: string | null;
   image_url?: string | null;
   affiliate_url?: string | null;
+  affiliate_links?: Array<{ url: string; network?: string }> | null;
   status?: string | null;
   is_owned?: boolean | null;
   rating_display?: number | string | null;
@@ -100,16 +101,27 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
 
   const safeImageUrl = sanitizeValidUrl(row.image_url, DEFAULT_FALLBACK_IMAGE) || DEFAULT_FALLBACK_IMAGE;
 
+  const isBook = 
+    row.category_id === 'books-guides' ||
+    row.category_id?.toLowerCase().includes('book') ||
+    features.some(f => f.toLowerCase().startsWith('format:'));
+
+  const productType: Product['productType'] = isBook ? 'book' : (isOwned ? 'digital' : 'physical');
+  const category = row.category_id === 'books-guides' 
+    ? 'Books & Guides' 
+    : (row.category_id || 'General');
+  const subcategory = isBook ? 'Curated Books' : 'General';
+
   return {
     id: row.id,
     slug: row.slug || `product-${row.id}`,
     name: row.title || 'Untitled Product',
-    brand: row.brand?.trim() || 'EveryAge Curated',
+    brand: row.brand?.trim() || (isBook ? 'EveryAge Editorial' : 'EveryAge Curated'),
     description: row.description || '',
-    productType: isOwned ? 'digital' : 'physical',
-    category: row.category_id || 'General',
-    subcategory: 'General',
-    useCases: ['Daily productivity', 'Everyday utility'],
+    productType,
+    category,
+    subcategory,
+    useCases: isBook ? ['Deep focus', 'Commercial wisdom', 'Daily habit design'] : ['Daily productivity', 'Everyday utility'],
     bestFor: row.best_for?.trim() || 'Shoppers looking for reliable tested essentials.',
     notFor: row.not_for?.trim() || 'Users seeking cheap disposable alternatives.',
     features: features.length > 0 ? features : ['Editorial vetted', 'Verified merchant warranty'],
@@ -117,16 +129,26 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     limitations: limitations.length > 0 ? limitations : ['Standard merchant shipping policies apply'],
     sourceProvider: (row.merchant_id as string) || 'merchant_direct',
     imageUrl: safeImageUrl,
-    imageSource: 'Merchant Verified',
+    imageSource: isBook ? 'Publisher Authorized' : 'Merchant Verified',
     imageLicense: 'Official Affiliate Feed',
     altText: row.title || 'Product Image',
     region: ['Global', 'US'],
     language: 'English',
     status,
-    editorialNotes: 'Editorial team vetted product.',
+    editorialNotes: isBook ? 'Curated reading recommendation vetted by editorial team.' : 'Editorial team vetted product.',
     handsOnTested: true,
     editorialConfidence: 'Verified',
-    editorialBadge: (row.editorial_badge as Product['editorialBadge']) || undefined,
+    editorialBadge: (
+      row.editorial_badge === "Editor's Choice" || row.editorial_badge === 'Editor’s Choice'
+        ? 'Editor’s Choice'
+        : row.editorial_badge === 'Best Value'
+          ? 'Best Value'
+          : row.editorial_badge === 'Top Practical Pick'
+            ? 'Top Practical Pick'
+            : row.editorial_badge === 'Creator Favorite'
+              ? 'Creator Favorite'
+              : undefined
+    ),
     createdAt: row.created_at || new Date().toISOString(),
     updatedAt: row.updated_at || new Date().toISOString()
   };
@@ -160,7 +182,8 @@ export function mapSupabaseRowToOffer(row: SupabaseProductRow): MerchantOffer {
     merchantName = 'Direct Brand';
   }
 
-  const safeUrl = sanitizeAffiliateUrl(row.affiliate_url);
+  const rawUrl = row.affiliate_url || row.affiliate_links?.[0]?.url;
+  const safeUrl = sanitizeAffiliateUrl(rawUrl);
   const price = sanitizePriceBound(row.price_min, 0) ?? 0;
   const originalPrice = sanitizePriceBound(row.price_max, null) ?? undefined;
   const nowIso = new Date().toISOString();

@@ -1,19 +1,31 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { getAllBooks, getAllOwnedProducts } from '../../lib/search/catalogSearch';
+import { catalogRepository } from '../../lib/db/repository';
+import { mapProductToBook, getAllOwnedProducts, getAllBooks, isBookProduct } from '../../lib/search/catalogSearch';
 import { BookCard } from '../../components/ui/BookCard';
 import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Books, PDFs & Knowledge Resources',
   description: 'Curated books, field guides, and digital templates on focus, business economics, and creator systems.'
 };
 
-export default function BooksPage() {
-  const books = getAllBooks();
+export default async function BooksPage() {
+  const allProducts = await catalogRepository.getAllProducts({ status: 'active' });
+
+  // Query and filter live book products from Supabase
+  const bookProducts = allProducts.filter(isBookProduct);
+
+  const books = bookProducts.length > 0
+    ? bookProducts.map(p => mapProductToBook(p, catalogRepository.getOfferForProduct(p.id)))
+    : getAllBooks();
+
   const owned = getAllOwnedProducts();
 
   return (

@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { BOOKS } from '../src/data/seedCatalog';
+import { Product, MerchantOffer } from '../src/types';
+import { mapProductToBook, getAllBooksAsync, getBookBySlugAsync } from '../src/lib/search/catalogSearch';
 
 describe('/books & BookCard Component Readability and Integrity Audits', () => {
   const bookCardPath = path.resolve(__dirname, '../src/components/ui/BookCard.tsx');
@@ -74,5 +76,82 @@ describe('/books & BookCard Component Readability and Integrity Audits', () => {
     expect(content).not.toContain('text-neutral-900');
     expect(content).not.toContain('#1D438A');
     expect(content).toContain('var(--text)');
+  });
+
+  it('unifies a live Product into the Book view model via mapProductToBook', () => {
+    const product: Product = {
+      id: 'book-test-1',
+      slug: 'deep-work-test',
+      name: 'Deep Work: Rules for Focused Success',
+      brand: 'Cal Newport',
+      description: 'Focus in a distracted world.',
+      productType: 'book',
+      category: 'Books & Guides',
+      subcategory: 'Curated Books',
+      useCases: ['Deep focus'],
+      bestFor: 'Knowledge workers needing focus.',
+      notFor: 'Casual readers.',
+      features: [
+        'Format: Paperback / Hardcover',
+        'Difficulty: Beginner',
+        'The 4 Deep Work philosophies'
+      ],
+      benefits: ['High focus'],
+      limitations: ['Requires discipline'],
+      sourceProvider: 'Amazon',
+      imageUrl: 'https://images-na.ssl-images-amazon.com/images/P/1455586692.01.LZZZZZZZ.jpg',
+      imageSource: 'Publisher Feed',
+      imageLicense: 'Official Affiliate Feed',
+      altText: 'Deep Work Cover',
+      region: ['Global'],
+      language: 'English',
+      status: 'active',
+      editorialNotes: 'Editorial review.',
+      handsOnTested: true,
+      editorialConfidence: 'Verified',
+      editorialBadge: 'Editor’s Choice',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const offer: MerchantOffer = {
+      id: 'off-book-test-1',
+      productId: 'book-test-1',
+      merchantName: 'Amazon',
+      providerName: 'Amazon',
+      affiliateProgram: 'prog-amazon',
+      originalUrl: 'https://amazon.com/dp/1455586692',
+      affiliateUrl: 'https://amazon.com/dp/1455586692?tag=everyagedigital-20',
+      currency: 'USD',
+      price: 18.99,
+      priceType: 'fixed',
+      availability: 'in_stock',
+      region: ['Global'],
+      lastCheckedAt: new Date().toISOString(),
+      staleAfterDays: 7,
+      active: true
+    };
+
+    const book = mapProductToBook(product, offer);
+
+    expect(book.id).toBe('book-test-1');
+    expect(book.slug).toBe('deep-work-test');
+    expect(book.title).toBe('Deep Work: Rules for Focused Success');
+    expect(book.author).toBe('Cal Newport');
+    expect(book.format).toBe('Paperback / Hardcover');
+    expect(book.price).toBe(18.99);
+    expect(book.merchant).toBe('Amazon');
+    expect(book.affiliateUrl).toBe('https://amazon.com/dp/1455586692?tag=everyagedigital-20');
+    expect(book.difficulty).toBe('Beginner');
+    expect(book.keyLearnings).toContain('The 4 Deep Work philosophies');
+  });
+
+  it('getAllBooksAsync and getBookBySlugAsync resolve book records', async () => {
+    const books = await getAllBooksAsync();
+    expect(books.length).toBeGreaterThanOrEqual(4);
+
+    const first = await getBookBySlugAsync('deep-work-cal-newport');
+    expect(first).toBeDefined();
+    expect(first?.author).toBe('Cal Newport');
   });
 });

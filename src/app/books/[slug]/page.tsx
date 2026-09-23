@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { getBookBySlug, getProductById } from '../../../lib/search/catalogSearch';
+import { getBookBySlug, getBookBySlugAsync, getProductById } from '../../../lib/search/catalogSearch';
 import { BOOKS } from '../../../data/seedCatalog';
 import { MerchantBadge } from '../../../components/ui/MerchantBadge';
 import { WishlistButton } from '../../../components/ui/WishlistButton';
@@ -11,17 +11,16 @@ import { Breadcrumbs } from '../../../components/ui/Breadcrumbs';
 import { ProductCard } from '../../../components/ui/ProductCard';
 import { ExternalLink, Check, BookOpen, Clock, Target } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface BookPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return BOOKS.map(b => ({ slug: b.slug }));
-}
-
 export async function generateMetadata({ params }: BookPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const book = getBookBySlug(slug);
+  const book = (await getBookBySlugAsync(slug)) || getBookBySlug(slug);
   if (!book) return { title: 'Book Not Found' };
 
   return {
@@ -37,7 +36,7 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
 
 export default async function BookDetailPage({ params }: BookPageProps) {
   const { slug } = await params;
-  const book = getBookBySlug(slug);
+  const book = (await getBookBySlugAsync(slug)) || getBookBySlug(slug);
 
   if (!book) {
     notFound();

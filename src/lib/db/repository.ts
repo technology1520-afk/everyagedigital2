@@ -247,7 +247,8 @@ class CatalogRepository {
     if (merchantLower.includes('amazon')) network = 'amazon';
     else if (merchantLower.includes('gumroad')) network = 'gumroad';
 
-    const safeUrl = sanitizeAffiliateUrl(row.affiliate_url);
+    const rawAffiliateUrl = row.affiliate_url || row.affiliate_links?.[0]?.url;
+    const safeUrl = sanitizeAffiliateUrl(rawAffiliateUrl);
     const linkRecord: AffiliateLinkRecord = {
       id: `link-${row.id}`,
       productId: row.id,
@@ -282,7 +283,7 @@ class CatalogRepository {
         const supabase = getSupabaseAdminClient();
         const { data, error } = await supabase
           .from(TABLE_PRODUCTS)
-          .select('*')
+          .select('*, affiliate_links(*)')
           .eq('id', id)
           .maybeSingle();
 
@@ -312,7 +313,7 @@ class CatalogRepository {
         const supabase = getSupabaseAdminClient();
         const { data, error } = await supabase
           .from(TABLE_PRODUCTS)
-          .select('*')
+          .select('*, affiliate_links(*)')
           .eq('slug', slug)
           .maybeSingle();
 
@@ -336,7 +337,7 @@ class CatalogRepository {
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
-        let query = supabase.from(TABLE_PRODUCTS).select('*');
+        let query = supabase.from(TABLE_PRODUCTS).select('*, affiliate_links(*)');
         if (filter?.status && filter.status !== 'all') {
           query = query.eq('status', filter.status);
         }
