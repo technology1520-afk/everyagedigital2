@@ -39,7 +39,7 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
     expect(validateAffiliateUrlForNetwork('https://gumroad.com/l/product-template', 'gumroad')).toBe(true);
   });
 
-  it('enforces slug uniqueness when creating products', () => {
+  it('enforces slug uniqueness when creating products', async () => {
     const validProduct = {
       title: 'Ultra Ergonomic Split Keyboard',
       slug: 'ultra-ergonomic-split-keyboard',
@@ -54,17 +54,17 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
       isOwned: false
     };
 
-    const firstCreate = catalogRepository.createProduct(validProduct);
+    const firstCreate = await catalogRepository.createProduct(validProduct);
     expect(firstCreate.success).toBe(true);
     expect(firstCreate.product?.slug).toBe('ultra-ergonomic-split-keyboard');
 
     // Attempt to create duplicate slug
-    const duplicateCreate = catalogRepository.createProduct(validProduct);
+    const duplicateCreate = await catalogRepository.createProduct(validProduct);
     expect(duplicateCreate.success).toBe(false);
     expect(duplicateCreate.error).toContain('is already taken');
   });
 
-  it('supports full product lifecycle: create, update, toggle status, and delete', () => {
+  it('supports full product lifecycle: create, update, toggle status, and delete', async () => {
     const input = {
       title: 'Field Audio Recorder Pro',
       slug: 'field-audio-recorder-pro',
@@ -80,12 +80,12 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
     };
 
     // 1. Create
-    const created = catalogRepository.createProduct(input);
+    const created = await catalogRepository.createProduct(input);
     expect(created.success).toBe(true);
     const id = created.product!.id;
 
     // 2. Update
-    const updated = catalogRepository.updateProduct(id, {
+    const updated = await catalogRepository.updateProduct(id, {
       title: 'Field Audio Recorder Pro (Updated)',
       priceMin: 189.00
     });
@@ -93,13 +93,13 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
     expect(updated.product?.name).toBe('Field Audio Recorder Pro (Updated)');
 
     // 3. Toggle Status to active
-    const toggled = catalogRepository.toggleProductStatus(id, 'active');
+    const toggled = await catalogRepository.toggleProductStatus(id, 'active');
     expect(toggled?.status).toBe('active');
 
     // 4. Delete
-    const deleted = catalogRepository.deleteProduct(id);
+    const deleted = await catalogRepository.deleteProduct(id);
     expect(deleted).toBe(true);
-    expect(catalogRepository.getProductById(id)).toBeUndefined();
+    expect(await catalogRepository.getProductById(id)).toBeUndefined();
   });
 
   it('correctly reports current repository backend mode and diagnostics', () => {

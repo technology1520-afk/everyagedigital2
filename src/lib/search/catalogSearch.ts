@@ -182,13 +182,25 @@ export function searchCatalog(params: FilterParams = {}): SearchResult {
 }
 
 export function getProductBySlug(slug: string): EnrichedProduct | undefined {
-  const product = catalogRepository.getProductBySlug(slug);
+  const product = catalogRepository.getProductBySlugSync(slug);
+  if (!product) return undefined;
+  return enrichProduct(product);
+}
+
+export async function getProductBySlugAsync(slug: string): Promise<EnrichedProduct | undefined> {
+  const product = await catalogRepository.getProductBySlug(slug);
   if (!product) return undefined;
   return enrichProduct(product);
 }
 
 export function getProductById(id: string): EnrichedProduct | undefined {
-  const product = catalogRepository.getProductById(id);
+  const product = catalogRepository.getProductByIdSync(id);
+  if (!product) return undefined;
+  return enrichProduct(product);
+}
+
+export async function getProductByIdAsync(id: string): Promise<EnrichedProduct | undefined> {
+  const product = await catalogRepository.getProductById(id);
   if (!product) return undefined;
   return enrichProduct(product);
 }

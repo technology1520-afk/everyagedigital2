@@ -23,6 +23,13 @@ import {
   MerchantNetwork 
 } from './schema';
 import { isSupabaseConfigured, getSupabaseEnv } from '../supabase/config';
+import { getSupabaseAdminClient } from '../supabase/server';
+import { 
+  mapSupabaseRowToProduct, 
+  mapProductInputToSupabaseRow, 
+  mapProductUpdateToSupabaseRow,
+  SupabaseProductRow
+} from './supabaseMapper';
 
 export interface AffiliateLinkRecord {
   id: string;
@@ -215,15 +222,116 @@ class CatalogRepository {
     return list;
   }
 
-  public getProductById(id: string): Product | undefined {
+  public getProductByIdSync(id: string): Product | undefined {
     return this.products.find(p => p.id === id);
   }
 
-  public getProductBySlug(slug: string): Product | undefined {
+  public async getProductById(id: string): Promise<Product | undefined> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
+
+        if (!error && data) {
+          const product = mapSupabaseRowToProduct(data as SupabaseProductRow);
+          const idx = this.products.findIndex(p => p.id === id);
+          if (idx >= 0) this.products[idx] = product;
+          else this.products.unshift(product);
+          return product;
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] getProductById Supabase error:', err);
+      }
+    }
+    return this.getProductByIdSync(id);
+  }
+
+  public getProductBySlugSync(slug: string): Product | undefined {
     return this.products.find(p => p.slug === slug);
   }
 
-  public createProduct(input: ProductInput): { success: boolean; product?: Product; error?: string } {
+  public async getProductBySlug(slug: string): Promise<Product | undefined> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('slug', slug)
+          .maybeSingle();
+
+        if (!error && data) {
+          const product = mapSupabaseRowToProduct(data as SupabaseProductRow);
+          const idx = this.products.findIndex(p => p.id === product.id || p.slug === slug);
+          if (idx >= 0) this.products[idx] = product;
+          else this.products.unshift(product);
+          return product;
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] getProductBySlug Supabase error:', err);
+      }
+    }
+    return this.getProductBySlugSync(slug);
+  }
+
+  public async getAllProducts(filter?: { status?: string; category?: string; merchant?: string; staleOnly?: boolean }): Promise<Product[]> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        let query = supabase.from('products').select('*');
+        if (filter?.status && filter.status !== 'all') {
+          query = query.eq('status', filter.status);
+        }
+        const { data, error } = await query;
+        if (error) {
+          console.error('[CatalogRepository] getAllProducts error from Supabase:', error.message);
+        } else if (data && data.length > 0) {
+          const mapped = data.map((row) => mapSupabaseRowToProduct(row as SupabaseProductRow));
+          for (const p of mapped) {
+            const idx = this.products.findIndex(existing => existing.id === p.id);
+            if (idx >= 0) this.products[idx] = p;
+            else this.products.unshift(p);
+          }
+          return this.applyProductFilters(mapped, filter);
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] getAllProducts exception:', err);
+      }
+    }
+    return this.getProducts(filter);
+  }
+
+  private applyProductFilters(list: Product[], filter?: { status?: string; category?: string; merchant?: string; staleOnly?: boolean }): Product[] {
+    let result = [...list];
+    if (filter?.status && filter.status !== 'all') {
+      result = result.filter(p => p.status === filter.status);
+    }
+    if (filter?.category && filter.category !== 'all') {
+      result = result.filter(p => p.category.toLowerCase() === filter.category!.toLowerCase());
+    }
+    if (filter?.merchant && filter.merchant !== 'all') {
+      result = result.filter(p => {
+        const offer = this.offers.find(o => o.productId === p.id);
+        return offer && offer.merchantName.toLowerCase() === filter.merchant!.toLowerCase();
+      });
+    }
+    if (filter?.staleOnly) {
+      result = result.filter(p => {
+        const offer = this.offers.find(o => o.productId === p.id);
+        if (!offer) return false;
+        const checked = new Date(offer.lastCheckedAt).getTime();
+        const staleLimit = offer.staleAfterDays * 24 * 60 * 60 * 1000;
+        return (Date.now() - checked) > staleLimit;
+      });
+    }
+    return result;
+  }
+
+  public async createProduct(input: ProductInput): Promise<{ success: boolean; product?: Product; error?: string }> {
     // 1. Validate Input
     const parsed = ProductInputSchema.safeParse(input);
     if (!parsed.success) {
@@ -232,7 +340,7 @@ class CatalogRepository {
 
     const data = parsed.data;
 
-    // 2. Enforce slug uniqueness
+    // 2. Enforce slug uniqueness in memory
     if (this.products.some(p => p.slug === data.slug)) {
       return { success: false, error: `Product slug "${data.slug}" is already taken.` };
     }
@@ -319,6 +427,33 @@ class CatalogRepository {
       clickCount: 0
     };
 
+    // If Supabase is active, execute database insert
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data: existing } = await supabase
+          .from('products')
+          .select('id')
+          .eq('slug', data.slug)
+          .maybeSingle();
+
+        if (existing) {
+          return { success: false, error: `Product slug "${data.slug}" is already taken.` };
+        }
+
+        const dbRow = mapProductInputToSupabaseRow(data, newId);
+        const { error: sbError } = await supabase.from('products').insert(dbRow);
+        if (sbError) {
+          console.error('[CatalogRepository] Supabase createProduct insert error:', sbError);
+          return { success: false, error: sbError.message };
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Database insert failed';
+        console.error('[CatalogRepository] Supabase createProduct exception:', err);
+        return { success: false, error: message };
+      }
+    }
+
     this.products.unshift(newProduct);
     this.offers.unshift(newOffer);
     this.links.unshift(newLink);
@@ -326,8 +461,12 @@ class CatalogRepository {
     return { success: true, product: newProduct };
   }
 
-  public updateProduct(id: string, input: Partial<ProductInput>): { success: boolean; product?: Product; error?: string } {
-    const index = this.products.findIndex(p => p.id === id);
+  public async updateProduct(id: string, input: Partial<ProductInput>): Promise<{ success: boolean; product?: Product; error?: string }> {
+    let index = this.products.findIndex(p => p.id === id);
+    if (index === -1 && this.getBackendMode().mode === 'supabase') {
+      await this.getProductById(id);
+      index = this.products.findIndex(p => p.id === id);
+    }
     if (index === -1) return { success: false, error: 'Product not found' };
 
     const current = this.products[index];
@@ -370,10 +509,45 @@ class CatalogRepository {
       }
     }
 
+    // If Supabase is active, execute database update
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const updateRow = mapProductUpdateToSupabaseRow(input);
+        const { error: sbError } = await supabase
+          .from('products')
+          .update(updateRow)
+          .eq('id', id);
+
+        if (sbError) {
+          console.error('[CatalogRepository] Supabase updateProduct error:', sbError);
+          return { success: false, error: sbError.message };
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Database update failed';
+        console.error('[CatalogRepository] Supabase updateProduct exception:', err);
+        return { success: false, error: message };
+      }
+    }
+
     return { success: true, product: current };
   }
 
-  public deleteProduct(id: string): boolean {
+  public async deleteProduct(id: string): Promise<boolean> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { error: sbError } = await supabase.from('products').delete().eq('id', id);
+        if (sbError) {
+          console.error('[CatalogRepository] Supabase deleteProduct error:', sbError);
+          return false;
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] Supabase deleteProduct exception:', err);
+        return false;
+      }
+    }
+
     const index = this.products.findIndex(p => p.id === id);
     if (index === -1) return false;
     this.products.splice(index, 1);
@@ -382,12 +556,9 @@ class CatalogRepository {
     return true;
   }
 
-  public toggleProductStatus(id: string, status: ProductStatus): Product | undefined {
-    const product = this.products.find(p => p.id === id);
-    if (!product) return undefined;
-    product.status = status;
-    product.updatedAt = new Date().toISOString();
-    return product;
+  public async toggleProductStatus(id: string, status: ProductStatus): Promise<Product | undefined> {
+    const res = await this.updateProduct(id, { status });
+    return res.product;
   }
 
   public getOfferForProduct(productId: string): MerchantOffer | undefined {

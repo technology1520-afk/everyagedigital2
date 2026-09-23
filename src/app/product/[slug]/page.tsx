@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { 
   getProductBySlug, 
+  getProductBySlugAsync,
   getSourceEvidenceForProduct, 
   searchCatalog, 
   getAllCollections 
@@ -41,7 +42,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const enriched = getProductBySlug(slug);
+  const enriched = (await getProductBySlugAsync(slug)) || getProductBySlug(slug);
   if (!enriched) return { title: 'Product Not Found' };
 
   return {
@@ -57,7 +58,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const enriched = getProductBySlug(slug);
+  const enriched = (await getProductBySlugAsync(slug)) || getProductBySlug(slug);
 
   if (!enriched) {
     notFound();

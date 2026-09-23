@@ -160,7 +160,7 @@ describe('Master MCP Server Specification & Verification', () => {
     expect(json.data.status).toBe('draft');
 
     // Check repository state directly
-    const stored = catalogRepository.getProductById(json.data.id);
+    const stored = await catalogRepository.getProductById(json.data.id);
     expect(stored).toBeDefined();
     expect(stored?.name).toBe('Ergonomic Vertical Mouse Pro');
     expect(stored?.status).toBe('draft'); // Mandatory rule: always draft initially

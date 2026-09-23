@@ -8,7 +8,7 @@ describe('Master Prompt §4 & §13: Owner End-to-End 2-Minute Workflow', () => {
     catalogRepository.reset();
   });
 
-  it('completes the entire owner workflow: add product → live in shop → record click → dashboard stats updated', () => {
+  it('completes the entire owner workflow: add product → live in shop → record click → dashboard stats updated', async () => {
     // Step 1 & 2: Fill out product fields in Admin
     const newProductPayload: ProductInput = {
       title: 'Sony WH-1000XM5 Noise Canceling Headphones (Silver)',
@@ -29,7 +29,7 @@ describe('Master Prompt §4 & §13: Owner End-to-End 2-Minute Workflow', () => {
     };
 
     // Step 3: Save as Active
-    const createResult = catalogRepository.createProduct(newProductPayload);
+    const createResult = await catalogRepository.createProduct(newProductPayload);
     expect(createResult.success).toBe(true);
     const createdProduct = createResult.product!;
     expect(createdProduct.status).toBe('active');

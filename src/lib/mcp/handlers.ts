@@ -47,7 +47,7 @@ export async function handleAddProduct(args: unknown): Promise<McpToolResponse> 
     .replace(/(^-|-$)/g, '');
 
   // add_product ALWAYS creates as "draft" — human owner activates in /admin
-  const result = catalogRepository.createProduct({
+  const result = await catalogRepository.createProduct({
     title: data.title,
     slug,
     description: data.description,
@@ -88,7 +88,7 @@ export async function handleUpdateProduct(args: unknown): Promise<McpToolRespons
 
   const { id, title, description, price_min, price_max, image_url, category } = parsed.data;
 
-  const result = catalogRepository.updateProduct(id, {
+  const result = await catalogRepository.updateProduct(id, {
     title,
     description,
     priceMin: price_min,
@@ -114,7 +114,7 @@ export async function handleSetProductStatus(args: unknown): Promise<McpToolResp
     return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
   }
 
-  const updated = catalogRepository.toggleProductStatus(parsed.data.id, parsed.data.status);
+  const updated = await catalogRepository.toggleProductStatus(parsed.data.id, parsed.data.status);
   if (!updated) {
     return { ok: false, error: sanitizeErrorMessage('Product not found') };
   }

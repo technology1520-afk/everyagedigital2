@@ -11,7 +11,7 @@ export default async function AdminEditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = catalogRepository.getProductById(id);
+  const product = await catalogRepository.getProductById(id);
 
   if (!product) {
     notFound();

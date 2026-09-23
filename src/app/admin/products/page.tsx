@@ -23,7 +23,7 @@ export default async function AdminProductsPage({
   const merchantFilter = params.merchant || 'all';
   const staleOnly = params.stale === 'true';
 
-  const products = catalogRepository.getProducts({
+  const products = await catalogRepository.getAllProducts({
     status: statusFilter,
     category: categoryFilter,
     merchant: merchantFilter,

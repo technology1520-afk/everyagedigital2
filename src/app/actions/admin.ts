@@ -66,7 +66,7 @@ export async function createProductAction(input: ProductInput) {
     };
   }
 
-  const result = catalogRepository.createProduct(parsed.data);
+  const result = await catalogRepository.createProduct(parsed.data);
   if (result.success) {
     revalidatePath('/admin');
     revalidatePath('/admin/products');
@@ -79,7 +79,7 @@ export async function createProductAction(input: ProductInput) {
 
 // 4. Update Product Action
 export async function updateProductAction(id: string, input: Partial<ProductInput>) {
-  const result = catalogRepository.updateProduct(id, input);
+  const result = await catalogRepository.updateProduct(id, input);
   if (result.success) {
     revalidatePath('/admin');
     revalidatePath('/admin/products');
@@ -94,7 +94,7 @@ export async function updateProductAction(id: string, input: Partial<ProductInpu
 
 // 5. Delete Product Action
 export async function deleteProductAction(id: string) {
-  const success = catalogRepository.deleteProduct(id);
+  const success = await catalogRepository.deleteProduct(id);
   if (success) {
     revalidatePath('/admin');
     revalidatePath('/admin/products');
@@ -105,7 +105,7 @@ export async function deleteProductAction(id: string) {
 
 // 6. Toggle Product Status (Draft/Active/Paused/Archived)
 export async function toggleProductStatusAction(id: string, status: ProductStatus) {
-  const updated = catalogRepository.toggleProductStatus(id, status);
+  const updated = await catalogRepository.toggleProductStatus(id, status);
   if (updated) {
     revalidatePath('/admin');
     revalidatePath('/admin/products');
