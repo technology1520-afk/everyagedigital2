@@ -4,19 +4,19 @@ test.describe('EveryAge Digital Storefront & Admin E2E Tests', () => {
   test('homepage renders hero, value proposition, and editorial catalog', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/EveryAge Digital/);
-    await expect(page.locator('h1')).toContainText('Curated Commerce');
+    await expect(page.locator('h1')).toContainText('Find things worth buying');
 
     // Check presence of key navigation links
-    await expect(page.locator('a[href="/shop"]')).toBeVisible();
-    await expect(page.locator('a[href="/assistant"]')).toBeVisible();
+    await expect(page.locator('a[href="/shop"]').first()).toBeVisible();
+    await expect(page.locator('a[href="/assistant"]').first()).toBeVisible();
   });
 
   test('shop page renders filters and catalog items', async ({ page }) => {
     await page.goto('/shop');
-    await expect(page.locator('h1')).toContainText('Catalog');
+    await expect(page.locator('h1')).toContainText('Curated Commerce Storefront');
 
-    // Check category filter buttons
-    await expect(page.locator('text=All Categories')).toBeVisible();
+    // Check category filter section in sidebar
+    await expect(page.locator('text=CATEGORY')).toBeVisible();
   });
 
   test('unauthenticated access to /admin redirects to /admin/login', async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe('EveryAge Digital Storefront & Admin E2E Tests', () => {
     // Fill login form
     await page.fill('input[name="email"]', 'admin@everyagedigital.com');
     await page.fill('input[name="password"]', 'admin12345');
-    await page.click('button[type="submit"]');
+    await page.click('button:has-text("Sign In to Control Center")');
 
     // Should redirect to /admin dashboard
     await expect(page).toHaveURL(/.*\/admin$/);

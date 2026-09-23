@@ -46,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--text)] transition-colors duration-150">
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-[var(--background)] text-[var(--text)] transition-colors duration-150">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {/* Skip to Content for WCAG 2.2 AA Accessibility */}
           <a
