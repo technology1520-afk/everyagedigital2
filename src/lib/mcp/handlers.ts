@@ -8,8 +8,9 @@ import {
   MarkPriceCheckedInputSchema, 
   GetStalePricesInputSchema, 
   StoreStatsInputSchema 
-} from './tools';
+} from './schema';
 import { sanitizeErrorMessage } from './auth';
+import { Product } from '../../types';
 
 export type McpToolResponse<T = unknown> = 
   | { ok: true; data: T }
@@ -32,6 +33,8 @@ export async function handleListProducts(args: unknown): Promise<McpToolResponse
 /**
  * 2. add_product
  * Creates product strictly with status 'draft'. Enforces https URL and slug uniqueness.
+ * Defaults tested_in_house to false and omits "hands-on tested" badges unless explicitly specified.
+ * Automatically initializes last_price_checked_at timestamp.
  */
 export async function handleAddProduct(args: unknown): Promise<McpToolResponse> {
   const parsed = AddProductInputSchema.safeParse(args);
@@ -46,6 +49,28 @@ export async function handleAddProduct(args: unknown): Promise<McpToolResponse> 
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 
+  const nowIso = new Date().toISOString();
+
+  // 1. tested_in_house: defaults to false unless explicitly true
+  const testedInHouse = data.tested_in_house === true;
+
+  // 2. badges: omit "hands-on tested" badges unless explicitly specified in badges array
+  let badges: string[] = [];
+  if (Array.isArray(data.badges)) {
+    badges = [...data.badges];
+  }
+
+  // Derive editorialBadge if one matches standard editorial badges
+  let editorialBadge: Product['editorialBadge'] = undefined;
+  if (badges.length > 0) {
+    const foundBadge = badges.find(b => 
+      b === "Editor's Choice" || b === "Editor’s Choice" || b === "Best Value" || b === "Top Practical Pick" || b === "Creator Favorite"
+    );
+    if (foundBadge) {
+      editorialBadge = foundBadge as Product['editorialBadge'];
+    }
+  }
+
   // add_product ALWAYS creates as "draft" — human owner activates in /admin
   const result = await catalogRepository.createProduct({
     title: data.title,
@@ -59,8 +84,17 @@ export async function handleAddProduct(args: unknown): Promise<McpToolResponse> 
     currency: data.currency || 'USD',
     imageUrl: data.image_url,
     status: 'draft',
-    isOwned: false
-  });
+    isOwned: false,
+    editorialBadge,
+    editorialNotes: data.editorial_stance || 'Added via EveryAge Digital admin control center.',
+    editorialStance: data.editorial_stance,
+    editorial_stance: data.editorial_stance,
+    testedInHouse,
+    tested_in_house: testedInHouse,
+    badges,
+    lastPriceCheckedAt: nowIso,
+    last_price_checked_at: nowIso
+  } as any);
 
   if (!result.success || !result.product) {
     return { ok: false, error: sanitizeErrorMessage(result.error || 'Failed to create product') };
@@ -71,14 +105,18 @@ export async function handleAddProduct(args: unknown): Promise<McpToolResponse> 
     data: {
       id: result.product.id,
       slug: result.product.slug,
-      status: result.product.status
+      status: result.product.status,
+      tested_in_house: testedInHouse,
+      badges,
+      editorial_stance: data.editorial_stance,
+      last_price_checked_at: nowIso
     }
   };
 }
 
 /**
  * 3. update_product
- * Partial update, Zod-validated, returns updated product.
+ * Partial update, Zod-validated, returns updated product with optional editorial overrides.
  */
 export async function handleUpdateProduct(args: unknown): Promise<McpToolResponse> {
   const parsed = UpdateProductInputSchema.safeParse(args);
@@ -86,7 +124,18 @@ export async function handleUpdateProduct(args: unknown): Promise<McpToolRespons
     return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
   }
 
-  const { id, title, description, price_min, price_max, image_url, category } = parsed.data;
+  const { 
+    id, 
+    title, 
+    description, 
+    price_min, 
+    price_max, 
+    image_url, 
+    category,
+    badges,
+    editorial_stance,
+    tested_in_house
+  } = parsed.data;
 
   const result = await catalogRepository.updateProduct(id, {
     title,
@@ -94,8 +143,13 @@ export async function handleUpdateProduct(args: unknown): Promise<McpToolRespons
     priceMin: price_min,
     priceMax: price_max,
     imageUrl: image_url,
-    categoryId: category
-  });
+    categoryId: category,
+    badges,
+    editorialStance: editorial_stance,
+    editorial_stance,
+    testedInHouse: tested_in_house,
+    tested_in_house
+  } as any);
 
   if (!result.success || !result.product) {
     return { ok: false, error: sanitizeErrorMessage(result.error || 'Product not found') };
@@ -145,7 +199,7 @@ export async function handleGetClicks(args: unknown): Promise<McpToolResponse> {
 
 /**
  * 6. mark_price_checked
- * Updates lastCheckedAt timestamp on affiliate link and returns the new timestamp.
+ * Updates lastCheckedAt timestamp on affiliate link and last_price_checked_at in Supabase products table.
  */
 export async function handleMarkPriceChecked(args: unknown): Promise<McpToolResponse> {
   const parsed = MarkPriceCheckedInputSchema.safeParse(args);
@@ -153,7 +207,7 @@ export async function handleMarkPriceChecked(args: unknown): Promise<McpToolResp
     return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
   }
 
-  const newTimestamp = catalogRepository.markPriceChecked(parsed.data.product_id);
+  const newTimestamp = await catalogRepository.markPriceChecked(parsed.data.product_id);
   if (!newTimestamp) {
     return { ok: false, error: sanitizeErrorMessage('Product or affiliate link not found') };
   }
@@ -162,7 +216,8 @@ export async function handleMarkPriceChecked(args: unknown): Promise<McpToolResp
     ok: true,
     data: {
       product_id: parsed.data.product_id,
-      lastCheckedAt: newTimestamp
+      lastCheckedAt: newTimestamp,
+      last_price_checked_at: newTimestamp
     }
   };
 }

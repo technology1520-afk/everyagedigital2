@@ -49,6 +49,10 @@ CREATE TABLE IF NOT EXISTS products (
   not_for TEXT,
   features JSONB DEFAULT '[]'::jsonb,
   limitations JSONB DEFAULT '[]'::jsonb,
+  badges JSONB DEFAULT '[]'::jsonb,
+  editorial_stance TEXT,
+  tested_in_house BOOLEAN DEFAULT FALSE,
+  last_price_checked_at TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

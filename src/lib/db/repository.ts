@@ -428,6 +428,12 @@ class CatalogRepository {
     const safePriceMin = sanitizePriceBound(data.priceMin) ?? 0;
     const safePriceMax = sanitizePriceBound(data.priceMax) ?? undefined;
     const safeImageUrl = sanitizeValidUrl(data.imageUrl, 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=800&q=80')!;
+    const testedInHouse = data.testedInHouse !== undefined 
+      ? Boolean(data.testedInHouse) 
+      : (data.tested_in_house !== undefined ? Boolean(data.tested_in_house) : false);
+    const badges = data.badges || [];
+    const editorialStance = data.editorialStance || data.editorial_stance;
+    const lastPriceCheckedAt = data.lastPriceCheckedAt || data.last_price_checked_at || nowIso;
 
     const newProduct: Product = {
       id: newId,
@@ -452,10 +458,17 @@ class CatalogRepository {
       region: ['US', 'Global'],
       language: 'en',
       status: data.status,
-      editorialNotes: 'Added via EveryAge Digital admin control center.',
-      handsOnTested: true,
+      editorialNotes: editorialStance || 'Added via EveryAge Digital admin control center.',
+      handsOnTested: testedInHouse,
       editorialConfidence: 'High',
       editorialBadge: data.editorialBadge as Product['editorialBadge'],
+      badges,
+      editorialStance,
+      editorial_stance: editorialStance,
+      testedInHouse,
+      tested_in_house: testedInHouse,
+      lastPriceCheckedAt,
+      last_price_checked_at: lastPriceCheckedAt,
       createdAt: nowIso,
       updatedAt: nowIso
     };
@@ -474,7 +487,7 @@ class CatalogRepository {
       priceType: 'fixed',
       availability: 'in_stock',
       region: ['Global'],
-      lastCheckedAt: nowIso,
+      lastCheckedAt: lastPriceCheckedAt,
       staleAfterDays: 7,
       active: true
     };
@@ -485,7 +498,7 @@ class CatalogRepository {
       network,
       url: safeAffiliateUrl,
       relTag: 'sponsored nofollow noopener',
-      lastCheckedAt: nowIso,
+      lastCheckedAt: lastPriceCheckedAt,
       staleAfterDays: 7,
       clickCount: 0
     };
@@ -550,6 +563,37 @@ class CatalogRepository {
     if (input.notFor) current.notFor = input.notFor;
     if (input.editorialBadge !== undefined) current.editorialBadge = input.editorialBadge as Product['editorialBadge'];
     if (input.imageUrl) current.imageUrl = sanitizeValidUrl(input.imageUrl, current.imageUrl) || current.imageUrl;
+
+    const extra = input as unknown as Record<string, unknown>;
+    if (input.badges !== undefined || extra.badges !== undefined) {
+      const bList = (input.badges ?? extra.badges) as string[];
+      current.badges = bList;
+      if (Array.isArray(bList)) {
+        const found = bList.find((b: string) => 
+          b === "Editor's Choice" || b === "Editor’s Choice" || b === "Best Value" || b === "Top Practical Pick" || b === "Creator Favorite"
+        );
+        if (found) {
+          current.editorialBadge = found as Product['editorialBadge'];
+        }
+      }
+    }
+    if (input.editorialStance !== undefined || input.editorial_stance !== undefined || extra.editorial_stance !== undefined) {
+      const stance = input.editorialStance ?? input.editorial_stance ?? (extra.editorial_stance as string);
+      current.editorialStance = stance;
+      current.editorial_stance = stance;
+      current.editorialNotes = stance;
+    }
+    if (input.testedInHouse !== undefined || input.tested_in_house !== undefined || extra.tested_in_house !== undefined) {
+      const tested = Boolean(input.testedInHouse ?? input.tested_in_house ?? extra.tested_in_house);
+      current.testedInHouse = tested;
+      current.tested_in_house = tested;
+      current.handsOnTested = tested;
+    }
+    if (input.lastPriceCheckedAt !== undefined || input.last_price_checked_at !== undefined || extra.last_price_checked_at !== undefined) {
+      const ts = input.lastPriceCheckedAt ?? input.last_price_checked_at ?? (extra.last_price_checked_at as string);
+      current.lastPriceCheckedAt = ts;
+      current.last_price_checked_at = ts;
+    }
 
     current.updatedAt = new Date().toISOString();
 
@@ -665,15 +709,52 @@ class CatalogRepository {
     return true;
   }
 
-  public markPriceChecked(productId: string): string | null {
-    const link = this.links.find(l => l.productId === productId || l.id === productId);
-    if (!link) return null;
+  public async markPriceChecked(productId: string): Promise<string | null> {
+    let product = this.products.find(p => p.id === productId);
+    let link = this.links.find(l => l.productId === productId || l.id === productId);
+
+    if (!product && this.getBackendMode().mode === 'supabase') {
+      await this.getProductById(productId);
+      product = this.products.find(p => p.id === productId);
+      link = this.links.find(l => l.productId === productId || l.id === productId);
+    }
+
+    if (!link && !product) return null;
+
     const now = new Date().toISOString();
-    link.lastCheckedAt = now;
-    const offer = this.offers.find(o => o.productId === link.productId);
+    if (link) {
+      link.lastCheckedAt = now;
+    }
+    const targetProductId = product ? product.id : (link ? link.productId : productId);
+    const offer = this.offers.find(o => o.productId === targetProductId);
     if (offer) {
       offer.lastCheckedAt = now;
     }
+    if (product) {
+      product.lastPriceCheckedAt = now;
+      product.last_price_checked_at = now;
+      product.updatedAt = now;
+    }
+
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { error: sbError } = await supabase
+          .from(TABLE_PRODUCTS)
+          .update({
+            last_price_checked_at: now,
+            updated_at: now
+          })
+          .eq('id', targetProductId);
+
+        if (sbError) {
+          console.error('[CatalogRepository] Supabase markPriceChecked error:', sbError);
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] Supabase markPriceChecked exception:', err);
+      }
+    }
+
     return now;
   }
 

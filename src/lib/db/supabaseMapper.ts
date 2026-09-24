@@ -71,6 +71,10 @@ export interface SupabaseProductRow {
   not_for?: string | null;
   features?: unknown;
   limitations?: unknown;
+  badges?: string[] | null;
+  editorial_stance?: string | null;
+  tested_in_house?: boolean | null;
+  last_price_checked_at?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
 }
@@ -135,8 +139,8 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     region: ['Global', 'US'],
     language: 'English',
     status,
-    editorialNotes: isBook ? 'Curated reading recommendation vetted by editorial team.' : 'Editorial team vetted product.',
-    handsOnTested: true,
+    editorialNotes: row.editorial_stance || (isBook ? 'Curated reading recommendation vetted by editorial team.' : 'Editorial team vetted product.'),
+    handsOnTested: row.tested_in_house !== undefined && row.tested_in_house !== null ? Boolean(row.tested_in_house) : true,
     editorialConfidence: 'Verified',
     editorialBadge: (
       row.editorial_badge === "Editor's Choice" || row.editorial_badge === 'Editor’s Choice'
@@ -149,6 +153,13 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
               ? 'Creator Favorite'
               : undefined
     ),
+    badges: Array.isArray(row.badges) ? row.badges.map(b => String(b)) : [],
+    editorialStance: row.editorial_stance || undefined,
+    editorial_stance: row.editorial_stance || undefined,
+    testedInHouse: row.tested_in_house !== undefined && row.tested_in_house !== null ? Boolean(row.tested_in_house) : true,
+    tested_in_house: row.tested_in_house !== undefined && row.tested_in_house !== null ? Boolean(row.tested_in_house) : true,
+    lastPriceCheckedAt: row.last_price_checked_at || undefined,
+    last_price_checked_at: row.last_price_checked_at || undefined,
     createdAt: row.created_at || new Date().toISOString(),
     updatedAt: row.updated_at || new Date().toISOString()
   };
@@ -242,6 +253,10 @@ export function mapProductInputToSupabaseRow(input: ProductInput, id: string): R
     not_for: input.notFor?.trim() || null,
     features,
     limitations,
+    badges: input.badges || (extra.badges as string[]) || [],
+    editorial_stance: input.editorialStance?.trim() || (extra.editorial_stance as string)?.trim() || null,
+    tested_in_house: input.testedInHouse !== undefined ? Boolean(input.testedInHouse) : (extra.tested_in_house !== undefined ? Boolean(extra.tested_in_house) : false),
+    last_price_checked_at: input.lastPriceCheckedAt || (extra.last_price_checked_at as string) || new Date().toISOString(),
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
@@ -273,6 +288,20 @@ export function mapProductUpdateToSupabaseRow(input: Partial<ProductInput>): Rec
   if (input.notFor !== undefined) row.not_for = input.notFor?.trim() || null;
   if (extra.features !== undefined) row.features = extra.features;
   if (extra.limitations !== undefined) row.limitations = extra.limitations;
+
+  if (input.badges !== undefined || extra.badges !== undefined) {
+    row.badges = input.badges ?? extra.badges;
+  }
+  if (input.editorialStance !== undefined || extra.editorial_stance !== undefined || extra.editorialStance !== undefined) {
+    const stance = input.editorialStance ?? (extra.editorial_stance as string) ?? (extra.editorialStance as string);
+    row.editorial_stance = stance?.trim() || null;
+  }
+  if (input.testedInHouse !== undefined || extra.tested_in_house !== undefined || extra.testedInHouse !== undefined) {
+    row.tested_in_house = Boolean(input.testedInHouse ?? extra.tested_in_house ?? extra.testedInHouse);
+  }
+  if (input.lastPriceCheckedAt !== undefined || extra.last_price_checked_at !== undefined || extra.lastPriceCheckedAt !== undefined) {
+    row.last_price_checked_at = input.lastPriceCheckedAt ?? (extra.last_price_checked_at as string) ?? (extra.lastPriceCheckedAt as string);
+  }
 
   return row;
 }

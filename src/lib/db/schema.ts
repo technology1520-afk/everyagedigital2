@@ -27,7 +27,14 @@ export const ProductInputSchema = z.object({
   notFor: z.string().optional(),
   editorialBadge: z.string().optional(),
   metaTitle: z.string().max(70).optional(),
-  metaDescription: z.string().max(160).optional()
+  metaDescription: z.string().max(160).optional(),
+  badges: z.array(z.string()).optional(),
+  editorialStance: z.string().optional(),
+  editorial_stance: z.string().optional(),
+  testedInHouse: z.boolean().optional(),
+  tested_in_house: z.boolean().optional(),
+  lastPriceCheckedAt: z.string().optional(),
+  last_price_checked_at: z.string().optional()
 });
 
 export type ProductInput = z.infer<typeof ProductInputSchema>;

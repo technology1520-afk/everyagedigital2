@@ -261,10 +261,14 @@ describe('Master MCP Server Specification & Verification', () => {
     expect(json.ok).toBe(true);
     expect(json.data.product_id).toBe(target.id);
     expect(json.data.lastCheckedAt).toBeDefined();
+    expect(json.data.last_price_checked_at).toBeDefined();
 
     // Verify in repository
     const offer = catalogRepository.getOfferForProduct(target.id);
     expect(offer?.lastCheckedAt).toBe(json.data.lastCheckedAt);
+
+    const storedProduct = await catalogRepository.getProductById(target.id);
+    expect(storedProduct?.last_price_checked_at).toBe(json.data.last_price_checked_at);
   });
 
   it('get_stale_prices only lists products past staleAfter', async () => {
@@ -320,6 +324,112 @@ describe('Master MCP Server Specification & Verification', () => {
     const serialized = JSON.stringify(json.data);
     expect(serialized).not.toContain('userMessage');
     expect(serialized).not.toContain('assistantReply');
+  });
+
+  it('add_product defaults tested_in_house to false, initializes last_price_checked_at, and omits hands-on tested badge', async () => {
+    const req = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'add_product',
+        arguments: {
+          title: 'Mechanical Key Switch Tester',
+          description: 'Multi-switch tester unit for tactile evaluation.',
+          category: 'Ergonomics & Peripherals',
+          merchant: 'Amazon',
+          affiliate_url: 'https://www.amazon.com/dp/B00SWITCHTEST?tag=everyagedigital-20',
+          price_min: 24.99
+        }
+      }
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const json = await res.json();
+
+    expect(json.ok).toBe(true);
+    expect(json.data.tested_in_house).toBe(false);
+    expect(json.data.last_price_checked_at).toBeDefined();
+    expect(new Date(json.data.last_price_checked_at).getTime()).toBeGreaterThan(0);
+    expect(json.data.badges).toEqual([]);
+
+    const stored = await catalogRepository.getProductById(json.data.id);
+    expect(stored).toBeDefined();
+    expect(stored?.handsOnTested).toBe(false);
+    expect(stored?.tested_in_house).toBe(false);
+    expect(stored?.last_price_checked_at).toBe(json.data.last_price_checked_at);
+    expect(stored?.badges?.some((b: string) => b.toLowerCase().includes('hands-on tested'))).toBe(false);
+  });
+
+  it('add_product accepts optional editorial overrides (badges, editorial_stance, tested_in_house)', async () => {
+    const req = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'add_product',
+        arguments: {
+          title: 'Heavy Duty Gas Spring Monitor Arm',
+          description: 'Full articulation monitor arm supporting up to 35-inch screens.',
+          category: 'Ergonomics & Peripherals',
+          merchant: 'Amazon',
+          affiliate_url: 'https://www.amazon.com/dp/B00MONITORARM?tag=everyagedigital-20',
+          price_min: 89.99,
+          badges: ["Editor's Choice", 'Hands-on Tested'],
+          editorial_stance: 'Benchmark build quality for dual monitor productivity setups.',
+          tested_in_house: true
+        }
+      }
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const json = await res.json();
+
+    expect(json.ok).toBe(true);
+    expect(json.data.tested_in_house).toBe(true);
+    expect(json.data.editorial_stance).toBe('Benchmark build quality for dual monitor productivity setups.');
+    expect(json.data.badges).toEqual(["Editor's Choice", 'Hands-on Tested']);
+    expect(json.data.last_price_checked_at).toBeDefined();
+
+    const stored = await catalogRepository.getProductById(json.data.id);
+    expect(stored).toBeDefined();
+    expect(stored?.handsOnTested).toBe(true);
+    expect(stored?.tested_in_house).toBe(true);
+    expect(stored?.editorialBadge).toBe("Editor's Choice");
+    expect(stored?.editorialNotes).toBe('Benchmark build quality for dual monitor productivity setups.');
+    expect(stored?.badges).toContain('Hands-on Tested');
+  });
+
+  it('update_product supports updating editorial overrides (badges, editorial_stance, tested_in_house)', async () => {
+    const products = catalogRepository.getProducts();
+    const target = products[0];
+
+    const req = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'update_product',
+        arguments: {
+          id: target.id,
+          badges: ['Best Value'],
+          editorial_stance: 'Revised long-term verdict after extensive daily testing.',
+          tested_in_house: true
+        }
+      }
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const json = await res.json();
+
+    expect(json.ok).toBe(true);
+    expect(json.data.id).toBe(target.id);
+    expect(json.data.editorialNotes).toBe('Revised long-term verdict after extensive daily testing.');
+    expect(json.data.editorialBadge).toBe('Best Value');
+    expect(json.data.handsOnTested).toBe(true);
+    expect(json.data.badges).toEqual(['Best Value']);
+
+    const stored = await catalogRepository.getProductById(target.id);
+    expect(stored?.editorialNotes).toBe('Revised long-term verdict after extensive daily testing.');
+    expect(stored?.editorialBadge).toBe('Best Value');
+    expect(stored?.handsOnTested).toBe(true);
   });
 
   it('sanitizeErrorMessage strips tokens and credentials from errors', () => {
