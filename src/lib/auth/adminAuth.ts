@@ -5,12 +5,28 @@ export const ADMIN_COOKIE_NAME = 'everyage_admin_session';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Default owner credentials (fallback passwords are prohibited in production)
-export const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL || (isProduction ? '' : 'admin@everyagedigital.com');
-export const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || (isProduction ? '' : 'admin12345');
+export function getAdminCredentials() {
+  const isProd = process.env.NODE_ENV === 'production';
+  const email = (process.env.ADMIN_EMAIL || (isProd ? '' : 'admin@everyagedigital.com'))
+    .trim()
+    .replace(/^["']|["']$/g, '');
+  const password = (process.env.ADMIN_PASSWORD || (isProd ? '' : 'admin12345'))
+    .trim()
+    .replace(/^["']|["']$/g, '');
+  return { email, password };
+}
 
-function getSessionSecret(): string {
-  const secret = process.env.SESSION_SECRET;
+// Default owner credentials (fallback passwords are prohibited in production)
+export const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL
+  ? process.env.ADMIN_EMAIL.trim().replace(/^["']|["']$/g, '')
+  : (isProduction ? '' : 'admin@everyagedigital.com');
+export const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
+  ? process.env.ADMIN_PASSWORD.trim().replace(/^["']|["']$/g, '')
+  : (isProduction ? '' : 'admin12345');
+
+export function getSessionSecret(): string {
+  const rawSecret = process.env.SESSION_SECRET || process.env.ADMIN_SESSION_SECRET || process.env.JWT_SECRET;
+  const secret = rawSecret?.trim().replace(/^["']|["']$/g, '');
   if (!secret) {
     if (isProduction) {
       throw new Error('SESSION_SECRET environment variable is required in production.');

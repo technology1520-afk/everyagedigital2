@@ -24,8 +24,10 @@ export default function AdminLoginPage() {
       } else {
         setError(res.error || 'Authentication failed. Please check credentials.');
       }
-    } catch {
-      setError('An unexpected error occurred during sign-in.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'An unexpected error occurred during sign-in.';
+      console.error('[AdminLogin] Error:', err);
+      setError(msg);
     } finally {
       setLoading(false);
     }

@@ -6,7 +6,8 @@ import { redirect } from 'next/navigation';
 import { 
   ADMIN_COOKIE_NAME, 
   DEFAULT_ADMIN_EMAIL, 
-  DEFAULT_ADMIN_PASSWORD, 
+  DEFAULT_ADMIN_PASSWORD,
+  getAdminCredentials, 
   createSessionToken,
   checkAdminAuth 
 } from '../../lib/auth/adminAuth';
@@ -31,31 +32,47 @@ async function assertAdmin() {
 
 // 1. Owner Login Action
 export async function loginAdminAction(formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  try {
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
-  if (!email || !password) {
-    return { success: false, error: 'Email and password are required.' };
+    if (!email || !password) {
+      return { success: false, error: 'Email and password are required.' };
+    }
+
+    const { email: validEmail, password: validPassword } = getAdminCredentials();
+
+    if (!validEmail || !validPassword) {
+      console.error('[AdminAuth] ADMIN_EMAIL or ADMIN_PASSWORD is not configured.');
+      return { 
+        success: false, 
+        error: 'Admin authentication is not configured on the server. Please verify ADMIN_EMAIL and ADMIN_PASSWORD in Vercel settings.' 
+      };
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const targetEmail = validEmail.toLowerCase();
+
+    if (cleanEmail !== targetEmail || password !== validPassword) {
+      return { success: false, error: 'Invalid owner credentials.' };
+    }
+
+    const token = createSessionToken(cleanEmail);
+    const cookieStore = await cookies();
+    cookieStore.set(ADMIN_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'An unexpected error occurred during authentication.';
+    console.error('[AdminAuth] Login error:', message);
+    return { success: false, error: message };
   }
-
-  const cleanEmail = email.trim().toLowerCase();
-  const validEmail = DEFAULT_ADMIN_EMAIL.toLowerCase();
-
-  if (!validEmail || !DEFAULT_ADMIN_PASSWORD || cleanEmail !== validEmail || password !== DEFAULT_ADMIN_PASSWORD) {
-    return { success: false, error: 'Invalid owner credentials.' };
-  }
-
-  const token = createSessionToken(cleanEmail);
-  const cookieStore = await cookies();
-  cookieStore.set(ADMIN_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7 // 7 days
-  });
-
-  return { success: true };
 }
 
 // 2. Owner Logout Action

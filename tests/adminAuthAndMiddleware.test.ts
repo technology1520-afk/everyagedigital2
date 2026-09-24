@@ -103,4 +103,22 @@ describe('Master Prompt §3.1 & §13: Admin Auth & Route Protection', () => {
       })
     ).rejects.toThrow('Unauthorized: Admin access required.');
   });
+
+  it('loginAdminAction validates empty inputs gracefully', async () => {
+    const { loginAdminAction } = await import('../src/app/actions/admin');
+    const emptyForm = new FormData();
+    const result = await loginAdminAction(emptyForm);
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Email and password are required.');
+  });
+
+  it('loginAdminAction rejects incorrect credentials cleanly without crashing', async () => {
+    const { loginAdminAction } = await import('../src/app/actions/admin');
+    const form = new FormData();
+    form.set('email', 'wrong@admin.com');
+    form.set('password', 'wrongpass');
+    const result = await loginAdminAction(form);
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Invalid owner credentials.');
+  });
 });
