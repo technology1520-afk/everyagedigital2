@@ -13,25 +13,10 @@ export function AffiliateDisclosure({
   isAmazon = false,
   className = ''
 }: AffiliateDisclosureProps) {
+  // Banner variant permanently disabled per site-wide clean design standards.
+  // Compliance is maintained via the global footer and compact badge disclosures.
   if (variant === 'banner') {
-    return (
-      <aside
-        aria-label="Affiliate Disclosure"
-        className={`bg-amber-500/10 border border-amber-500/30 backdrop-blur-md rounded-2xl p-4 text-amber-200 text-xs flex items-start gap-3 shadow-lg shadow-black/10 ${className}`}
-      >
-        <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-        <div className="leading-relaxed">
-          <strong className="font-semibold text-amber-100">Editorial Transparency:</strong>{' '}
-          EveryAge Digital is reader-supported. When you purchase through links on our site, we may earn an affiliate commission at no extra cost to you.
-          {isAmazon && (
-            <span className="block mt-1 font-medium text-amber-200">
-              As an Amazon Associate I earn from qualifying purchases.
-            </span>
-          )}
-          {' '}<Link href="/affiliate-disclosure" className="underline hover:text-white ml-1 font-medium text-amber-300">Learn about our evaluation methodology & disclosure policy &rarr;</Link>
-        </div>
-      </aside>
-    );
+    return null;
   }
 
   if (variant === 'compact') {

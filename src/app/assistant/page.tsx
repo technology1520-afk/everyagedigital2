@@ -2,7 +2,6 @@ import React from 'react';
 import { Metadata } from 'next';
 import { ShoppingAssistant } from '../../components/ui/ShoppingAssistant';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
-import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Sparkles, ShieldCheck, CheckCircle2, Lock } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -42,8 +41,6 @@ export default function AssistantPage() {
           <span>Privacy-preserving (no personal data logged)</span>
         </div>
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       {/* Main Interactive Assistant */}
       <ShoppingAssistant />

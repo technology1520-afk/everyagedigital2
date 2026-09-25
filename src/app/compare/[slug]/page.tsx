@@ -3,7 +3,6 @@ import { Metadata } from 'next';
 import { getProductById } from '../../../lib/search/catalogSearch';
 import { ComparisonTable } from '../../../components/ui/ComparisonTable';
 import { Breadcrumbs } from '../../../components/ui/Breadcrumbs';
-import { AffiliateDisclosure } from '../../../components/ui/AffiliateDisclosure';
 import { Scale } from 'lucide-react';
 
 interface CompareSlugPageProps {
@@ -61,8 +60,6 @@ export default async function CompareSlugPage({ params }: CompareSlugPageProps) 
           Editorial head-to-head analysis comparing performance, ergonomics, and real-world value.
         </p>
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       <ComparisonTable items={items} />
     </div>

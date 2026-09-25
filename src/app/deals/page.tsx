@@ -2,7 +2,6 @@ import React from 'react';
 import { Metadata } from 'next';
 import { getDealsAsync } from '../../lib/search/catalogSearch';
 import { ProductGrid } from '../../components/ui/ProductGrid';
-import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
 import { Flame, ShieldCheck } from 'lucide-react';
 
@@ -40,8 +39,6 @@ export default async function DealsPage() {
           <strong className="text-slate-900 dark:text-white">No Fake Urgency:</strong> We never display artificial countdown timers, fake &ldquo;only 2 left!&rdquo; warnings, or inflated reference MSRPs. Prices reflect the latest verified merchant feeds.
         </div>
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       <ProductGrid items={deals} columns={3} emptyMessage="No active deals currently meet our vetting standards." />
     </div>

@@ -3,7 +3,6 @@ import { Metadata } from 'next';
 import { catalogRepository } from '../../lib/db/repository';
 import { mapProductToBook, getAllOwnedProducts, getAllBooks, isBookProduct } from '../../lib/search/catalogSearch';
 import { BookCard } from '../../components/ui/BookCard';
-import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
 import Link from 'next/link';
 import { ArrowRight, BookOpen } from 'lucide-react';
@@ -47,8 +46,6 @@ export default async function BooksPage() {
           Skip generic airport bestsellers. We hand-pick books and digital guides that build enduring mental frameworks for deep focus, commercial acumen, and daily creative discipline.
         </p>
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       {/* 1. Our Direct Publisher Guides */}
       <section className="bg-purple-100/40 dark:bg-indigo-950/30 border border-purple-200/60 dark:border-indigo-500/20 backdrop-blur-xl rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm dark:shadow-xl">

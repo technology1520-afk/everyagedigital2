@@ -10,7 +10,6 @@ import {
 import { COLLECTIONS } from '../../../data/seedCatalog';
 import { ProductCard } from '../../../components/ui/ProductCard';
 import { BookCard } from '../../../components/ui/BookCard';
-import { AffiliateDisclosure } from '../../../components/ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../../../components/ui/Breadcrumbs';
 import { Check, Calendar } from 'lucide-react';
 
@@ -124,8 +123,6 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           </div>
         </div>
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       {/* Included Products */}
       <section className="space-y-6">

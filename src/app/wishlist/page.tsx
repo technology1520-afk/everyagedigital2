@@ -7,7 +7,6 @@ import { getProductById, getAllBooks } from '../../lib/search/catalogSearch';
 import { ProductCard } from '../../components/ui/ProductCard';
 import { BookCard } from '../../components/ui/BookCard';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
-import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Bookmark, Trash2, Scale, ArrowRight } from 'lucide-react';
 
 export default function WishlistPage() {
@@ -62,8 +61,6 @@ export default function WishlistPage() {
           </div>
         )}
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       {totalSaved === 0 ? (
         <div className="py-20 text-center rounded-3xl bg-white/80 dark:bg-white/[0.02] backdrop-blur-xl border border-dashed border-purple-200 dark:border-white/10 p-8 sm:p-12 space-y-4">

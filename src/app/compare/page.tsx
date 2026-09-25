@@ -6,7 +6,6 @@ import { useWishlist } from '../../context/WishlistContext';
 import { getProductById } from '../../lib/search/catalogSearch';
 import { ComparisonTable } from '../../components/ui/ComparisonTable';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
-import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Scale, Share2, Trash2, Plus } from 'lucide-react';
 import Link from 'next/link';
 
@@ -71,8 +70,6 @@ function CompareContent() {
           </div>
         )}
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       <ComparisonTable items={items} />
 
