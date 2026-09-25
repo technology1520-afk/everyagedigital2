@@ -10,8 +10,10 @@ import { catalogRepository } from '../../../lib/db/repository';
 import { markLinkCheckedAction } from '../../actions/admin';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export default function AdminAffiliateLinksPage() {
+export default async function AdminAffiliateLinksPage() {
+  await catalogRepository.getAllProducts();
   const links = catalogRepository.getLinks();
 
   return (

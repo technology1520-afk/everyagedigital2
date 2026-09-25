@@ -246,7 +246,7 @@ export async function handleStoreStats(args: unknown): Promise<McpToolResponse> 
     return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
   }
 
-  const stats = catalogRepository.getStoreMcpStats();
+  const stats = await catalogRepository.getStoreMcpStats();
   return { ok: true, data: stats };
 }
 

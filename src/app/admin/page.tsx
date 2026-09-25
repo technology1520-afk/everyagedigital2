@@ -109,10 +109,10 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="truncate">
             <div className="text-base font-bold text-neutral-900 truncate">
-              {stats.topProduct ? stats.topProduct.name : 'N/A'}
+              {stats.topProduct ? stats.topProduct.name : 'None'}
             </div>
             <div className="text-xs text-purple-700 font-semibold mt-0.5">
-              {stats.topProduct ? `${stats.topProduct.clicks} clicks` : '0 clicks'}
+              {stats.topProduct ? `${stats.topProduct.clicks} clicks` : '-'}
             </div>
           </div>
           <div className="text-[11px] text-neutral-400 truncate">
@@ -142,43 +142,49 @@ export default async function AdminDashboardPage() {
             </Link>
           </div>
 
-          <div className="divide-y divide-neutral-100">
-            {stats.topProducts.map((p, idx) => {
-              const percentage = Math.round((p.clicks / maxClicks) * 100);
-              return (
-                <div key={p.id} className="py-3 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <span className="text-xs font-mono font-bold text-neutral-400 w-4 text-center">
-                      {idx + 1}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-semibold text-neutral-900 truncate">
-                        {p.name}
-                      </div>
-                      <div className="text-[11px] text-neutral-500 flex items-center gap-2">
-                        <span>{p.merchant}</span>
-                        <span>•</span>
-                        <span>${p.price.toFixed(2)}</span>
+          {stats.topProducts.length === 0 ? (
+            <div className="py-8 text-center text-xs text-neutral-500">
+              No products available
+            </div>
+          ) : (
+            <div className="divide-y divide-neutral-100">
+              {stats.topProducts.map((p, idx) => {
+                const percentage = Math.round((p.clicks / maxClicks) * 100);
+                return (
+                  <div key={p.id} className="py-3 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <span className="text-xs font-mono font-bold text-neutral-400 w-4 text-center">
+                        {idx + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-neutral-900 truncate">
+                          {p.name}
+                        </div>
+                        <div className="text-[11px] text-neutral-500 flex items-center gap-2">
+                          <span>{p.merchant}</span>
+                          <span>•</span>
+                          <span>${p.price.toFixed(2)}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Sparkline Visual Bar */}
-                  <div className="w-36 flex items-center gap-2 shrink-0">
-                    <div className="flex-1 bg-neutral-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-[#234F9E] h-full rounded-full"
-                        style={{ width: `${percentage}%` }}
-                      />
+                    {/* Sparkline Visual Bar */}
+                    <div className="w-36 flex items-center gap-2 shrink-0">
+                      <div className="flex-1 bg-neutral-100 rounded-full h-2 overflow-hidden">
+                        <div
+                          className="bg-[#234F9E] h-full rounded-full"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-mono font-bold text-neutral-700 w-8 text-right">
+                        {p.clicks}
+                      </span>
                     </div>
-                    <span className="text-xs font-mono font-bold text-neutral-700 w-8 text-right">
-                      {p.clicks}
-                    </span>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Right Column: Stale-Price List & Assistant Stats (5 cols) */}
@@ -274,12 +280,18 @@ export default async function AdminDashboardPage() {
                 Recent User Inquiries
               </span>
               <div className="space-y-1.5">
-                {stats.recentQuestions.map((q, idx) => (
-                  <div key={idx} className="p-2.5 bg-[#F7F7F4] rounded text-xs text-neutral-700 flex items-start gap-2">
-                    <span className="font-mono text-neutral-400 text-[10px] mt-0.5">#{idx + 1}</span>
-                    <span className="line-clamp-1 italic">&ldquo;{q.question}&rdquo;</span>
+                {stats.recentQuestions.length === 0 ? (
+                  <div className="p-2.5 bg-[#F7F7F4] rounded text-xs text-neutral-400 italic">
+                    No inquiries recorded yet
                   </div>
-                ))}
+                ) : (
+                  stats.recentQuestions.map((q, idx) => (
+                    <div key={idx} className="p-2.5 bg-[#F7F7F4] rounded text-xs text-neutral-700 flex items-start gap-2">
+                      <span className="font-mono text-neutral-400 text-[10px] mt-0.5">#{idx + 1}</span>
+                      <span className="line-clamp-1 italic">&ldquo;{q.question}&rdquo;</span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 

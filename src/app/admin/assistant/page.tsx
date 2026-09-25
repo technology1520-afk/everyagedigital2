@@ -10,6 +10,7 @@ import {
 import { catalogRepository } from '../../../lib/db/repository';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default function AdminAssistantLogsPage() {
   const logs = catalogRepository.getAssistantLogs();

@@ -5,8 +5,10 @@ import { catalogRepository } from '../../../lib/db/repository';
 import { createCategoryAction, deleteCategoryAction } from '../../actions/admin';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export default function AdminCategoriesPage() {
+export default async function AdminCategoriesPage() {
+  await catalogRepository.getAllProducts();
   const categories = catalogRepository.getCategories();
 
   async function handleCreate(formData: FormData) {

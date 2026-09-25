@@ -128,6 +128,32 @@ class CatalogRepository {
   }
 
   public reset() {
+    if (this.getBackendMode().mode === 'supabase') {
+      this.products = [];
+      this.offers = [];
+      this.links = [];
+      this.ownedProducts = JSON.parse(JSON.stringify(INITIAL_OWNED));
+      this.collections = JSON.parse(JSON.stringify(INITIAL_COLLECTIONS));
+      this.books = JSON.parse(JSON.stringify(INITIAL_BOOKS));
+      this.clicks = [];
+      this.assistantLogs = [];
+
+      const defaultCategoryNames = [
+        'Ergonomics & Peripherals',
+        'Smart Audio & Microphones',
+        'Home Office & Lighting',
+        'Health & Wellness Tech',
+        'Focus & Time Tools'
+      ];
+      this.categories = defaultCategoryNames.map((name, idx) => ({
+        id: `cat-${idx + 1}`,
+        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        name,
+        sortOrder: idx
+      }));
+      return;
+    }
+
     this.products = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
     this.offers = JSON.parse(JSON.stringify(INITIAL_OFFERS));
     this.ownedProducts = JSON.parse(JSON.stringify(INITIAL_OWNED));
@@ -296,8 +322,10 @@ class CatalogRepository {
           else this.products.unshift(product);
           return product;
         }
+        return undefined;
       } catch (err) {
         console.error('[CatalogRepository] getProductById Supabase error:', err);
+        return undefined;
       }
     }
     return this.getProductByIdSync(id);
@@ -326,8 +354,10 @@ class CatalogRepository {
           else this.products.unshift(product);
           return product;
         }
+        return undefined;
       } catch (err) {
         console.error('[CatalogRepository] getProductBySlug Supabase error:', err);
+        return undefined;
       }
     }
     return this.getProductBySlugSync(slug);
@@ -344,23 +374,54 @@ class CatalogRepository {
         const { data, error } = await query;
         if (error) {
           console.error('[CatalogRepository] getAllProducts error from Supabase:', error.message);
-        } else if (data && data.length > 0) {
+          return [];
+        } else if (data) {
+          const isFullFetch = !filter || (!filter.status && !filter.category && !filter.merchant && !filter.staleOnly) || filter.status === 'all';
+          if (data.length === 0) {
+            if (isFullFetch) {
+              this.products = [];
+              this.offers = [];
+              this.links = [];
+            }
+            return [];
+          }
+
+          if (isFullFetch) {
+            this.offers = [];
+            this.links = [];
+          }
+
           const mapped = data.map((row) => {
             this.ensureOfferForSupabaseProduct(row as SupabaseProductRow);
             return mapSupabaseRowToProduct(row as SupabaseProductRow);
           });
-          for (const p of mapped) {
-            const idx = this.products.findIndex(existing => existing.id === p.id);
-            if (idx >= 0) this.products[idx] = p;
-            else this.products.unshift(p);
+
+          if (isFullFetch) {
+            this.products = mapped;
+          } else {
+            for (const p of mapped) {
+              const idx = this.products.findIndex(existing => existing.id === p.id);
+              if (idx >= 0) this.products[idx] = p;
+              else this.products.push(p);
+            }
           }
+
+          for (const p of mapped) {
+            if (p.category && !this.categories.some(c => c.name.toLowerCase() === p.category.toLowerCase())) {
+              this.categories.push({
+                id: `cat-${this.categories.length + 1}`,
+                slug: p.category.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                name: p.category,
+                sortOrder: this.categories.length
+              });
+            }
+          }
+
           return this.applyProductFilters(mapped, filter);
-        } else if (data && data.length === 0) {
-          // Supabase is configured and currently has 0 products
-          return [];
         }
       } catch (err) {
         console.error('[CatalogRepository] getAllProducts exception:', err);
+        return [];
       }
     }
     return this.getProducts(filter);
@@ -1077,13 +1138,37 @@ class CatalogRepository {
     return results;
   }
 
-  public getStoreMcpStats() {
-    const products_by_status = {
-      draft: this.products.filter(p => p.status === 'draft').length,
-      active: this.products.filter(p => p.status === 'active').length,
-      paused: this.products.filter(p => p.status === 'paused').length,
-      archived: this.products.filter(p => p.status === 'archived').length
+  public async getStoreMcpStats() {
+    let products_by_status = {
+      draft: 0,
+      active: 0,
+      paused: 0,
+      archived: 0
     };
+
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data, error } = await supabase.from(TABLE_PRODUCTS).select('status');
+        if (!error && data) {
+          for (const row of data) {
+            const status = row.status as keyof typeof products_by_status;
+            if (products_by_status[status] !== undefined) {
+              products_by_status[status]++;
+            }
+          }
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] getStoreMcpStats Supabase error:', err);
+      }
+    } else {
+      products_by_status = {
+        draft: this.products.filter(p => p.status === 'draft').length,
+        active: this.products.filter(p => p.status === 'active').length,
+        paused: this.products.filter(p => p.status === 'paused').length,
+        archived: this.products.filter(p => p.status === 'archived').length
+      };
+    }
 
     const now = Date.now();
     const ms7d = 7 * 24 * 60 * 60 * 1000;
@@ -1098,6 +1183,14 @@ class CatalogRepository {
       clicks_30d,
       assistant_conversations_7d
     };
+  }
+
+  public async getStoreStats() {
+    return this.getStoreMcpStats();
+  }
+
+  public getTelemetry(days: number = 7) {
+    return this.getClicksReport(days);
   }
 }
 
