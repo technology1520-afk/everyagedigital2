@@ -33,7 +33,7 @@ export function BookCard({ book, className = '', priority = false }: BookCardPro
 
   return (
     <article
-      className={`product-card group flex flex-col h-full bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden p-4 sm:p-5 transition-all ${className}`}
+      className={`product-card group flex flex-col h-full bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden p-4 sm:p-5 transition-all ${className}`}
     >
       {/* Top Section: Cover Left + Info Right */}
       <div className="flex items-start gap-3.5 sm:gap-4">
@@ -41,7 +41,7 @@ export function BookCard({ book, className = '', priority = false }: BookCardPro
         <div className="w-24 sm:w-28 shrink-0">
           <Link
             href={`/books/${book.slug}`}
-            className="block aspect-2/3 w-full rounded-lg overflow-hidden bg-[var(--surface-muted)] border border-[var(--border)]/70 p-1.5 relative group-hover:border-[var(--accent)] transition-colors shadow-xs"
+            className="block aspect-2/3 w-full rounded-xl overflow-hidden bg-[var(--surface-muted)] border border-[var(--border)]/70 p-1.5 relative group-hover:border-[var(--accent)] transition-colors shadow-xs"
             tabIndex={-1}
             aria-hidden="true"
           >
@@ -78,7 +78,7 @@ export function BookCard({ book, className = '', priority = false }: BookCardPro
         <div className="flex-1 min-w-0 flex flex-col">
           {/* Header Row: Format Badge Chip + Wishlist Button */}
           <div className="flex items-center justify-between gap-1.5 mb-1.5">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/15 shrink-0">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/15 shrink-0">
               <BookOpen className="w-3 h-3" />
               <span className="truncate max-w-[120px]">{book.format}</span>
             </span>
@@ -149,7 +149,7 @@ export function BookCard({ book, className = '', priority = false }: BookCardPro
           </a>
           <Link
             href={`/books/${book.slug}`}
-            className="touch-target py-2.5 px-4 rounded-lg text-xs font-semibold text-[var(--text)] hover:bg-[var(--surface-muted)] border border-[var(--border)] transition-colors text-center min-h-[44px]"
+            className="touch-target py-2.5 px-4 rounded-xl text-xs font-semibold text-[var(--text)] hover:bg-[var(--surface-muted)] border border-[var(--border)] transition-colors text-center min-h-[44px]"
           >
             Summary
           </Link>

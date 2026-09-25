@@ -23,15 +23,27 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#F4F5F7] flex flex-col md:flex-row text-neutral-900 font-sans antialiased">
+    <div className="min-h-screen bg-slate-100/70 dark:bg-slate-950 flex flex-col md:flex-row text-slate-900 dark:text-slate-100 font-sans antialiased relative overflow-x-hidden">
+      {/* Ambient background with subtle, fixed-position blur spheres */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+        {/* Light blue sphere */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-sky-400/25 dark:bg-sky-500/10 blur-3xl" />
+        {/* Indigo sphere */}
+        <div className="absolute top-1/4 -right-28 w-[32rem] h-[32rem] rounded-full bg-indigo-500/20 dark:bg-indigo-600/15 blur-3xl" />
+        {/* Purple sphere */}
+        <div className="absolute bottom-10 left-1/4 w-[30rem] h-[30rem] rounded-full bg-purple-500/20 dark:bg-purple-600/15 blur-3xl" />
+        {/* Secondary light blue sphere for viewport balance */}
+        <div className="absolute bottom-1/3 -right-20 w-80 h-80 rounded-full bg-blue-400/15 dark:bg-blue-500/10 blur-3xl" />
+      </div>
+
       {/* Mobile Top Navigation & Drawer */}
       <AdminMobileNav />
 
       {/* Desktop Sidebar Navigation */}
-      <aside className="hidden md:flex md:w-64 bg-[#151515] text-white flex-shrink-0 flex-col justify-between border-r border-neutral-800">
+      <aside className="hidden md:flex md:w-64 bg-slate-950/80 dark:bg-slate-950/90 backdrop-blur-2xl text-white flex-shrink-0 flex-col justify-between border-r border-white/10 relative z-10">
         <div>
           {/* Brand Header */}
-          <div className="p-5 border-b border-neutral-800 flex items-center justify-between">
+          <div className="p-5 border-b border-white/10 flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#234F9E]" />
@@ -107,7 +119,7 @@ export default function AdminLayout({
         </div>
 
         {/* Footer actions */}
-        <div className="p-4 border-t border-neutral-800 space-y-2 text-xs">
+        <div className="p-4 border-t border-white/10 space-y-2 text-xs">
           <Link
             href="/"
             target="_blank"
@@ -133,23 +145,23 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Administrative Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Dense Utility Top Bar */}
-        <header className="h-14 bg-white border-b border-neutral-200 px-4 sm:px-6 flex items-center justify-between gap-3 sticky top-0 md:top-0 z-20">
+        <header className="h-14 backdrop-blur-2xl bg-white/80 dark:bg-slate-900/80 border-b border-white/30 dark:border-white/10 px-4 sm:px-6 flex items-center justify-between gap-3 sticky top-0 z-20">
           <div className="flex items-center gap-3 flex-1 max-w-md">
             <div className="relative w-full">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type="search"
                 placeholder="Search catalog..."
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white"
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white text-slate-900 dark:text-white placeholder:text-slate-400 transition-colors"
               />
             </div>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-emerald-800 dark:text-emerald-300 bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/50 px-2 py-1 rounded-lg backdrop-blur-xs">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
               <span>Compliance Guard Active</span>
             </div>
 

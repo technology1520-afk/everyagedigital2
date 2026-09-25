@@ -24,7 +24,7 @@ export function MobileTabBar() {
   return (
     <nav
       aria-label="Mobile Navigation Bar"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--background)]/95 backdrop-blur-md border-t border-[var(--border)] px-2 py-1 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.03)] pb-safe transition-colors duration-150"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-xl bg-slate-950/80 border-t border-white/10 px-2 py-1 flex items-center justify-around shadow-2xl pb-safe transition-all"
     >
       {tabs.map(tab => {
         const isActive =
@@ -37,19 +37,19 @@ export function MobileTabBar() {
             href={tab.href}
             className={`touch-target flex-1 flex flex-col items-center justify-center py-1 transition-colors min-w-[44px] min-h-[44px] rounded-lg ${
               isActive
-                ? 'text-[var(--accent)] font-semibold'
+                ? 'text-blue-400 font-semibold'
                 : tab.highlight
-                ? 'text-[var(--purple)] hover:text-[var(--accent)]'
-                : 'text-[var(--text-secondary)] hover:text-[var(--text)]'
+                ? 'text-purple-400 hover:text-purple-300'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <tab.icon
               className={`w-5 h-5 ${
                 isActive
-                  ? 'text-[var(--accent)]'
+                  ? 'text-blue-400'
                   : tab.highlight
-                  ? 'text-[var(--purple)]'
-                  : 'text-[var(--text-secondary)]'
+                  ? 'text-purple-400'
+                  : 'text-slate-400'
               }`}
             />
             <span className="text-[10px] mt-0.5 tracking-tight">{tab.name}</span>

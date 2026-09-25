@@ -62,36 +62,36 @@ export function SiteFooter() {
   };
 
   return (
-    <footer className="site-footer">
+    <footer className="border-t border-white/10 bg-slate-950/80 backdrop-blur-xl text-slate-400 py-12 px-4 sm:px-6 lg:px-8 mt-16">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
         {/* Top Transparency & Editorial Trust Section */}
-        <div className="p-5 sm:p-6 rounded-2xl border border-neutral-800 bg-neutral-900/70 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-center">
+        <div className="p-5 sm:p-6 rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-center shadow-xl">
           <div>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-[#8FA8D6] font-semibold">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-blue-400 font-semibold">
               Publishing Standards
             </span>
             <h4 className="text-base font-semibold text-white mt-1">
               Curated clearly. Recommended intelligently.
             </h4>
-            <p className="text-xs text-[#B9BFC9] mt-1.5 leading-relaxed">
+            <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
               EveryAge Digital is an independent commerce publication. We research, test, and filter everyday essentials, books, and digital resources. Products are purchased directly on external merchant websites or via authorized digital checkout.
             </p>
           </div>
-          <div className="p-4 rounded-xl border border-neutral-800 bg-black/40 text-xs text-[#B9BFC9] leading-relaxed">
+          <div className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-md text-xs text-slate-300 leading-relaxed">
             <strong className="font-semibold text-white block mb-1">
               Affiliate & Partnership Transparency
             </strong>
             <p className="mb-2 text-white">
               <strong>As an Amazon Associate I earn from qualifying purchases.</strong>
             </p>
-            <p className="text-[11px] text-neutral-400">
+            <p className="text-[11px] text-slate-400">
               We also link to Gumroad, Impact, and direct brands. We never accept payment to inflate editorial rankings, nor do we sort recommendations by commission rates.
             </p>
           </div>
         </div>
 
         {/* Mobile Accordion Navigation (Phones only, md:hidden) */}
-        <div className="md:hidden divide-y divide-neutral-800 border-y border-neutral-800">
+        <div className="md:hidden divide-y divide-white/10 border-y border-white/10">
           {FOOTER_SECTIONS.map(section => {
             const isOpen = Boolean(openSections[section.title]);
             return (
@@ -104,7 +104,7 @@ export function SiteFooter() {
                 >
                   <span>{section.title}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-[#8FA8D6] transition-transform duration-200 ${
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
                       isOpen ? 'rotate-180' : ''
                     }`}
                   />
@@ -115,12 +115,12 @@ export function SiteFooter() {
                       <li key={link.label}>
                         <Link
                           href={link.href}
-                          className="touch-target min-h-[44px] flex items-center text-[#B9BFC9] hover:text-white transition-colors"
+                          className="touch-target min-h-[44px] flex items-center text-slate-400 hover:text-white transition-colors"
                         >
                           {link.label}
                         </Link>
                         {link.note && (
-                          <p className="text-[11px] text-neutral-500 pb-2 leading-relaxed">
+                          <p className="text-[11px] text-slate-500 pb-2 leading-relaxed">
                             {link.note}
                           </p>
                         )}
@@ -137,15 +137,15 @@ export function SiteFooter() {
         <div className="hidden md:grid md:grid-cols-4 gap-8">
           {FOOTER_SECTIONS.map(section => (
             <div key={section.title}>
-              <h5>{section.title}</h5>
+              <h5 className="text-xs uppercase font-mono tracking-wider font-semibold text-white mb-3">{section.title}</h5>
               <ul className="space-y-2 text-xs">
                 {section.links.map(link => (
                   <li key={link.label}>
-                    <Link href={link.href} className="hover:text-white transition-colors">
+                    <Link href={link.href} className="text-slate-400 hover:text-white transition-colors">
                       {link.label}
                     </Link>
                     {link.note && (
-                      <span className="text-[11px] text-neutral-500 block mt-2">
+                      <span className="text-[11px] text-slate-500 block mt-2">
                         {link.note}
                       </span>
                     )}
@@ -157,7 +157,7 @@ export function SiteFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-neutral-800/80 pt-6 text-center text-xs text-neutral-400">
+        <div className="border-t border-white/10 pt-6 text-center text-xs text-slate-500">
           <p>© {new Date().getFullYear()} EveryAge Digital. All rights reserved. Made for thoughtful, distraction-free discovery.</p>
         </div>
       </div>

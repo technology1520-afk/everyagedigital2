@@ -48,22 +48,22 @@ export default async function BooksPage() {
       <AffiliateDisclosure variant="banner" isAmazon />
 
       {/* 1. Our Direct Publisher Guides */}
-      <section className="bg-[var(--surface-muted)]/70 border border-[var(--border)] rounded-3xl p-6 sm:p-8 space-y-6">
+      <section className="bg-indigo-950/30 border border-indigo-500/20 backdrop-blur-xl rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] font-semibold">
+            <span className="text-xs font-mono uppercase tracking-wider text-indigo-400 font-semibold">
               In-House Publications
             </span>
-            <h2 className="font-serif text-2xl font-bold text-[var(--text)] mt-0.5">
+            <h2 className="font-serif text-2xl font-bold text-white mt-0.5">
               EveryAge Digital Field Guides & Notion Systems
             </h2>
-            <p className="text-xs text-[var(--text-secondary)] mt-1">
+            <p className="text-xs text-slate-300 mt-1">
               Authored directly by our editorial staff. Delivered immediately in PDF & Notion formats.
             </p>
           </div>
           <Link
             href="/shop/own-products"
-            className="text-xs font-semibold text-[var(--accent)] hover:underline flex items-center gap-1 shrink-0"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 shrink-0"
           >
             <span>All In-House Guides</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -74,27 +74,27 @@ export default async function BooksPage() {
           {owned.map(item => (
             <div
               key={item.id}
-              className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 flex flex-col justify-between shadow-xs transition-colors"
+              className="rounded-2xl bg-white/[0.04] backdrop-blur-lg border border-white/10 hover:border-blue-400/40 hover:bg-white/[0.07] hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-black/20 p-5 flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between text-xs text-[var(--text-secondary)] mb-1">
-                  <span className="font-semibold text-[var(--success)] bg-[var(--success-soft)] px-2 py-0.5 rounded border border-[var(--success)]/20">
+                <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+                  <span className="font-semibold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
                     Direct Download
                   </span>
-                  <span className="font-mono text-[var(--text-secondary)]">{item.fileFormat}</span>
+                  <span className="font-mono text-slate-400">{item.fileFormat}</span>
                 </div>
-                <h3 className="text-base font-bold text-[var(--text)] mt-2">
-                  <Link href={`/shop/own-products/${item.slug}`} className="hover:text-[var(--accent)] transition-colors">
+                <h3 className="text-base font-bold text-white mt-2">
+                  <Link href={`/shop/own-products/${item.slug}`} className="hover:text-blue-300 transition-colors">
                     {item.title}
                   </Link>
                 </h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-2 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 line-clamp-2 leading-relaxed">
                   {item.tagline}
                 </p>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-[var(--border)] flex items-center justify-between">
-                <span className="text-base font-bold text-[var(--text)]">
+              <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between">
+                <span className="text-base font-bold text-white">
                   ${item.price.toFixed(2)}
                 </span>
                 <Link

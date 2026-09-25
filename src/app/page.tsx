@@ -143,17 +143,17 @@ export default async function HomePage() {
 
       {/* 2. Popular Categories Bar */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="border-t border-b border-[#E4E7EC] py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="border-t border-b border-white/10 py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {categories.map(cat => (
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
-              className="p-3 bg-white rounded-xl border border-neutral-200/80 hover:border-[#234F9E]/50 transition-colors flex flex-col justify-between group min-h-[64px]"
+              className="p-3.5 bg-white/[0.04] backdrop-blur-md rounded-2xl border border-white/10 hover:border-blue-400/40 hover:bg-white/[0.08] transition-all flex flex-col justify-between group min-h-[64px] shadow-sm shadow-black/20"
             >
-              <span className="text-xs font-bold text-neutral-800 group-hover:text-[#234F9E] transition-colors">
+              <span className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
                 {cat.name}
               </span>
-              <span className="text-[10px] text-neutral-400 mt-2 font-mono">
+              <span className="text-[10px] text-slate-400 mt-2 font-mono">
                 {cat.count} verified pick{cat.count > 1 ? 's' : ''} &rarr;
               </span>
             </Link>
@@ -165,19 +165,19 @@ export default async function HomePage() {
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-[#234F9E] font-semibold">
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
               Vetted & Tested
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-neutral-900 mt-1">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-1">
               Editorial Choices
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-500 mt-1">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">
               Selected for durability, space economy, and verified practical utility.
             </p>
           </div>
           <Link
             href="/shop?sort=editorial_picks"
-            className="text-xs font-semibold text-[#234F9E] hover:underline flex items-center gap-1 touch-target"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 touch-target"
           >
             <span>View All ({featuredSearch.total})</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -195,19 +195,19 @@ export default async function HomePage() {
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-[#234F9E] font-semibold">
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
               Thematic Setups
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-neutral-900 mt-1">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-1">
               Curated Collections
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-500 mt-1">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">
               Cohesive kits with clear selection criteria—no bloated recommendations.
             </p>
           </div>
           <Link
             href="/collection/home-office-starter-kit"
-            className="text-xs font-semibold text-[#234F9E] hover:underline flex items-center gap-1"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1"
           >
             <span>Explore Collections</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -223,22 +223,22 @@ export default async function HomePage() {
 
       {/* 5. AI Shopping Receptionist Callout Banner */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-[#151515] text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="bg-slate-900/40 backdrop-blur-xl border border-white/10 text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
           <div className="max-w-xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
               <span>Grounded Shopping Concierge</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-white leading-snug">
               Need a tailored recommendation? Ask our digital receptionist.
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               Describe your desk space, budget, preferred merchant, or format. Our receptionist runs deterministic searches over our vetted database and explains exactly why an item fits or where it falls short.
             </p>
             <div className="pt-2">
               <Link
                 href="/assistant"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#234F9E] text-white text-xs sm:text-sm font-semibold rounded-xl hover:bg-[#193B7A] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all"
               >
                 <span>Launch Shopping Assistant</span>
                 <ArrowRight className="w-4 h-4" />
@@ -246,20 +246,20 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-5 w-full md:w-80 text-xs space-y-3">
-            <div className="flex items-center gap-2 text-neutral-200">
+          <div className="bg-white/[0.04] backdrop-blur-md border border-white/10 rounded-2xl p-5 w-full md:w-80 text-xs space-y-3 shadow-lg">
+            <div className="flex items-center gap-2 text-slate-200">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Retrieval-grounded catalog search</span>
             </div>
-            <div className="flex items-center gap-2 text-neutral-200">
+            <div className="flex items-center gap-2 text-slate-200">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Transparent limitation notices</span>
             </div>
-            <div className="flex items-center gap-2 text-neutral-200">
+            <div className="flex items-center gap-2 text-slate-200">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Never invents prices or false availability</span>
             </div>
-            <div className="flex items-center gap-2 text-neutral-200">
+            <div className="flex items-center gap-2 text-slate-200">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Zero sponsored bias in ranking</span>
             </div>
@@ -271,19 +271,19 @@ export default async function HomePage() {
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-[#234F9E] font-semibold">
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
               Essential Reading
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-neutral-900 mt-1">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-1">
               Books, Guides & Knowledge
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-500 mt-1">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">
               Foundational ideas on deep work, commercial economics, and habit mastery.
             </p>
           </div>
           <Link
             href="/books"
-            className="text-xs font-semibold text-[#234F9E] hover:underline flex items-center gap-1"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1"
           >
             <span>View All Books</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -299,22 +299,22 @@ export default async function HomePage() {
 
       {/* 7. Our Own Digital Products */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-[#EFEDFB]/40 border border-[#D9D2F5] rounded-3xl p-8 sm:p-10">
+        <div className="bg-indigo-950/30 border border-indigo-500/20 backdrop-blur-xl rounded-3xl p-8 sm:p-10 shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-[#6D5BD0] font-semibold">
+              <span className="text-xs font-mono uppercase tracking-widest text-indigo-400 font-semibold">
                 Direct Publisher Products
               </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-neutral-900 mt-1">
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-1">
                 Published by EveryAge Digital
               </h2>
-              <p className="text-xs sm:text-sm text-neutral-600 mt-1">
+              <p className="text-xs sm:text-sm text-slate-300 mt-1">
                 Field-tested guides, legal templates, and Notion workspaces created in-house. Instant digital delivery with 30-day money-back guarantee.
               </p>
             </div>
             <Link
               href="/shop/own-products"
-              className="text-xs font-semibold text-[#234F9E] hover:underline flex items-center gap-1 shrink-0"
+              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 shrink-0"
             >
               <span>Explore Direct Products</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -325,32 +325,32 @@ export default async function HomePage() {
             {ownedProducts.map(prod => (
               <div
                 key={prod.id}
-                className="product-card bg-white p-6 flex flex-col justify-between"
+                className="product-card rounded-2xl bg-white/[0.04] backdrop-blur-lg border border-white/10 hover:border-blue-400/40 hover:bg-white/[0.07] hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-black/20 p-6 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between text-xs text-neutral-500 mb-2">
-                    <span className="badge-digital font-semibold px-2 py-0.5 rounded text-xs">
+                  <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+                    <span className="badge-digital font-semibold px-2.5 py-0.5 rounded-full text-xs">
                       Direct Digital Download
                     </span>
-                    <span className="font-mono text-neutral-400">{prod.fileFormat}</span>
+                    <span className="font-mono text-slate-400">{prod.fileFormat}</span>
                   </div>
-                  <h3 className="text-lg font-bold text-neutral-900">
-                    <Link href={`/shop/own-products/${prod.slug}`} className="product-title transition-colors">
+                  <h3 className="text-lg font-bold text-white">
+                    <Link href={`/shop/own-products/${prod.slug}`} className="hover:text-blue-300 transition-colors">
                       {prod.title}
                     </Link>
                   </h3>
-                  <p className="text-xs text-neutral-600 mt-2 leading-relaxed">
+                  <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                     {prod.tagline}
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-neutral-100 space-y-1.5">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+                  <div className="mt-4 pt-3 border-t border-white/10 space-y-1.5">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                       Included Deliverables:
                     </span>
-                    <ul className="text-xs text-neutral-700 space-y-1">
+                    <ul className="text-xs text-slate-300 space-y-1">
                       {prod.includedItems.slice(0, 2).map((item, i) => (
                         <li key={i} className="flex items-start gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#18794E] shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                           <span className="line-clamp-1">{item}</span>
                         </li>
                       ))}
@@ -358,12 +358,12 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
                   <div>
-                    <span className="text-xl font-bold text-neutral-900 product-price">
+                    <span className="text-xl font-bold text-white product-price">
                       ${prod.price.toFixed(2)}
                     </span>
-                    <span className="text-xs text-neutral-500 ml-1 uppercase">{prod.currency}</span>
+                    <span className="text-xs text-slate-400 ml-1 uppercase">{prod.currency}</span>
                   </div>
 
                   <Link
@@ -381,41 +381,41 @@ export default async function HomePage() {
 
       {/* 8. Methodology & Trust Pillars */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="border border-[#E4E7EC] bg-white rounded-3xl p-8 sm:p-12">
+        <div className="border border-white/10 bg-slate-900/40 backdrop-blur-xl rounded-3xl p-8 sm:p-12 shadow-xl">
           <div className="max-w-2xl">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#234F9E] font-semibold">
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
               Editorial Independence
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-neutral-900 mt-1">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-1">
               How our recommendations work.
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
               We never accept money to inflate product rankings. We maintain direct affiliate partnerships so that when you choose to buy via our links, merchants pay us a small referral fee at zero extra cost to you.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-8 border-t border-neutral-100">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-8 border-t border-white/10">
             <div>
-              <h3 className="font-bold text-sm text-neutral-900 mb-1">
+              <h3 className="font-bold text-sm text-white mb-1">
                 1. Rigorous Selection
               </h3>
-              <p className="text-xs text-neutral-600 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed">
                 Products undergo hands-on testing or deep specification verification against primary manufacturer documents.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-sm text-neutral-900 mb-1">
+              <h3 className="font-bold text-sm text-white mb-1">
                 2. Honest Limitations
               </h3>
-              <p className="text-xs text-neutral-600 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed">
                 Every product page clearly states who the product is NOT suitable for, so you avoid costly purchasing mistakes.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-sm text-neutral-900 mb-1">
+              <h3 className="font-bold text-sm text-white mb-1">
                 3. Price Freshness Checks
               </h3>
-              <p className="text-xs text-neutral-600 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed">
                 Prices and availability fluctuate. When an offer has not been refreshed recently, we prompt you to check the live merchant price.
               </p>
             </div>

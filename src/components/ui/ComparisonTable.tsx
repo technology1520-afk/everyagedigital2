@@ -20,14 +20,14 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
 
   if (items.length === 0) {
     return (
-      <div className="py-20 text-center bg-white border border-neutral-200 rounded-2xl p-8">
-        <h3 className="text-base font-semibold text-neutral-900">No products in comparison</h3>
-        <p className="text-xs text-neutral-500 mt-2 max-w-sm mx-auto">
+      <div className="py-20 text-center rounded-3xl bg-white/[0.02] backdrop-blur-xl border border-dashed border-white/10 p-8 sm:p-12 space-y-4">
+        <h3 className="text-base font-semibold text-white">No products in comparison</h3>
+        <p className="text-xs text-slate-400 mt-2 max-w-sm mx-auto">
           Browse the catalog and click the &ldquo;Compare&rdquo; scale button on up to 4 products to compare specs, merchants, and trade-offs side by side.
         </p>
         <Link
           href="/shop"
-          className="mt-5 inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 bg-[#1D438A] text-white text-xs font-semibold rounded-xl hover:bg-[#153266] transition-colors"
+          className="mt-5 inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all"
         >
           Explore Products
         </Link>
@@ -38,18 +38,18 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
   return (
     <div className="space-y-3">
       {items.length > 3 && (
-        <div className="md:hidden flex items-center gap-2 p-3 bg-[#F2EBDD]/60 border border-[#E0D3BC] rounded-xl text-xs text-[#4A3B22]">
-          <Info className="w-4 h-4 text-[#A15C00] shrink-0" />
+        <div className="md:hidden flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-xs text-amber-200 backdrop-blur-md">
+          <Info className="w-4 h-4 text-amber-400 shrink-0" />
           <span>Showing 3 of {items.length} products on phone. Remove one to add another, or view on tablet/desktop.</span>
         </div>
       )}
 
-      <div className={`overflow-x-auto bg-white border border-[#E2E5EB] rounded-2xl shadow-xs scrollbar-thin ${className}`}>
+      <div className={`overflow-x-auto rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-xl scrollbar-thin ${className}`}>
         <table className="w-full text-left border-collapse min-w-[580px] sm:min-w-[700px]">
           <thead>
-            <tr className="border-b border-neutral-200 bg-[#F7F7F4]">
+            <tr className="border-b border-white/10 bg-slate-950/60">
               {/* Sticky Attribute Column Header */}
-              <th className="sticky left-0 bg-[#F7F7F4] z-20 p-3 sm:p-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider w-32 sm:w-44 shadow-[2px_0_5px_rgba(0,0,0,0.04)]">
+              <th className="sticky left-0 bg-slate-950/80 backdrop-blur-md z-20 p-3 sm:p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider w-32 sm:w-44 border-r border-white/10 shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
                 Attribute
               </th>
               {items.map(({ product }, idx) => (
@@ -61,14 +61,14 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
                     <button
                       type="button"
                       onClick={() => toggleCompareProduct(product.id)}
-                      className="touch-target absolute -top-1 -right-1 w-11 h-11 flex items-center justify-center text-neutral-400 hover:text-neutral-700 rounded-full hover:bg-neutral-200 cursor-pointer"
+                      className="touch-target absolute -top-1 -right-1 w-11 h-11 flex items-center justify-center text-slate-400 hover:text-white rounded-full hover:bg-white/10 cursor-pointer transition-colors"
                       title="Remove from comparison"
                       aria-label={`Remove ${product.name} from comparison`}
                     >
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="aspect-4/3 w-full bg-neutral-100 rounded-lg overflow-hidden mb-3 relative">
+                    <div className="aspect-4/3 w-full bg-slate-950/40 rounded-xl overflow-hidden mb-3 relative border border-white/10">
                       <Image
                         src={product.imageUrl}
                         alt={product.altText}
@@ -78,11 +78,11 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
                       />
                     </div>
 
-                    <span className="text-[10px] font-mono uppercase text-neutral-400 font-semibold">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 font-semibold">
                       {product.brand}
                     </span>
-                    <h4 className="text-xs font-bold text-neutral-900 line-clamp-2 mt-0.5">
-                      <Link href={`/product/${product.slug}`} className="hover:underline">
+                    <h4 className="text-xs font-bold text-white line-clamp-2 mt-0.5">
+                      <Link href={`/product/${product.slug}`} className="hover:text-blue-300 transition-colors">
                         {product.name}
                       </Link>
                     </h4>
@@ -91,10 +91,10 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100 text-xs">
+          <tbody className="divide-y divide-white/10 text-xs">
             {/* Price & Merchant */}
             <tr>
-              <td className="sticky left-0 bg-white z-20 p-3 sm:p-4 font-semibold text-neutral-700 shadow-[2px_0_5px_rgba(0,0,0,0.04)]">
+              <td className="sticky left-0 bg-slate-950/80 backdrop-blur-md z-20 p-3 sm:p-4 font-semibold text-slate-200 border-r border-white/10 shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
                 Merchant & Price
               </td>
               {items.map(({ product, offer, freshness }, idx) => (
@@ -110,11 +110,11 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
 
             {/* Best For */}
             <tr>
-              <td className="sticky left-0 bg-white z-20 p-3 sm:p-4 font-semibold text-neutral-700 shadow-[2px_0_5px_rgba(0,0,0,0.04)]">
+              <td className="sticky left-0 bg-slate-950/80 backdrop-blur-md z-20 p-3 sm:p-4 font-semibold text-slate-200 border-r border-white/10 shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
                 Best Suited For
               </td>
               {items.map(({ product }, idx) => (
-                <td key={product.id} className={`p-3 sm:p-4 text-neutral-700 leading-relaxed ${idx >= 3 ? 'hidden md:table-cell' : ''}`}>
+                <td key={product.id} className={`p-3 sm:p-4 text-slate-200 leading-relaxed ${idx >= 3 ? 'hidden md:table-cell' : ''}`}>
                   {product.bestFor}
                 </td>
               ))}
@@ -122,13 +122,13 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
 
             {/* Trade-offs & Limitations */}
             <tr>
-              <td className="sticky left-0 bg-white z-20 p-3 sm:p-4 font-semibold text-neutral-700 shadow-[2px_0_5px_rgba(0,0,0,0.04)]">
+              <td className="sticky left-0 bg-slate-950/80 backdrop-blur-md z-20 p-3 sm:p-4 font-semibold text-slate-200 border-r border-white/10 shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
                 Key Trade-offs
               </td>
               {items.map(({ product }, idx) => (
-                <td key={product.id} className={`p-3 sm:p-4 text-neutral-600 leading-relaxed bg-amber-50/30 ${idx >= 3 ? 'hidden md:table-cell' : ''}`}>
+                <td key={product.id} className={`p-3 sm:p-4 text-slate-300 leading-relaxed bg-amber-500/5 ${idx >= 3 ? 'hidden md:table-cell' : ''}`}>
                   <div className="flex items-start gap-1.5">
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                     <span>
                       {product.limitations.length > 0 ? product.limitations[0] : product.notFor}
                     </span>
@@ -139,15 +139,15 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
 
             {/* Key Features */}
             <tr>
-              <td className="sticky left-0 bg-white z-20 p-3 sm:p-4 font-semibold text-neutral-700 shadow-[2px_0_5px_rgba(0,0,0,0.04)]">
+              <td className="sticky left-0 bg-slate-950/80 backdrop-blur-md z-20 p-3 sm:p-4 font-semibold text-slate-200 border-r border-white/10 shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
                 Top Features
               </td>
               {items.map(({ product }, idx) => (
                 <td key={product.id} className={`p-3 sm:p-4 ${idx >= 3 ? 'hidden md:table-cell' : ''}`}>
-                  <ul className="space-y-1 text-[11px] text-neutral-600">
+                  <ul className="space-y-1 text-[11px] text-slate-300">
                     {product.features.slice(0, 3).map((f, i) => (
                       <li key={i} className="flex items-start gap-1">
-                        <Check className="w-3 h-3 text-emerald-600 shrink-0 mt-0.5" />
+                        <Check className="w-3 h-3 text-emerald-400 shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -157,8 +157,8 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
             </tr>
 
             {/* Outbound CTA */}
-            <tr className="bg-neutral-50/50">
-              <td className="sticky left-0 bg-neutral-50 z-20 p-3 sm:p-4 font-semibold text-neutral-700 shadow-[2px_0_5px_rgba(0,0,0,0.04)]">
+            <tr className="bg-white/[0.02]">
+              <td className="sticky left-0 bg-slate-950/80 backdrop-blur-md z-20 p-3 sm:p-4 font-semibold text-slate-200 border-r border-white/10 shadow-[2px_0_5px_rgba(0,0,0,0.2)]">
                 Direct Link
               </td>
               {items.map(({ product, offer }, idx) => (
@@ -168,13 +168,13 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
                       href={offer.affiliateUrl}
                       target="_blank"
                       rel="sponsored nofollow noopener"
-                      className="touch-target inline-flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors min-h-[44px]"
+                      className="touch-target inline-flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25 transition-all min-h-[44px]"
                     >
                       <span>View at {offer.merchantName}</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
                   ) : (
-                    <span className="text-neutral-400 italic">No active offer</span>
+                    <span className="text-slate-400 italic">No active offer</span>
                   )}
                 </td>
               ))}

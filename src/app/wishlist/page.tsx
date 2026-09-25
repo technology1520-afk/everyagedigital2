@@ -28,16 +28,16 @@ export default function WishlistPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       <Breadcrumbs items={[{ label: 'Saved Wishlist' }]} />
 
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-[#E2E5EB]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-white/10">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-[#1D438A] font-semibold">
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
             <Bookmark className="w-3.5 h-3.5" />
             <span>Private Local Storage</span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-neutral-900 mt-1">
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white mt-1">
             Your Saved Wishlist ({totalSaved})
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
             Saved on your device. No registration or account tracking required.
           </p>
         </div>
@@ -46,7 +46,7 @@ export default function WishlistPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/compare"
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#1D438A] text-white rounded-lg text-xs font-semibold hover:bg-[#153266] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-blue-500/25 transition-all"
             >
               <Scale className="w-3.5 h-3.5" />
               <span>Compare Products</span>
@@ -54,7 +54,7 @@ export default function WishlistPage() {
             <button
               type="button"
               onClick={clearSaved}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-[#E2E5EB] text-neutral-600 rounded-lg text-xs font-medium hover:bg-neutral-50 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/15 border border-white/15 text-slate-200 rounded-xl text-xs font-medium transition-all cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear List</span>
@@ -66,17 +66,17 @@ export default function WishlistPage() {
       <AffiliateDisclosure variant="banner" isAmazon />
 
       {totalSaved === 0 ? (
-        <div className="py-20 text-center bg-white border border-[#E2E5EB] rounded-2xl p-8 space-y-4">
-          <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+        <div className="py-20 text-center rounded-3xl bg-white/[0.02] backdrop-blur-xl border border-dashed border-white/10 p-8 sm:p-12 space-y-4">
+          <div className="w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mx-auto shadow-md">
             <Bookmark className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-bold text-neutral-900">Your saved list is empty</h3>
-          <p className="text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed">
+          <h3 className="text-base font-bold text-white">Your saved list is empty</h3>
+          <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
             Click the bookmark icon on any product or book card while browsing to save it to this private list for later review.
           </p>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#1D438A] text-white text-xs font-semibold rounded-lg hover:bg-[#153266] transition-colors"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all"
           >
             <span>Browse Products</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -87,7 +87,7 @@ export default function WishlistPage() {
           {/* Saved Products */}
           {savedProducts.length > 0 && (
             <section className="space-y-4">
-              <h2 className="font-serif text-xl font-bold text-neutral-900">
+              <h2 className="font-serif text-xl font-bold text-white">
                 Saved Hardware & Essentials ({savedProducts.length})
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -101,7 +101,7 @@ export default function WishlistPage() {
           {/* Saved Books */}
           {savedBooks.length > 0 && (
             <section className="space-y-4">
-              <h2 className="font-serif text-xl font-bold text-neutral-900">
+              <h2 className="font-serif text-xl font-bold text-white">
                 Saved Books & Reading ({savedBooks.length})
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

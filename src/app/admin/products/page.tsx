@@ -39,17 +39,17 @@ export default async function AdminProductsPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             Curated Products Inventory
           </h1>
-          <p className="text-xs text-neutral-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Manage tested hardware, software tools, and compliant affiliate offers.
           </p>
         </div>
 
         <Link
           href="/admin/products/new"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] transition-colors shadow-xs"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 dark:bg-blue-500 text-white text-xs font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-sm"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add New Product</span>
@@ -57,20 +57,20 @@ export default async function AdminProductsPage({
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white p-4 rounded-xl border border-neutral-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="rounded-2xl bg-white/65 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg shadow-black/5 p-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
           {/* Status Filter */}
-          <div className="flex items-center gap-1.5 text-xs text-neutral-600">
-            <span className="font-semibold text-neutral-800">Status:</span>
-            <div className="flex items-center bg-[#F7F7F4] border border-neutral-200 rounded-lg p-0.5 text-xs">
+          <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
+            <span className="font-semibold text-slate-900 dark:text-white">Status:</span>
+            <div className="flex items-center bg-slate-200/40 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 rounded-xl p-0.5 text-xs backdrop-blur-md">
               {['all', 'active', 'draft', 'paused', 'archived'].map(st => (
                 <Link
                   key={st}
                   href={`/admin/products?status=${st}&category=${categoryFilter}&merchant=${merchantFilter}`}
-                  className={`px-2.5 py-1 rounded capitalize font-medium transition-colors ${
+                  className={`px-2.5 py-1 rounded-lg capitalize font-medium transition-colors ${
                     statusFilter === st
-                      ? 'bg-white text-neutral-900 shadow-2xs font-semibold'
-                      : 'text-neutral-600 hover:text-neutral-900'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   {st}
@@ -80,15 +80,15 @@ export default async function AdminProductsPage({
           </div>
 
           {/* Category Filter */}
-          <div className="flex items-center gap-1.5 text-xs text-neutral-600">
-            <span className="font-semibold text-neutral-800">Category:</span>
-            <div className="flex items-center bg-[#F7F7F4] border border-neutral-200 rounded-lg p-0.5 text-xs overflow-x-auto">
+          <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
+            <span className="font-semibold text-slate-900 dark:text-white">Category:</span>
+            <div className="flex items-center bg-slate-200/40 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 rounded-xl p-0.5 text-xs backdrop-blur-md overflow-x-auto">
               <Link
                 href={`/admin/products?status=${statusFilter}&category=all&merchant=${merchantFilter}`}
-                className={`px-2.5 py-1 rounded capitalize font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-lg capitalize font-medium transition-colors ${
                   categoryFilter === 'all'
-                    ? 'bg-white text-neutral-900 shadow-2xs font-semibold'
-                    : 'text-neutral-600 hover:text-neutral-900'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 All
@@ -97,10 +97,10 @@ export default async function AdminProductsPage({
                 <Link
                   key={c.id}
                   href={`/admin/products?status=${statusFilter}&category=${encodeURIComponent(c.name)}&merchant=${merchantFilter}`}
-                  className={`px-2.5 py-1 rounded font-medium transition-colors truncate max-w-[140px] ${
+                  className={`px-2.5 py-1 rounded-lg font-medium transition-colors truncate max-w-[140px] ${
                     categoryFilter.toLowerCase() === c.name.toLowerCase()
-                      ? 'bg-white text-neutral-900 shadow-2xs font-semibold'
-                      : 'text-neutral-600 hover:text-neutral-900'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   {c.name}
@@ -113,13 +113,13 @@ export default async function AdminProductsPage({
         {/* Stale Price Filter Toggle */}
         <Link
           href={`/admin/products?status=${statusFilter}&category=${categoryFilter}&stale=${staleOnly ? 'false' : 'true'}`}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border backdrop-blur-md transition-colors ${
             staleOnly
-              ? 'bg-amber-100 text-amber-900 border-amber-300 font-semibold'
-              : 'bg-[#F7F7F4] text-neutral-700 border-neutral-200 hover:bg-neutral-100'
+              ? 'bg-amber-500/20 text-amber-900 dark:text-amber-200 border-amber-500/30 font-semibold'
+              : 'bg-slate-200/40 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 border-white/40 dark:border-white/10 hover:bg-slate-200/60 dark:hover:bg-slate-800/60'
           }`}
         >
-          <Clock className="w-3.5 h-3.5 text-amber-700" />
+          <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
           <span>Stale Prices Only</span>
         </Link>
       </div>
@@ -127,7 +127,7 @@ export default async function AdminProductsPage({
       {/* Mobile Stacked Cards (Phone) */}
       <div className="md:hidden space-y-3">
         {products.length === 0 ? (
-          <div className="p-8 text-center bg-white rounded-xl border border-neutral-200 text-xs text-neutral-500">
+          <div className="rounded-2xl bg-white/65 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg shadow-black/5 p-8 text-center text-xs text-slate-500 dark:text-slate-400">
             No products found matching the current filters.
           </div>
         ) : (
@@ -139,72 +139,72 @@ export default async function AdminProductsPage({
             return (
               <div
                 key={p.id}
-                className="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-xs space-y-3"
+                className="rounded-2xl bg-white/65 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg shadow-black/5 p-4 space-y-3"
               >
                 {/* Header: Thumbnail, Title, Status */}
                 <div className="flex items-start gap-3">
                   <img
                     src={p.imageUrl}
                     alt={p.name}
-                    className="w-14 h-14 rounded-lg object-cover bg-neutral-100 border border-neutral-200 shrink-0"
+                    className="w-14 h-14 rounded-xl object-cover bg-slate-100 dark:bg-slate-800 border border-white/40 dark:border-white/10 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] font-mono uppercase text-neutral-400 font-semibold">
+                      <span className="text-[10px] font-mono uppercase text-slate-400 dark:text-slate-500 font-semibold">
                         {p.category}
                       </span>
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                           p.status === 'active'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30'
                             : p.status === 'draft'
-                            ? 'bg-amber-100 text-amber-800'
+                            ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30'
                             : p.status === 'paused'
-                            ? 'bg-neutral-100 text-neutral-700'
-                            : 'bg-rose-100 text-rose-800'
+                            ? 'bg-slate-500/20 text-slate-700 dark:text-slate-300 border border-slate-500/30'
+                            : 'bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-500/30'
                         }`}
                       >
                         {p.status}
                       </span>
                     </div>
 
-                    <h3 className="font-semibold text-xs text-neutral-900 line-clamp-2 mt-0.5">
+                    <h3 className="font-semibold text-xs text-slate-900 dark:text-white line-clamp-2 mt-0.5">
                       {p.name}
                     </h3>
-                    <div className="text-[11px] font-mono text-neutral-400 truncate mt-0.5">
+                    <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate mt-0.5">
                       /{p.slug}
                     </div>
                   </div>
                 </div>
 
                 {/* Details row: Merchant, Price, Clicks */}
-                <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-[#F7F7F4] rounded-lg text-xs">
+                <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-white/40 dark:bg-slate-800/40 border border-white/30 dark:border-white/5 rounded-xl backdrop-blur-sm text-xs">
                   <div>
-                    <span className="text-[10px] text-neutral-500 block">Merchant</span>
-                    <span className="font-semibold text-neutral-800 truncate block">
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Merchant</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">
                       {offer ? offer.merchantName : 'Direct'}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-neutral-500 block">Price</span>
-                    <span className="font-mono font-bold text-neutral-900 block">
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Price</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white block">
                       ${offer ? offer.price.toFixed(2) : '0.00'}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-neutral-500 block">Clicks</span>
-                    <span className="font-mono font-bold text-[#234F9E] block">
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Clicks</span>
+                    <span className="font-mono font-bold text-blue-600 dark:text-blue-400 block">
                       {clickCount}
                     </span>
                   </div>
                 </div>
 
                 {/* Actions row with touch targets >= 44px */}
-                <div className="flex items-center gap-2 pt-1 border-t border-neutral-100">
+                <div className="flex items-center gap-2 pt-2 border-t border-white/20 dark:border-white/5">
                   <Link
                     href={`/product/${p.slug}`}
                     target="_blank"
-                    className="touch-target flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-700 text-xs font-semibold hover:bg-neutral-50 min-h-[44px]"
+                    className="touch-target flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/40 dark:border-white/10 bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-white/90 dark:hover:bg-slate-800/90 backdrop-blur-sm transition-colors min-h-[44px]"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                     <span>View</span>
@@ -212,7 +212,7 @@ export default async function AdminProductsPage({
 
                   <Link
                     href={`/admin/products/${p.id}/edit`}
-                    className="touch-target flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] min-h-[44px]"
+                    className="touch-target flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-blue-600 dark:bg-blue-500 text-white text-xs font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-sm min-h-[44px]"
                   >
                     <Edit className="w-3.5 h-3.5" />
                     <span>Edit</span>
@@ -231,11 +231,11 @@ export default async function AdminProductsPage({
       </div>
 
       {/* Desktop/Tablet Products Table (hidden on phone, visible md+) */}
-      <div className="hidden md:block bg-white rounded-xl border border-neutral-200/80 shadow-xs overflow-hidden">
+      <div className="hidden md:block rounded-2xl backdrop-blur-md bg-white/40 dark:bg-slate-900/40 border border-white/40 dark:border-white/10 shadow-lg shadow-black/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs min-w-[700px]">
             <thead>
-              <tr className="border-b border-neutral-200 bg-[#F7F7F4] text-neutral-500 font-semibold uppercase tracking-wider text-[10px]">
+              <tr className="border-b border-white/20 dark:border-white/5 bg-white/30 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
                 <th className="py-3 px-4">Item</th>
                 <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Merchant</th>
@@ -246,10 +246,10 @@ export default async function AdminProductsPage({
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-white/20 dark:divide-white/5">
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-neutral-500">
+                  <td colSpan={8} className="py-8 text-center text-slate-500 dark:text-slate-400">
                     No products found matching the current filters.
                   </td>
                 </tr>
@@ -260,20 +260,20 @@ export default async function AdminProductsPage({
                   const clickCount = link ? link.clickCount : 0;
 
                   return (
-                    <tr key={p.id} className="hover:bg-neutral-50/80 transition-colors">
+                    <tr key={p.id} className="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
                       {/* Product details with thumbnail */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
                           <img
                             src={p.imageUrl}
                             alt={p.name}
-                            className="w-10 h-10 rounded-lg object-cover bg-neutral-100 border border-neutral-200 shrink-0"
+                            className="w-10 h-10 rounded-lg object-cover bg-slate-100 dark:bg-slate-800 border border-white/40 dark:border-white/10 shrink-0"
                           />
                           <div className="min-w-0 max-w-xs">
-                            <div className="font-semibold text-neutral-900 truncate">
+                            <div className="font-semibold text-slate-900 dark:text-white truncate">
                               {p.name}
                             </div>
-                            <div className="text-[11px] font-mono text-neutral-400 truncate">
+                            <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate">
                               /{p.slug}
                             </div>
                           </div>
@@ -281,19 +281,19 @@ export default async function AdminProductsPage({
                       </td>
 
                       {/* Category */}
-                      <td className="py-3 px-4 text-neutral-700 whitespace-nowrap">
+                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                         {p.category}
                       </td>
 
                       {/* Merchant */}
-                      <td className="py-3 px-4 text-neutral-700 whitespace-nowrap">
+                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1">
                           <span>{offer ? offer.merchantName : 'Direct'}</span>
                         </span>
                       </td>
 
                       {/* Price */}
-                      <td className="py-3 px-4 font-mono font-semibold text-neutral-900 whitespace-nowrap">
+                      <td className="py-3 px-4 font-mono font-semibold text-slate-900 dark:text-white whitespace-nowrap">
                         ${offer ? offer.price.toFixed(2) : '0.00'}
                       </td>
 
@@ -302,58 +302,58 @@ export default async function AdminProductsPage({
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                             p.status === 'active'
-                              ? 'bg-emerald-100 text-emerald-800'
-                            : p.status === 'draft'
-                            ? 'bg-amber-100 text-amber-800'
-                            : p.status === 'paused'
-                            ? 'bg-neutral-100 text-neutral-700'
-                            : 'bg-rose-100 text-rose-800'
-                        }`}
-                      >
-                        {p.status}
-                      </span>
-                    </td>
-
-                    {/* Clicks */}
-                    <td className="py-3 px-4 font-mono font-bold text-neutral-900 whitespace-nowrap">
-                      {clickCount}
-                    </td>
-
-                    {/* Updated Date */}
-                    <td className="py-3 px-4 text-neutral-400 text-[11px] whitespace-nowrap">
-                      {new Date(p.updatedAt).toLocaleDateString()}
-                    </td>
-
-                    {/* Action buttons */}
-                    <td className="py-3 px-4 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          href={`/product/${p.slug}`}
-                          target="_blank"
-                          title="View on Storefront"
-                          className="touch-target p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                              ? 'bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30'
+                              : p.status === 'draft'
+                              ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30'
+                              : p.status === 'paused'
+                              ? 'bg-slate-500/20 text-slate-700 dark:text-slate-300 border border-slate-500/30'
+                              : 'bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-500/30'
+                          }`}
                         >
-                          <ExternalLink className="w-4 h-4" />
-                        </Link>
+                          {p.status}
+                        </span>
+                      </td>
 
-                        <Link
-                          href={`/admin/products/${p.id}/edit`}
-                          title="Edit Product"
-                          className="touch-target p-2 text-neutral-600 hover:text-[#234F9E] rounded-lg hover:bg-neutral-100 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Link>
+                      {/* Clicks */}
+                      <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                        {clickCount}
+                      </td>
 
-                        {/* Delete with confirmation dialog */}
-                        <DeleteProductButton
-                          productId={p.id}
-                          productName={p.name}
-                          variant="table"
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
+                      {/* Updated Date */}
+                      <td className="py-3 px-4 text-slate-400 dark:text-slate-500 text-[11px] whitespace-nowrap">
+                        {new Date(p.updatedAt).toLocaleDateString()}
+                      </td>
+
+                      {/* Action buttons */}
+                      <td className="py-3 px-4 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Link
+                            href={`/product/${p.slug}`}
+                            target="_blank"
+                            title="View on Storefront"
+                            className="touch-target p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </Link>
+
+                          <Link
+                            href={`/admin/products/${p.id}/edit`}
+                            title="Edit Product"
+                            className="touch-target p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Link>
+
+                          {/* Delete with confirmation dialog */}
+                          <DeleteProductButton
+                            productId={p.id}
+                            productName={p.name}
+                            variant="table"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  );
               })
             )}
           </tbody>

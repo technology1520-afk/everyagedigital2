@@ -50,7 +50,7 @@ export function AdminMobileNav() {
   }, [isOpen]);
 
   return (
-    <div className="md:hidden bg-[#151515] text-white border-b border-neutral-800 sticky top-0 z-30">
+    <div className="md:hidden backdrop-blur-2xl bg-slate-950/90 text-white border-b border-white/10 sticky top-0 z-30">
       {/* Top Header Row */}
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
@@ -74,8 +74,8 @@ export function AdminMobileNav() {
 
       {/* Drawer Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 top-[57px] z-40 bg-black/60 backdrop-blur-xs flex flex-col">
-          <div className="bg-[#181818] border-b border-neutral-800 p-4 space-y-2 max-h-[calc(100vh-60px)] overflow-y-auto">
+        <div className="fixed inset-0 top-[57px] z-40 bg-black/60 backdrop-blur-md flex flex-col">
+          <div className="backdrop-blur-2xl bg-slate-900/90 border-b border-white/20 p-4 space-y-2 max-h-[calc(100vh-60px)] overflow-y-auto">
             <nav className="space-y-1 text-sm font-medium">
               {ADMIN_LINKS.map(item => {
                 const Icon = item.icon;

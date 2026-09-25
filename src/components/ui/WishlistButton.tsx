@@ -35,13 +35,13 @@ export function WishlistButton({
         onClick={handleToggle}
         aria-label={isSaved ? 'Remove from saved list' : 'Save for later'}
         aria-pressed={isSaved}
-        className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium border transition-colors cursor-pointer min-h-[44px] ${
+        className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border backdrop-blur-md transition-all cursor-pointer min-h-[44px] ${
           isSaved
-            ? 'bg-amber-50 text-amber-900 border-amber-300'
-            : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50'
+            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+            : 'bg-white/5 text-slate-200 border-white/10 hover:bg-white/10 hover:text-white'
         } ${className}`}
       >
-        <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-amber-600 text-amber-600' : 'text-neutral-500'}`} />
+        <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`} />
         {isSaved ? 'Saved to List' : 'Save for Later'}
       </button>
     );
@@ -53,13 +53,13 @@ export function WishlistButton({
       onClick={handleToggle}
       aria-label={isSaved ? 'Remove from saved list' : 'Save for later'}
       aria-pressed={isSaved}
-      className={`w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border transition-colors cursor-pointer ${
+      className={`w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-sm ${
         isSaved
-          ? 'bg-amber-50 text-amber-600 border-amber-300'
-          : 'bg-white/90 text-neutral-600 border-neutral-200/80 hover:bg-white hover:text-black'
+          ? 'bg-amber-500/30 text-amber-300 border-amber-500/50'
+          : 'bg-slate-950/60 text-slate-300 border-white/20 hover:bg-slate-900/80 hover:text-white'
       } ${className}`}
     >
-      <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-600 text-amber-600' : 'text-neutral-600'}`} />
+      <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`} />
     </button>
   );
 }

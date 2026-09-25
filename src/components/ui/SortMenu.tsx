@@ -22,18 +22,18 @@ export function SortMenu({ currentSort, onChange, className = '' }: SortMenuProp
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
-      <label htmlFor="sort-select" className="text-xs text-neutral-500 font-medium">
+      <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+      <label htmlFor="sort-select" className="text-xs text-slate-400 font-medium">
         Sort:
       </label>
       <select
         id="sort-select"
         value={currentSort}
         onChange={e => onChange(e.target.value as SortOption)}
-        className="text-xs bg-white border border-[#E2E5EB] rounded-lg px-2.5 py-1.5 text-neutral-800 font-medium focus:outline-hidden focus:border-[#1D438A] cursor-pointer"
+        className="text-xs bg-slate-900/80 border border-white/10 rounded-xl px-2.5 py-1.5 text-slate-200 font-medium focus:outline-hidden focus:border-blue-400 cursor-pointer backdrop-blur-md"
       >
         {options.map(opt => (
-          <option key={opt.value} value={opt.value}>
+          <option key={opt.value} value={opt.value} className="bg-slate-900 text-slate-200">
             {opt.label}
           </option>
         ))}

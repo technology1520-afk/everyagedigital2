@@ -47,7 +47,7 @@ export function ProductGallery({
   return (
     <div className="space-y-3">
       {/* Mobile Swipeable Carousel & Desktop Main View */}
-      <div className="relative w-full rounded-2xl overflow-hidden bg-[#F0F1ED] border border-[#E2E5EB] shadow-xs">
+      <div className="relative w-full rounded-3xl overflow-hidden bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-xl">
         {/* Swipeable Container */}
         <div
           ref={scrollRef}
@@ -58,7 +58,7 @@ export function ProductGallery({
           {galleryImages.map((src, idx) => (
             <div
               key={idx}
-              className="min-w-full snap-center relative aspect-square sm:aspect-4/3 md:aspect-square bg-neutral-100 flex items-center justify-center"
+              className="min-w-full snap-center relative aspect-square sm:aspect-4/3 md:aspect-square bg-slate-950/40 flex items-center justify-center"
             >
               <Image
                 src={src}
@@ -74,8 +74,8 @@ export function ProductGallery({
 
         {/* Editorial Badge */}
         {editorialBadge && (
-          <div className="absolute top-3 left-3 z-10 bg-[#F2EBDD] text-[#4A3B22] border border-[#E0D3BC] px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs">
-            <Award className="w-3.5 h-3.5 text-[#A15C00]" />
+          <div className="absolute top-3 left-3 z-10 bg-amber-500/10 text-amber-200 border border-amber-500/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-lg">
+            <Award className="w-3.5 h-3.5 text-amber-400" />
             <span>{editorialBadge}</span>
           </div>
         )}
@@ -89,7 +89,7 @@ export function ProductGallery({
                 onClick={() => scrollToImage(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
                 className={`h-2 rounded-full transition-all duration-200 ${
-                  activeIndex === idx ? 'w-5 bg-[#234F9E]' : 'w-2 bg-neutral-400/70 hover:bg-neutral-600'
+                  activeIndex === idx ? 'w-5 bg-blue-500 shadow-sm shadow-blue-500/50' : 'w-2 bg-white/20 hover:bg-white/40'
                 }`}
               />
             ))}
@@ -104,8 +104,8 @@ export function ProductGallery({
             <button
               key={idx}
               onClick={() => scrollToImage(idx)}
-              className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
-                activeIndex === idx ? 'border-[#234F9E] ring-2 ring-[#234F9E]/20' : 'border-transparent opacity-70 hover:opacity-100'
+              className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 bg-slate-900/40 backdrop-blur-md ${
+                activeIndex === idx ? 'border-blue-400 ring-2 ring-blue-400/30' : 'border-white/10 opacity-60 hover:opacity-100'
               }`}
             >
               <Image
@@ -122,10 +122,10 @@ export function ProductGallery({
 
       {/* Image Attribution */}
       {(imageSource || imageLicense) && (
-        <div className="flex items-center justify-between text-[11px] text-neutral-500 px-1 pt-1">
+        <div className="flex items-center justify-between text-[11px] text-slate-400 px-1 pt-1">
           {imageSource && <span>Image: {imageSource}</span>}
           {imageLicense && (
-            <span className="font-mono text-[10px] bg-neutral-200/60 px-1.5 py-0.5 rounded">
+            <span className="font-mono text-[10px] bg-white/10 border border-white/10 px-1.5 py-0.5 rounded text-slate-300">
               {imageLicense}
             </span>
           )}

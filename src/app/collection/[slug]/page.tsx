@@ -70,43 +70,43 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       />
 
       {/* Collection Hero */}
-      <div className="bg-white border border-[#E2E5EB] rounded-3xl overflow-hidden shadow-xs">
+      <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-12">
           {/* Text Summary */}
           <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="text-xs font-mono uppercase tracking-widest text-[#1D438A] font-semibold">
+                <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
                   Curated Collection
                 </span>
-                <span className="text-xs text-neutral-400 flex items-center gap-1 font-mono">
+                <span className="text-xs text-slate-400 flex items-center gap-1 font-mono">
                   <Calendar className="w-3.5 h-3.5" />
                   Reviewed {new Date(collection.lastReviewedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </span>
               </div>
 
-              <h1 className="font-serif text-3xl sm:text-5xl font-bold text-neutral-900 leading-tight">
+              <h1 className="font-serif text-3xl sm:text-5xl font-bold text-white leading-tight">
                 {collection.title}
               </h1>
 
-              <p className="text-sm sm:text-base font-medium text-neutral-700 leading-relaxed">
+              <p className="text-sm sm:text-base font-medium text-slate-200 leading-relaxed">
                 {collection.subtitle}
               </p>
 
-              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                 {collection.introduction}
               </p>
             </div>
 
             {/* Selection Criteria Box */}
-            <div className="mt-8 pt-6 border-t border-neutral-100">
-              <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 block mb-2.5">
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <span className="text-xs font-bold uppercase tracking-wider text-white block mb-2.5">
                 Vetting Criteria for This Kit:
               </span>
-              <ul className="space-y-1.5 text-xs text-neutral-700">
+              <ul className="space-y-1.5 text-xs text-slate-300">
                 {collection.selectionCriteria.map((crit, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                    <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                     <span>{crit}</span>
                   </li>
                 ))}
@@ -115,7 +115,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           </div>
 
           {/* Cover Media */}
-          <div className="lg:col-span-5 bg-neutral-100 min-h-[300px] lg:min-h-full">
+          <div className="lg:col-span-5 bg-slate-950/50 min-h-[300px] lg:min-h-full">
             <img
               src={collection.coverImage}
               alt={collection.title}
@@ -129,11 +129,11 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 
       {/* Included Products */}
       <section className="space-y-6">
-        <div className="flex items-baseline justify-between border-b border-neutral-200 pb-3">
-          <h2 className="font-serif text-2xl font-bold text-neutral-900">
+        <div className="flex items-baseline justify-between border-b border-white/10 pb-3">
+          <h2 className="font-serif text-2xl font-bold text-white">
             Selected Products ({products.length})
           </h2>
-          <span className="text-xs text-neutral-500 font-mono">
+          <span className="text-xs text-slate-400 font-mono">
             Direct merchant fulfillment
           </span>
         </div>
@@ -148,11 +148,11 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       {/* Included Books & Knowledge Guides (if any) */}
       {books.length > 0 && (
         <section className="space-y-6 pt-6">
-          <div className="flex items-baseline justify-between border-b border-neutral-200 pb-3">
-            <h2 className="font-serif text-2xl font-bold text-neutral-900">
+          <div className="flex items-baseline justify-between border-b border-white/10 pb-3">
+            <h2 className="font-serif text-2xl font-bold text-white">
               Companion Reading & Guides ({books.length})
             </h2>
-            <span className="text-xs text-neutral-500 font-mono">
+            <span className="text-xs text-slate-400 font-mono">
               Deepen practical mastery
             </span>
           </div>
