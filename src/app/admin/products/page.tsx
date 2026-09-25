@@ -4,11 +4,10 @@ import {
   Plus, 
   ExternalLink, 
   Edit, 
-  Trash2, 
   Clock
 } from 'lucide-react';
 import { catalogRepository } from '../../../lib/db/repository';
-import { deleteProductAction } from '../../actions/admin';
+import { DeleteProductButton } from '../../../components/admin/DeleteProductButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -218,20 +217,11 @@ export default async function AdminProductsPage({
                     <span>Edit</span>
                   </Link>
 
-                  <form
-                    action={async () => {
-                      'use server';
-                      deleteProductAction(p.id);
-                    }}
-                  >
-                    <button
-                      type="submit"
-                      aria-label={`Delete ${p.name}`}
-                      className="touch-target w-11 h-11 flex items-center justify-center rounded-xl border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 min-h-[44px]"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </form>
+                  <DeleteProductButton
+                    productId={p.id}
+                    productName={p.name}
+                    variant="mobile"
+                  />
                 </div>
               </div>
             );
@@ -353,21 +343,12 @@ export default async function AdminProductsPage({
                           <Edit className="w-4 h-4" />
                         </Link>
 
-                        {/* Soft Delete */}
-                        <form
-                          action={async () => {
-                            'use server';
-                            deleteProductAction(p.id);
-                          }}
-                        >
-                          <button
-                            type="submit"
-                            title="Delete Product"
-                            className="touch-target p-2 text-neutral-400 hover:text-rose-600 rounded-lg hover:bg-neutral-100 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </form>
+                        {/* Delete with confirmation dialog */}
+                        <DeleteProductButton
+                          productId={p.id}
+                          productName={p.name}
+                          variant="table"
+                        />
                       </div>
                     </td>
                   </tr>

@@ -132,8 +132,9 @@ export async function deleteProductAction(id: string) {
     revalidatePath('/admin');
     revalidatePath('/admin/products');
     revalidatePath('/shop');
+    return { success: true };
   }
-  return { success };
+  return { success: false, error: 'Product not found or could not be deleted.' };
 }
 
 // 6. Toggle Product Status (Draft/Active/Paused/Archived)
