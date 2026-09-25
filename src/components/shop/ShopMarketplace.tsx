@@ -100,7 +100,7 @@ export function ShopMarketplace({
           <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
             Catalog Marketplace
           </span>
-          <h1 className="font-serif text-2xl sm:text-4xl font-bold text-white mt-1">
+          <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-white mt-1">
             Curated Commerce Storefront
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">

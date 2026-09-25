@@ -23,14 +23,14 @@ export default function OwnProductsPage() {
       />
 
       <div className="max-w-3xl space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1D438A]/10 text-[#1D438A] text-xs font-semibold">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/20 text-xs font-semibold backdrop-blur-md">
           <Sparkles className="w-3.5 h-3.5" />
           <span>EveryAge Digital Original Publications</span>
         </div>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-neutral-900 leading-tight">
+        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
           Field Guides, Notion Systems & Contract Kits
         </h1>
-        <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
           Crafted in-house by our editors and domain specialists. Practical, actionable toolkits with zero ongoing monthly subscription fees.
         </p>
       </div>
@@ -39,44 +39,44 @@ export default function OwnProductsPage() {
         {products.map(prod => (
           <article
             key={prod.id}
-            className="bg-white border border-[#E2E5EB] rounded-3xl overflow-hidden shadow-xs flex flex-col justify-between hover:border-[#1D438A]/40 transition-colors"
+            className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between hover:border-blue-400/40 hover:bg-slate-900/60 transition-all duration-300 group"
           >
-            <div className="relative aspect-16/9 w-full bg-[#F0F1ED] overflow-hidden">
+            <div className="relative aspect-16/9 w-full bg-slate-950/60 overflow-hidden">
               <img
                 src={prod.coverImage}
                 alt={prod.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute top-3 left-3 bg-emerald-800 text-white text-xs font-semibold px-2.5 py-1 rounded-md">
+              <div className="absolute top-3 left-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 backdrop-blur-md text-xs font-semibold px-2.5 py-1 rounded-lg">
                 Direct Download
               </div>
             </div>
 
             <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6">
               <div>
-                <div className="flex items-center justify-between text-xs text-neutral-400 font-mono mb-2">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-mono mb-2">
                   <span>Format: {prod.fileFormat}</span>
                   <span>{prod.pageCountOrModules}</span>
                 </div>
 
-                <h2 className="font-serif text-2xl font-bold text-neutral-900">
-                  <Link href={`/shop/own-products/${prod.slug}`} className="hover:text-[#1D438A] transition-colors">
+                <h2 className="font-serif text-2xl font-bold text-white group-hover:text-blue-300 transition-colors">
+                  <Link href={`/shop/own-products/${prod.slug}`}>
                     {prod.title}
                   </Link>
                 </h2>
 
-                <p className="text-xs text-neutral-600 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   {prod.description}
                 </p>
 
-                <div className="mt-5 pt-4 border-t border-neutral-100">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 block mb-2">
+                <div className="mt-5 pt-4 border-t border-white/10">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
                     Included Items:
                   </span>
-                  <ul className="space-y-1.5 text-xs text-neutral-700">
+                  <ul className="space-y-1.5 text-xs text-slate-300">
                     {prod.includedItems.map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -84,17 +84,17 @@ export default function OwnProductsPage() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-neutral-100 flex items-center justify-between">
+              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
                 <div>
-                  <span className="text-2xl font-bold text-neutral-900">
+                  <span className="text-2xl font-bold text-white">
                     ${prod.price.toFixed(2)}
                   </span>
-                  <span className="text-xs text-neutral-500 uppercase ml-1">{prod.currency}</span>
+                  <span className="text-xs text-slate-400 uppercase ml-1">{prod.currency}</span>
                 </div>
 
                 <Link
                   href={`/shop/own-products/${prod.slug}`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1D438A] text-white rounded-xl text-xs font-semibold hover:bg-[#153266] transition-colors shadow-xs"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-blue-600/25 transition-all"
                 >
                   <span>Product Details</span>
                   <ArrowRight className="w-4 h-4" />

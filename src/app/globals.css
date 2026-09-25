@@ -3,31 +3,31 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* CORE (unchanged) */
-  --background: #F7F7F4;
-  --surface: #FFFFFF;
-  --surface-muted: #F0F1ED;
-  --text: #151515;
-  --text-secondary: #667085;
-  --border: #E4E7EC;
+  /* CORE DARK GLASSMORPHISM TOKENS */
+  --background: #020617;        /* deep cosmic slate-950 */
+  --surface: rgba(15, 23, 42, 0.4);           /* translucent cards */
+  --surface-muted: rgba(30, 41, 59, 0.3);
+  --text: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --border: rgba(255, 255, 255, 0.1);
 
   /* PRIMARY ACCENT — buttons, links, active states */
-  --accent: #234F9E;
-  --accent-hover: #193B7A;
-  --accent-soft: #E8EEF9;
+  --accent: #3B82F6;
+  --accent-hover: #60A5FA;
+  --accent-soft: rgba(59, 130, 246, 0.15);
 
-  /* SEMANTIC ACCENT FAMILIES — each with a job */
-  --coral: #E8604C;        --coral-soft: #FDEDEA;   /* Top Pick badges */
-  --amber: #B7791F;        --amber-soft: #FBF3DF;   /* Best Value, stale prices, featured */
-  --featured: #F2EBDD;
-  --success: #18794E;      --success-soft: #E6F4EC; /* in-stock, positive deltas */
-  --purple: #6D5BD0;       --purple-soft: #EFEDFB;  /* digital products ONLY */
-  --gumroad-pink: #FF90E8;                          /* Gumroad merchant chip */
-  --amazon-navy: #232F3E;  --amazon-orange: #FF9900; /* Amazon merchant chip */
+  /* SEMANTIC ACCENT FAMILIES */
+  --coral: #F08A78;        --coral-soft: rgba(240, 138, 120, 0.15);
+  --amber: #F59E0B;        --amber-soft: rgba(245, 158, 11, 0.12);
+  --featured: rgba(30, 41, 59, 0.4);
+  --success: #10B981;      --success-soft: rgba(16, 185, 129, 0.15);
+  --purple: #A855F7;       --purple-soft: rgba(168, 85, 247, 0.15);
+  --gumroad-pink: #FF90E8;
+  --amazon-navy: #232F3E;  --amazon-orange: #FF9900;
 
-  --soft: #667085;
-  --warning: #A15C00;
-  --danger: #B42318;
+  --soft: #94A3B8;
+  --warning: #F59E0B;
+  --danger: #EF4444;
   --font-serif: "Newsreader", "Georgia", "Cambria", serif;
 }
 
@@ -86,11 +86,8 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(1200px 400px at 80% -50px, rgba(35,79,158,0.06), transparent),
-    radial-gradient(900px 300px at 10% -30px, rgba(183,121,31,0.05), transparent),
-    var(--background);
-  color: var(--text);
+  background-color: #020617;
+  color: #F8FAFC;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -205,8 +202,8 @@ textarea:focus-visible {
 }
 
 .disclosure-banner {
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
   color: #FDE68A;
   backdrop-filter: blur(12px);
   border-radius: 1rem;

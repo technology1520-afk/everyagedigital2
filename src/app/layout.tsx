@@ -45,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark bg-slate-950 text-slate-100`}>
       <body suppressHydrationWarning className="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden flex flex-col antialiased selection:bg-blue-500/30 selection:text-white">
         {/* Persistent ambient blur glow spheres in fixed positions */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
@@ -57,7 +57,7 @@ export default function RootLayout({
           <div className="h-[500px] w-[500px] bg-sky-500/10 blur-[160px] pointer-events-none fixed -bottom-40 left-1/4 z-0 rounded-full" />
         </div>
 
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" enableSystem={false}>
           <div className="relative z-10 flex flex-col min-h-screen">
             {/* Skip to Content for WCAG 2.2 AA Accessibility */}
             <a

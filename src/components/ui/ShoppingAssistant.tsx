@@ -83,21 +83,21 @@ export function ShoppingAssistant() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start max-w-6xl mx-auto">
       {/* Chat Panel: 100% on phone, 60% on tablet/desktop (col-span-7) */}
-      <div className="md:col-span-7 flex flex-col h-[calc(100dvh-13rem)] min-h-[520px] md:h-[750px] bg-white border border-[#E2E5EB] rounded-2xl overflow-hidden shadow-xs">
+      <div className="md:col-span-7 flex flex-col h-[calc(100dvh-13rem)] min-h-[520px] md:h-[750px] bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
         {/* Assistant Header */}
-        <div className="bg-[#F7F7F4] border-b border-[#E2E5EB] p-3 sm:p-4 flex items-center justify-between shrink-0">
+        <div className="bg-slate-950/60 border-b border-white/10 p-3 sm:p-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#1D438A] text-white flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/30 shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <h2 className="text-xs sm:text-sm font-bold text-neutral-900">EveryAge Assistant</h2>
-                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full border border-emerald-200">
+                <h2 className="text-xs sm:text-sm font-bold text-white">EveryAge Assistant</h2>
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/40">
                   Catalog-Grounded
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-neutral-500 line-clamp-1">
+              <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1">
                 Verified items only • Zero sponsored bias
               </p>
             </div>
@@ -108,7 +108,7 @@ export function ShoppingAssistant() {
             <select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
-              className="text-xs bg-white border border-neutral-300 rounded-lg px-2 py-1 text-neutral-700 focus:outline-hidden"
+              className="text-xs bg-slate-900 border border-white/15 rounded-xl px-2.5 py-1.5 text-slate-200 focus:outline-hidden focus:border-blue-500 cursor-pointer"
               aria-label="Filter by category"
             >
               <option value="all">All Categories</option>
@@ -121,7 +121,7 @@ export function ShoppingAssistant() {
             <select
               value={selectedBudget || ''}
               onChange={e => setSelectedBudget(e.target.value ? Number(e.target.value) : undefined)}
-              className="text-xs bg-white border border-neutral-300 rounded-lg px-2 py-1 text-neutral-700 focus:outline-hidden"
+              className="text-xs bg-slate-900 border border-white/15 rounded-xl px-2.5 py-1.5 text-slate-200 focus:outline-hidden focus:border-blue-500 cursor-pointer"
               aria-label="Filter by budget"
             >
               <option value="">Any Budget</option>
@@ -134,7 +134,7 @@ export function ShoppingAssistant() {
         </div>
 
         {/* Message Stream */}
-        <div className="flex-1 p-3 sm:p-5 overflow-y-auto space-y-4 sm:space-y-6 bg-[#FAF9F6]/40">
+        <div className="flex-1 p-3 sm:p-5 overflow-y-auto space-y-4 sm:space-y-6">
           {messages.map(msg => {
             const isAssistant = msg.role === 'assistant';
             return (
@@ -144,7 +144,7 @@ export function ShoppingAssistant() {
               >
                 <div
                   className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold ${
-                    isAssistant ? 'bg-[#1D438A] text-white' : 'bg-neutral-800 text-white'
+                    isAssistant ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'bg-slate-800 text-white border border-white/10'
                   }`}
                 >
                   {isAssistant ? <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
@@ -155,8 +155,8 @@ export function ShoppingAssistant() {
                   <div
                     className={`p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                       isAssistant
-                        ? 'bg-white border border-[#E2E5EB] text-neutral-800 shadow-xs'
-                        : 'bg-[#1D438A] text-white'
+                        ? 'bg-white/[0.05] backdrop-blur-md border border-white/10 text-slate-200 shadow-lg'
+                        : 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
                     }`}
                   >
                     <p>{msg.content}</p>
@@ -169,43 +169,43 @@ export function ShoppingAssistant() {
                         <div
                           key={rec.product.id}
                           onClick={() => setSelectedPreviewId(rec.product.id)}
-                          className={`min-w-[240px] max-w-[260px] sm:min-w-0 sm:max-w-none snap-start bg-white border rounded-xl p-3 shadow-xs flex flex-col justify-between cursor-pointer transition-all duration-150 ${
+                          className={`min-w-[240px] max-w-[260px] sm:min-w-0 sm:max-w-none snap-start bg-slate-900/60 backdrop-blur-md border rounded-2xl p-3.5 shadow-lg flex flex-col justify-between cursor-pointer transition-all duration-150 ${
                             selectedPreviewId === rec.product.id
-                              ? 'border-[#234F9E] ring-2 ring-[#234F9E]/10'
-                              : 'border-neutral-200 hover:border-neutral-300'
+                              ? 'border-blue-500 ring-2 ring-blue-500/20 bg-slate-900/80'
+                              : 'border-white/10 hover:border-white/25 hover:bg-slate-900/75'
                           }`}
                         >
                           <div>
                             <div className="flex items-center justify-between gap-1 mb-1.5">
-                              <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
                                 {rec.product.brand}
                               </span>
                               <MerchantBadge merchant={rec.offer.merchantName} />
                             </div>
 
-                            <h4 className="font-semibold text-xs text-neutral-900 line-clamp-1">
+                            <h4 className="font-semibold text-xs text-white line-clamp-1">
                               {rec.product.name}
                             </h4>
 
                             {/* Fit Reason */}
-                            <div className="mt-1.5 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-100 rounded p-1.5 flex items-start gap-1">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0 mt-0.5" />
+                            <div className="mt-1.5 text-[11px] text-emerald-200 bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-2 flex items-start gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                               <span className="leading-tight line-clamp-2">{rec.fitReason}</span>
                             </div>
 
                             {/* Limitation notice */}
-                            <div className="mt-1.5 text-[10px] text-neutral-600 bg-neutral-50 border border-neutral-200/60 rounded p-1.5 flex items-start gap-1">
-                              <AlertCircle className="w-3 h-3 text-neutral-400 shrink-0 mt-0.5" />
+                            <div className="mt-1.5 text-[10px] text-amber-200 bg-amber-500/10 border border-amber-500/30 rounded-lg p-2 flex items-start gap-1.5">
+                              <AlertCircle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
                               <span className="leading-tight line-clamp-2">
-                                <strong className="text-neutral-700">Trade-off:</strong> {rec.limitations}
+                                <strong className="text-amber-100">Trade-off:</strong> {rec.limitations}
                               </span>
                             </div>
                           </div>
 
                           {/* Price & External Link */}
-                          <div className="mt-2.5 pt-2 border-t border-neutral-100 flex items-center justify-between gap-2">
+                          <div className="mt-2.5 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2">
                             <div>
-                              <span className="text-xs font-bold text-neutral-900">
+                              <span className="text-xs font-bold text-white">
                                 ${rec.offer.price.toFixed(2)}
                               </span>
                             </div>
@@ -217,7 +217,7 @@ export function ShoppingAssistant() {
                                 target="_blank"
                                 rel="sponsored nofollow noopener"
                                 onClick={e => e.stopPropagation()}
-                                className="touch-target inline-flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors min-h-[36px]"
+                                className="touch-target inline-flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors min-h-[36px] shadow-sm"
                               >
                                 <span>Offer</span>
                                 <ExternalLink className="w-3 h-3 opacity-80" />
@@ -237,7 +237,7 @@ export function ShoppingAssistant() {
                           key={prompt}
                           type="button"
                           onClick={() => handleSend(prompt)}
-                          className="touch-target px-3 py-1.5 text-[11px] bg-white border border-neutral-300 rounded-full text-neutral-700 hover:border-[#1D438A] hover:text-[#1D438A] transition-colors cursor-pointer min-h-[36px] flex items-center"
+                          className="touch-target px-3 py-1.5 text-[11px] bg-white/[0.05] hover:bg-white/10 border border-white/15 rounded-full text-slate-300 hover:text-white transition-all cursor-pointer min-h-[36px] flex items-center"
                         >
                           &ldquo;{prompt}&rdquo;
                         </button>
@@ -250,15 +250,15 @@ export function ShoppingAssistant() {
           })}
 
           {isTyping && (
-            <div className="flex items-center gap-2 text-neutral-400 text-xs italic pl-9 sm:pl-11">
-              <Sparkles className="w-3.5 h-3.5 animate-spin text-[#1D438A]" />
+            <div className="flex items-center gap-2 text-slate-400 text-xs italic pl-9 sm:pl-11">
+              <Sparkles className="w-3.5 h-3.5 animate-spin text-blue-400" />
               <span>Scanning verified catalog tools...</span>
             </div>
           )}
         </div>
 
         {/* Input Form - Pinned at bottom with safe-area padding */}
-        <div className="p-3 sm:p-4 border-t border-[#E2E5EB] bg-white pb-safe shrink-0">
+        <div className="p-3 sm:p-4 border-t border-white/10 bg-slate-950/80 backdrop-blur-xl pb-safe shrink-0">
           <form
             onSubmit={e => {
               e.preventDefault();
@@ -271,19 +271,19 @@ export function ShoppingAssistant() {
               value={inputQuery}
               onChange={e => setInputQuery(e.target.value)}
               placeholder="Ask anything: 'Ergonomic mouse under $110'..."
-              className="flex-1 px-3.5 py-2.5 text-xs sm:text-sm bg-[#F7F7F4] border border-[#E2E5EB] rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#1D438A] focus:outline-hidden min-h-[44px]"
+              className="flex-1 px-3.5 py-2.5 text-xs sm:text-sm bg-slate-900 border border-white/15 rounded-xl text-white placeholder:text-slate-500 focus:bg-slate-900/90 focus:border-blue-500 focus:outline-hidden min-h-[44px]"
             />
             <button
               type="submit"
               disabled={!inputQuery.trim() || isTyping}
               aria-label="Send message"
-              className="touch-target w-11 h-11 flex items-center justify-center bg-[#1D438A] text-white rounded-xl hover:bg-[#153266] transition-colors disabled:opacity-40 cursor-pointer shrink-0"
+              className="touch-target w-11 h-11 flex items-center justify-center bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/25 disabled:opacity-40 cursor-pointer shrink-0"
             >
               <Send className="w-4 h-4" />
             </button>
           </form>
 
-          <div className="mt-2 text-[10px] text-neutral-400 text-center flex items-center justify-center gap-2 sm:gap-3">
+          <div className="mt-2 text-[10px] text-slate-400 text-center flex items-center justify-center gap-2 sm:gap-3">
             <span>Catalog-grounded</span>
             <span>•</span>
             <span>Zero sponsored bias</span>
@@ -294,11 +294,11 @@ export function ShoppingAssistant() {
       </div>
 
       {/* Product Preview Panel: Hidden on phone, 40% on Tablet/Desktop (col-span-5) */}
-      <div className="hidden md:flex md:col-span-5 flex-col h-[750px] bg-white border border-[#E2E5EB] rounded-2xl overflow-hidden shadow-xs">
-        <div className="p-4 bg-[#F7F7F4] border-b border-[#E2E5EB] flex items-center justify-between">
+      <div className="hidden md:flex md:col-span-5 flex-col h-[750px] bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="p-4 bg-slate-950/60 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#1D438A]" />
-            <span className="text-xs font-bold uppercase tracking-wider text-neutral-800">
+            <ShieldCheck className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-200">
               Verified Product Preview
             </span>
           </div>
@@ -310,7 +310,7 @@ export function ShoppingAssistant() {
         {previewItem ? (
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
             {/* Product Image */}
-            <div className="relative aspect-4/3 w-full rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200">
+            <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden bg-slate-950/60 border border-white/10">
               <Image
                 src={previewItem.product.imageUrl}
                 alt={previewItem.product.altText}
@@ -319,7 +319,7 @@ export function ShoppingAssistant() {
                 className="object-cover"
               />
               {previewItem.product.editorialBadge && (
-                <span className="absolute top-2.5 left-2.5 bg-[#F2EBDD] text-[#4A3B22] text-[10px] font-semibold px-2.5 py-0.5 rounded-full border border-[#E0D3BC]">
+                <span className="absolute top-2.5 left-2.5 bg-blue-500/20 border border-blue-500/40 text-blue-300 backdrop-blur-md text-[10px] font-semibold px-2.5 py-0.5 rounded-full">
                   {previewItem.product.editorialBadge}
                 </span>
               )}
@@ -327,48 +327,48 @@ export function ShoppingAssistant() {
 
             {/* Brand & Name */}
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-semibold">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
                 {previewItem.product.brand}
               </span>
-              <h3 className="font-serif text-lg font-bold text-neutral-900 mt-0.5">
+              <h3 className="font-serif text-lg font-bold text-white mt-0.5">
                 {previewItem.product.name}
               </h3>
-              <p className="text-xs text-neutral-600 mt-2 leading-relaxed">
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                 {previewItem.product.description}
               </p>
             </div>
 
             {/* Best For vs Not For */}
             <div className="space-y-2 pt-1">
-              <div className="p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl text-xs text-emerald-900">
-                <span className="font-bold block mb-0.5 text-emerald-800">Best Suited For:</span>
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-200">
+                <span className="font-bold block mb-0.5 text-emerald-100">Best Suited For:</span>
                 <p>{previewItem.product.bestFor}</p>
               </div>
 
-              <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-xs text-amber-900">
-                <span className="font-bold block mb-0.5 text-amber-800">Key Trade-off:</span>
+              <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-200">
+                <span className="font-bold block mb-0.5 text-amber-100">Key Trade-off:</span>
                 <p>{previewItem.product.notFor}</p>
               </div>
             </div>
 
             {/* Price & Action */}
-            <div className="p-4 bg-[#F7F7F4] rounded-xl border border-[#E2E5EB] space-y-3">
+            <div className="p-4 bg-white/[0.04] backdrop-blur-md rounded-2xl border border-white/10 space-y-3 shadow-lg">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <span className="text-[10px] text-neutral-500 uppercase tracking-wider font-semibold block">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold block">
                     Verified Merchant Price
                   </span>
                   {previewItem.offer ? (
-                    <span className="text-xl font-bold text-neutral-900">
+                    <span className="text-xl font-bold text-white">
                       ${previewItem.offer.price.toFixed(2)}
                     </span>
                   ) : (
-                    <span className="text-xs text-neutral-400 italic">No price available</span>
+                    <span className="text-xs text-slate-400 italic">No price available</span>
                   )}
                 </div>
                 <Link
                   href={`/product/${previewItem.product.slug}`}
-                  className="text-xs text-[#1D438A] font-semibold hover:underline inline-flex items-center gap-0.5"
+                  className="text-xs text-blue-400 font-semibold hover:text-blue-300 hover:underline inline-flex items-center gap-0.5"
                 >
                   <span>Full Review</span>
                   <ChevronRight className="w-3 h-3" />
@@ -380,7 +380,7 @@ export function ShoppingAssistant() {
                   href={`/api/go/${previewItem.product.id}`}
                   target="_blank"
                   rel="sponsored nofollow noopener"
-                  className="touch-target w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-semibold bg-[#1D438A] text-white hover:bg-[#153266] transition-colors shadow-xs min-h-[44px]"
+                  className="touch-target w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-lg shadow-blue-600/25 min-h-[44px]"
                 >
                   <span>
                     {previewItem.offer.merchantName === 'Amazon'
@@ -393,8 +393,8 @@ export function ShoppingAssistant() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-neutral-400">
-            <Sparkles className="w-8 h-8 mb-2 opacity-50" />
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400">
+            <Sparkles className="w-8 h-8 mb-2 opacity-50 text-blue-400" />
             <p className="text-xs">Ask the assistant a question to preview verified products here.</p>
           </div>
         )}

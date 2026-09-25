@@ -124,17 +124,17 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* The beige disclosure banner moves BELOW the hero and keeps its warm tone */}
-        <div className="disclosure-banner rounded-xl p-4 mt-6 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        {/* Transparency Disclaimer Banner */}
+        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-200 backdrop-blur-md rounded-2xl p-4 mt-6 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg shadow-black/10">
           <div className="flex items-center gap-2.5">
-            <Info className="w-4 h-4 text-[#B7791F] shrink-0" />
+            <Info className="w-4 h-4 text-amber-400 shrink-0" />
             <span>
-              <strong>Editorial Transparency:</strong> As an Amazon Associate I earn from qualifying purchases. We recommend items with zero sponsored bias in ranking.
+              <strong className="text-amber-100 font-semibold">Editorial Transparency:</strong> As an Amazon Associate I earn from qualifying purchases. We recommend items with zero sponsored bias in ranking.
             </span>
           </div>
           <Link
             href="/affiliate-disclosure"
-            className="underline font-medium hover:text-[#151515] shrink-0 text-[11px]"
+            className="underline font-medium text-amber-300 hover:text-white shrink-0 text-[11px]"
           >
             Methodology & Disclosure &rarr;
           </Link>

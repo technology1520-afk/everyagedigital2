@@ -17,7 +17,7 @@ export function AffiliateDisclosure({
     return (
       <aside
         aria-label="Affiliate Disclosure"
-        className={`bg-amber-500/10 border border-amber-500/20 backdrop-blur-md rounded-2xl p-4 text-amber-200/90 text-xs flex items-start gap-3 shadow-lg shadow-black/10 ${className}`}
+        className={`bg-amber-500/10 border border-amber-500/30 backdrop-blur-md rounded-2xl p-4 text-amber-200 text-xs flex items-start gap-3 shadow-lg shadow-black/10 ${className}`}
       >
         <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
         <div className="leading-relaxed">

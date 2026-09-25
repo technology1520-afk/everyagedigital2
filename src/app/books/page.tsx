@@ -34,13 +34,13 @@ export default async function BooksPage() {
 
       {/* Header */}
       <div className="max-w-3xl space-y-3">
-        <span className="text-xs font-mono uppercase tracking-widest text-[var(--accent)] font-semibold">
+        <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
           Curated Reading & Knowledge
         </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--text)] leading-tight">
+        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text)] text-white leading-tight">
           Books, Guides & Practical Wisdom
         </h1>
-        <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
           Skip generic airport bestsellers. We hand-pick books and digital guides that build enduring mental frameworks for deep focus, commercial acumen, and daily creative discipline.
         </p>
       </div>
@@ -111,16 +111,16 @@ export default async function BooksPage() {
 
       {/* 2. Editorial Curated Book Recommendations */}
       <section className="space-y-6">
-        <div className="flex items-baseline justify-between border-b border-[var(--border)] pb-3">
+        <div className="flex items-baseline justify-between border-b border-white/10 pb-3">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-[var(--text)]">
+            <h2 className="font-serif text-2xl font-bold text-[var(--text)] text-white">
               Vetted Books on Focus & Business
             </h2>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5">
               Available in print, Kindle, and audiobook via verified book merchants.
             </p>
           </div>
-          <span className="text-xs text-[var(--text-secondary)] font-mono">
+          <span className="text-xs text-slate-400 font-mono">
             {books.length} Selected Texts
           </span>
         </div>
