@@ -7,7 +7,6 @@ import { ProductGrid } from '../ui/ProductGrid';
 import { FilterPanel } from '../ui/FilterPanel';
 import { FilterBottomSheet } from '../ui/FilterBottomSheet';
 import { SortMenu } from '../ui/SortMenu';
-import { AffiliateDisclosure } from '../ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../ui/Breadcrumbs';
 import { Search, Filter, X, Check } from 'lucide-react';
 
@@ -120,8 +119,6 @@ export function ShopMarketplace({
           />
         </div>
       </div>
-
-      <AffiliateDisclosure variant="banner" isAmazon />
 
       {/* Tablet Horizontal Scrollable Chips Bar (md:flex lg:hidden) */}
       <div className="hidden md:flex lg:hidden flex-col gap-2 pt-1 pb-2 border-b border-white/10">

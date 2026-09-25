@@ -64,32 +64,6 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-white/10 bg-slate-950/80 backdrop-blur-xl text-slate-400 py-12 px-4 sm:px-6 lg:px-8 mt-16">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
-        {/* Top Transparency & Editorial Trust Section */}
-        <div className="p-5 sm:p-6 rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-center shadow-xl">
-          <div>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-blue-400 font-semibold">
-              Publishing Standards
-            </span>
-            <h4 className="text-base font-semibold text-white mt-1">
-              Curated clearly. Recommended intelligently.
-            </h4>
-            <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
-              EveryAge Digital is an independent commerce publication. We research, test, and filter everyday essentials, books, and digital resources. Products are purchased directly on external merchant websites or via authorized digital checkout.
-            </p>
-          </div>
-          <div className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-md text-xs text-slate-300 leading-relaxed">
-            <strong className="font-semibold text-white block mb-1">
-              Affiliate & Partnership Transparency
-            </strong>
-            <p className="mb-2 text-white">
-              <strong>As an Amazon Associate I earn from qualifying purchases.</strong>
-            </p>
-            <p className="text-[11px] text-slate-400">
-              We also link to Gumroad, Impact, and direct brands. We never accept payment to inflate editorial rankings, nor do we sort recommendations by commission rates.
-            </p>
-          </div>
-        </div>
-
         {/* Mobile Accordion Navigation (Phones only, md:hidden) */}
         <div className="md:hidden divide-y divide-white/10 border-y border-white/10">
           {FOOTER_SECTIONS.map(section => {
@@ -159,6 +133,9 @@ export function SiteFooter() {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-6 text-center text-xs text-slate-500">
           <p>© {new Date().getFullYear()} EveryAge Digital. All rights reserved. Made for thoughtful, distraction-free discovery.</p>
+          <p className="text-xs text-slate-500 mt-4 max-w-xl mx-auto text-center leading-relaxed">
+            EveryAge Digital independently curates and reviews products. As an Amazon Associate, we earn from qualifying purchases through merchant links at no additional cost to you.
+          </p>
         </div>
       </div>
     </footer>
