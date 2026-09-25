@@ -253,10 +253,6 @@ export function mapProductInputToSupabaseRow(input: ProductInput, id: string): R
     not_for: input.notFor?.trim() || null,
     features,
     limitations,
-    badges: input.badges || (extra.badges as string[]) || [],
-    editorial_stance: input.editorialStance?.trim() || (extra.editorial_stance as string)?.trim() || null,
-    tested_in_house: input.testedInHouse !== undefined ? Boolean(input.testedInHouse) : (extra.tested_in_house !== undefined ? Boolean(extra.tested_in_house) : false),
-    last_price_checked_at: input.lastPriceCheckedAt || (extra.last_price_checked_at as string) || new Date().toISOString(),
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
@@ -288,20 +284,6 @@ export function mapProductUpdateToSupabaseRow(input: Partial<ProductInput>): Rec
   if (input.notFor !== undefined) row.not_for = input.notFor?.trim() || null;
   if (extra.features !== undefined) row.features = extra.features;
   if (extra.limitations !== undefined) row.limitations = extra.limitations;
-
-  if (input.badges !== undefined || extra.badges !== undefined) {
-    row.badges = input.badges ?? extra.badges;
-  }
-  if (input.editorialStance !== undefined || extra.editorial_stance !== undefined || extra.editorialStance !== undefined) {
-    const stance = input.editorialStance ?? (extra.editorial_stance as string) ?? (extra.editorialStance as string);
-    row.editorial_stance = stance?.trim() || null;
-  }
-  if (input.testedInHouse !== undefined || extra.tested_in_house !== undefined || extra.testedInHouse !== undefined) {
-    row.tested_in_house = Boolean(input.testedInHouse ?? extra.tested_in_house ?? extra.testedInHouse);
-  }
-  if (input.lastPriceCheckedAt !== undefined || extra.last_price_checked_at !== undefined || extra.lastPriceCheckedAt !== undefined) {
-    row.last_price_checked_at = input.lastPriceCheckedAt ?? (extra.last_price_checked_at as string) ?? (extra.lastPriceCheckedAt as string);
-  }
 
   return row;
 }

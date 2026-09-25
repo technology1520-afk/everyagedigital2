@@ -22,7 +22,7 @@ import {
   validateAffiliateUrlForNetwork, 
   MerchantNetwork 
 } from './schema';
-import { isSupabaseConfigured, getSupabaseEnv } from '../supabase/config';
+import { isSupabaseConfigured, isSupabaseAdminConfigured, getSupabaseEnv } from '../supabase/config';
 import { getSupabaseAdminClient } from '../supabase/server';
 import { 
   mapSupabaseRowToProduct, 
@@ -109,16 +109,16 @@ class CatalogRepository {
 
   public getBackendMode(): { mode: 'supabase' | 'in-memory-mock'; details: string } {
     const env = getSupabaseEnv();
-    if (isSupabaseConfigured()) {
+    if (isSupabaseConfigured() || isSupabaseAdminConfigured()) {
       return {
         mode: 'supabase',
         details: `Connected to Supabase at ${env.url}`
       };
     }
-    if (env.hasValidUrl && !env.hasValidAnonKey) {
+    if (env.hasValidUrl && !env.hasValidAnonKey && !env.hasValidServiceKey) {
       return {
         mode: 'in-memory-mock',
-        details: `Supabase URL is present (${env.url}) but anon key is missing or set to placeholder. Operating in fallback in-memory mode.`
+        details: `Supabase URL is present (${env.url}) but keys are missing or set to placeholder. Operating in fallback in-memory mode.`
       };
     }
     return {
@@ -355,6 +355,9 @@ class CatalogRepository {
             else this.products.unshift(p);
           }
           return this.applyProductFilters(mapped, filter);
+        } else if (data && data.length === 0) {
+          // Supabase is configured and currently has 0 products
+          return [];
         }
       } catch (err) {
         console.error('[CatalogRepository] getAllProducts exception:', err);
@@ -523,6 +526,23 @@ class CatalogRepository {
           console.error('[CatalogRepository] Supabase createProduct insert error:', sbError);
           return { success: false, error: sbError.message };
         }
+
+        if (safeAffiliateUrl) {
+          const linkRow = {
+            id: `link-${newId}`,
+            product_id: newId,
+            network,
+            url: safeAffiliateUrl,
+            rel_tag: 'sponsored nofollow noopener',
+            last_checked_at: lastPriceCheckedAt,
+            stale_after: 7,
+            click_count: 0
+          };
+          const { error: linkErr } = await supabase.from('affiliate_links').insert(linkRow);
+          if (linkErr) {
+            console.warn('[CatalogRepository] Supabase affiliate link insert warning:', linkErr.message);
+          }
+        }
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Database insert failed';
         console.error('[CatalogRepository] Supabase createProduct exception:', err);
@@ -646,10 +666,39 @@ class CatalogRepository {
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
+
+        // 1. Cascading delete from referencing tables to prevent foreign key violations
+        try {
+          await supabase.from('clicks').delete().eq('product_id', id);
+        } catch (e) {
+          console.warn('[CatalogRepository] Clicks delete warning:', e);
+        }
+        try {
+          await supabase.from('click_events').delete().eq('product_id', id);
+        } catch {
+          // ignore if table does not exist
+        }
+        try {
+          await supabase.from('affiliate_links').delete().eq('product_id', id);
+        } catch (e) {
+          console.warn('[CatalogRepository] Affiliate links delete warning:', e);
+        }
+
+        // 2. Delete product from products table
         const { error: sbError } = await supabase.from(TABLE_PRODUCTS).delete().eq('id', id);
+
         if (sbError) {
-          console.error('[CatalogRepository] Supabase deleteProduct error:', sbError);
-          return false;
+          console.warn('[CatalogRepository] Hard delete blocked by database constraint, performing soft-delete (archived):', sbError.message);
+          // 3. Fallback: Perform soft-delete (status: "archived") if hard delete was blocked
+          const { error: archiveError } = await supabase
+            .from(TABLE_PRODUCTS)
+            .update({ status: 'archived', updated_at: new Date().toISOString() })
+            .eq('id', id);
+
+          if (archiveError) {
+            console.error('[CatalogRepository] Supabase soft-delete archive error:', archiveError.message);
+            return false;
+          }
         }
       } catch (err) {
         console.error('[CatalogRepository] Supabase deleteProduct exception:', err);
@@ -658,10 +707,14 @@ class CatalogRepository {
     }
 
     const index = this.products.findIndex(p => p.id === id);
-    if (index === -1) return false;
-    this.products.splice(index, 1);
-    this.offers = this.offers.filter(o => o.productId !== id);
-    this.links = this.links.filter(l => l.productId !== id);
+    if (index !== -1) {
+      this.products.splice(index, 1);
+      this.offers = this.offers.filter(o => o.productId !== id);
+      this.links = this.links.filter(l => l.productId !== id);
+    }
+    if (this.getBackendMode().mode === 'in-memory-mock' && index === -1) {
+      return false;
+    }
     return true;
   }
 
@@ -912,6 +965,26 @@ class CatalogRepository {
   }
 
   // --- MCP SPECIFIC REUSABLE REPOSITORY METHODS ---
+  public async getAllProductsForMcp(filter?: { status?: string; category?: string }) {
+    const products = await this.getAllProducts(filter);
+    return products.map(p => {
+      const offer = this.offers.find(o => o.productId === p.id);
+      const link = this.links.find(l => l.productId === p.id);
+      return {
+        id: p.id,
+        slug: p.slug,
+        title: p.name,
+        category: p.category,
+        merchant: offer ? offer.merchantName : 'Direct',
+        price_min: offer ? offer.price : 0,
+        price_max: offer?.originalPrice ?? (offer ? offer.price : 0),
+        currency: offer ? offer.currency : 'USD',
+        status: p.status,
+        clicks: link ? link.clickCount : 0
+      };
+    });
+  }
+
   public getProductsForMcp(filter?: { status?: string; category?: string }) {
     let prods = [...this.products];
     if (filter?.status) {

@@ -75,4 +75,36 @@ describe('Admin Product Delete & Archive Workflow', () => {
     const secondDelete = await catalogRepository.deleteProduct(prodId);
     expect(secondDelete).toBe(false);
   });
+
+  it('successfully deletes products with foreign key relations (clicks & affiliate links)', async () => {
+    const input: ProductInput = {
+      title: 'Product With Clicks Test',
+      slug: 'product-with-clicks-test',
+      description: 'Testing cascading delete when clicks exist',
+      categoryId: 'Desk Setup & Lighting',
+      merchantId: 'Amazon',
+      priceMin: 29.99,
+      currency: 'USD',
+      imageUrl: 'https://example.com/item3.jpg',
+      affiliateUrl: 'https://amazon.com/dp/B000TEST3',
+      status: 'active',
+      isOwned: false
+    };
+
+    const created = await catalogRepository.createProduct(input);
+    expect(created.success).toBe(true);
+    const prodId = created.product!.id;
+
+    // Simulate clicks recorded for this product
+    catalogRepository.recordClick(prodId, 'https://google.com', 'US');
+    catalogRepository.recordClick(prodId, 'Direct', 'CA');
+
+    // Deleting product must succeed and cleanly remove/cascade
+    const deleted = await catalogRepository.deleteProduct(prodId);
+    expect(deleted).toBe(true);
+
+    expect(catalogRepository.getProductByIdSync(prodId)).toBeUndefined();
+    expect(catalogRepository.getOffers().some(o => o.productId === prodId)).toBe(false);
+    expect(catalogRepository.getLinks().some(l => l.productId === prodId)).toBe(false);
+  });
 });

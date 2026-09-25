@@ -39,9 +39,9 @@ export function sanitizeSupabaseKey(rawKey?: string | null): string {
 }
 
 export function getSupabaseEnv() {
-  const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const rawAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const rawServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const rawAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  const rawServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
 
   const url = sanitizeSupabaseUrl(rawUrl);
   const anonKey = sanitizeSupabaseKey(rawAnonKey);
@@ -58,8 +58,8 @@ export function getSupabaseEnv() {
 }
 
 export function isSupabaseConfigured(): boolean {
-  const { hasValidUrl, hasValidAnonKey } = getSupabaseEnv();
-  return hasValidUrl && hasValidAnonKey;
+  const { hasValidUrl, hasValidAnonKey, hasValidServiceKey } = getSupabaseEnv();
+  return hasValidUrl && (hasValidAnonKey || hasValidServiceKey);
 }
 
 export function isSupabaseAdminConfigured(): boolean {
@@ -98,6 +98,9 @@ export function validateSupabaseConfig(requireAdmin: boolean = false): {
   }
 
   if (!env.anonKey || isPlaceholder(env.anonKey)) {
+    if (env.hasValidServiceKey) {
+      return { url: cleanUrl, key: env.serviceRoleKey };
+    }
     throw new Error(
       '[Supabase Configuration Error] NEXT_PUBLIC_SUPABASE_ANON_KEY is missing or set to placeholder. ' +
       'Client operations require a valid anon key from your Supabase dashboard.'

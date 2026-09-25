@@ -26,7 +26,7 @@ export async function handleListProducts(args: unknown): Promise<McpToolResponse
     return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
   }
 
-  const products = catalogRepository.getProductsForMcp(parsed.data);
+  const products = await catalogRepository.getAllProductsForMcp(parsed.data);
   return { ok: true, data: products };
 }
 
