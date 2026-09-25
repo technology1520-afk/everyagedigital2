@@ -10,6 +10,7 @@ import { catalogRepository } from '../../../lib/db/repository';
 import { DeleteProductButton } from '../../../components/admin/DeleteProductButton';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function AdminProductsPage({
   searchParams

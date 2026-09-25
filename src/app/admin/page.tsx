@@ -15,8 +15,10 @@ import {
 import { catalogRepository } from '../../lib/db/repository';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  await catalogRepository.getAllProducts();
   const stats = catalogRepository.getDashboardStats();
   const maxClicks = Math.max(...stats.topProducts.map(p => p.clicks), 1);
 
