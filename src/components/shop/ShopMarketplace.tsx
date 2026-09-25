@@ -94,15 +94,15 @@ export function ShopMarketplace({
       <Breadcrumbs items={[{ label: 'Shop Marketplace' }]} />
 
       {/* Title Header & Search Bar */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-white/10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-purple-200/50 dark:border-white/10">
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
+          <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
             Catalog Marketplace
           </span>
-          <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-white mt-1">
+          <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">
             Curated Commerce Storefront
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
             Discover vetted everyday essentials, ergonomic tools, books, and digital systems.
           </p>
         </div>
@@ -115,15 +115,15 @@ export function ShopMarketplace({
             value={filters.query || ''}
             onChange={e => setFilters({ ...filters, query: e.target.value })}
             placeholder="Search items, brands, use cases..."
-            className="w-full pl-9 pr-3 py-2.5 text-xs bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-400 focus:outline-hidden focus:border-blue-400/50 backdrop-blur-md min-h-[44px] transition-all"
+            className="w-full pl-9 pr-3 py-2.5 text-xs bg-white/65 dark:bg-slate-900/50 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-400 dark:focus:border-blue-400/50 shadow-lg shadow-purple-950/5 min-h-[44px] transition-all"
           />
         </div>
       </div>
 
       {/* Tablet Horizontal Scrollable Chips Bar (md:flex lg:hidden) */}
-      <div className="hidden md:flex lg:hidden flex-col gap-2 pt-1 pb-2 border-b border-white/10">
+      <div className="hidden md:flex lg:hidden flex-col gap-2 pt-1 pb-2 border-b border-purple-200/50 dark:border-white/10">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-          <span className="text-[11px] font-semibold uppercase text-slate-400 shrink-0 mr-1">
+          <span className="text-[11px] font-semibold uppercase text-slate-500 dark:text-slate-400 shrink-0 mr-1">
             Categories:
           </span>
           <button
@@ -131,8 +131,8 @@ export function ShopMarketplace({
             onClick={() => setFilters({ ...filters, category: undefined })}
             className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[36px] backdrop-blur-md ${
               !filters.category
-                ? 'bg-blue-600/30 text-blue-200 border border-blue-500/40 font-semibold'
-                : 'bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10'
+                ? 'bg-purple-600 text-white dark:bg-blue-600/30 dark:text-blue-200 border border-purple-600 dark:border-blue-500/40 font-semibold'
+                : 'bg-white/70 text-slate-700 hover:text-slate-900 hover:bg-purple-100/50 border border-purple-200/60 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10 dark:border-white/10'
             }`}
           >
             All Categories
@@ -151,8 +151,8 @@ export function ShopMarketplace({
                 }
                 className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[36px] backdrop-blur-md ${
                   isSelected
-                    ? 'bg-blue-600/30 text-blue-200 border border-blue-500/40 font-semibold'
-                    : 'bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10'
+                    ? 'bg-purple-600 text-white dark:bg-blue-600/30 dark:text-blue-200 border border-purple-600 dark:border-blue-500/40 font-semibold'
+                    : 'bg-white/70 text-slate-700 hover:text-slate-900 hover:bg-purple-100/50 border border-purple-200/60 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10 dark:border-white/10'
                 }`}
               >
                 <span>{cat}</span>
@@ -185,25 +185,25 @@ export function ShopMarketplace({
         {/* Products Column */}
         <div className="lg:col-span-3 space-y-4 sm:space-y-6">
           {/* Controls Bar: Mobile Filter Button + Item count + Sorting */}
-          <div className="rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4">
+          <div className="rounded-2xl bg-white/65 dark:bg-white/[0.03] backdrop-blur-md border border-purple-200/60 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 shadow-sm dark:shadow-none">
             <div className="flex items-center gap-3">
               {/* Phone Filter Trigger Button */}
               <button
                 type="button"
                 onClick={() => setBottomSheetOpen(true)}
-                className="touch-target md:hidden inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-white hover:bg-white/10 backdrop-blur-md shadow-xs cursor-pointer"
+                className="touch-target md:hidden inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/80 border border-purple-200/60 text-xs font-semibold text-slate-800 hover:bg-white dark:bg-white/5 dark:border-white/10 dark:text-white dark:hover:bg-white/10 backdrop-blur-md shadow-xs cursor-pointer"
               >
-                <Filter className="w-4 h-4 text-blue-400" />
+                <Filter className="w-4 h-4 text-purple-600 dark:text-blue-400" />
                 <span>Filters</span>
                 {activeFilters.length > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-purple-600 dark:bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
                     {activeFilters.length}
                   </span>
                 )}
               </button>
 
-              <span className="text-xs font-semibold text-slate-300">
-                Showing <span className="text-white font-bold">{searchResult.total}</span> item{searchResult.total === 1 ? '' : 's'}
+              <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                Showing <span className="text-slate-900 dark:text-white font-bold">{searchResult.total}</span> item{searchResult.total === 1 ? '' : 's'}
               </span>
             </div>
 
@@ -216,7 +216,7 @@ export function ShopMarketplace({
           {/* Removable Active Filter Chips Row */}
           {activeFilters.length > 0 && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider mr-1">
+              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider mr-1">
                 Active:
               </span>
               {activeFilters.map(chip => (
@@ -224,7 +224,7 @@ export function ShopMarketplace({
                   key={chip.label}
                   type="button"
                   onClick={chip.onRemove}
-                  className="touch-target inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-600/20 text-blue-300 border border-blue-500/30 hover:bg-blue-600/30 backdrop-blur-md transition-colors cursor-pointer"
+                  className="touch-target inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-900 border border-purple-300 hover:bg-purple-200 dark:bg-blue-600/20 dark:text-blue-300 dark:border-blue-500/30 dark:hover:bg-blue-600/30 backdrop-blur-md transition-colors cursor-pointer"
                 >
                   <span>{chip.label}</span>
                   <X className="w-3.5 h-3.5 opacity-70" />
@@ -233,7 +233,7 @@ export function ShopMarketplace({
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="text-xs text-slate-400 hover:text-white underline ml-1 cursor-pointer py-1"
+                className="text-xs text-slate-500 hover:text-purple-700 dark:text-slate-400 dark:hover:text-white underline ml-1 cursor-pointer py-1"
               >
                 Clear all
               </button>

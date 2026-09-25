@@ -14,25 +14,25 @@ export default function MethodologyPage() {
       <Breadcrumbs items={[{ label: 'Methodology' }]} />
 
       <div className="space-y-4">
-        <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
+        <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
           Testing & Curation Standards
         </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
+        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
           How We Select and Evaluate Recommendations
         </h1>
-        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
           Every recommendation on EveryAge Digital must satisfy strict editorial vetting before being added to our catalog.
         </p>
       </div>
 
-      <div className="space-y-8 text-xs sm:text-sm text-slate-300 leading-relaxed">
+      <div className="space-y-8 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
         {/* Step 1 */}
-        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 space-y-3 shadow-xl">
-          <div className="flex items-center gap-2 text-blue-400 font-semibold text-xs uppercase tracking-wider">
+        <section className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm dark:shadow-xl">
+          <div className="flex items-center gap-2 text-purple-600 dark:text-blue-400 font-semibold text-xs uppercase tracking-wider">
             <FileSearch className="w-4 h-4" />
             <span>Pillar 1</span>
           </div>
-          <h2 className="font-serif text-xl font-bold text-white">
+          <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
             1. Primary Source Specification Auditing
           </h2>
           <p>
@@ -41,12 +41,12 @@ export default function MethodologyPage() {
         </section>
 
         {/* Step 2 */}
-        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 space-y-3 shadow-xl">
-          <div className="flex items-center gap-2 text-blue-400 font-semibold text-xs uppercase tracking-wider">
+        <section className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm dark:shadow-xl">
+          <div className="flex items-center gap-2 text-purple-600 dark:text-blue-400 font-semibold text-xs uppercase tracking-wider">
             <Scale className="w-4 h-4" />
             <span>Pillar 2</span>
           </div>
-          <h2 className="font-serif text-xl font-bold text-white">
+          <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
             2. Real-World Trade-Off Documentation
           </h2>
           <p>
@@ -55,12 +55,12 @@ export default function MethodologyPage() {
         </section>
 
         {/* Step 3 */}
-        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 space-y-3 shadow-xl">
-          <div className="flex items-center gap-2 text-blue-400 font-semibold text-xs uppercase tracking-wider">
+        <section className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm dark:shadow-xl">
+          <div className="flex items-center gap-2 text-purple-600 dark:text-blue-400 font-semibold text-xs uppercase tracking-wider">
             <Clock className="w-4 h-4" />
             <span>Pillar 3</span>
           </div>
-          <h2 className="font-serif text-xl font-bold text-white">
+          <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
             3. Honest Pricing & Freshness Invalidation
           </h2>
           <p>
@@ -69,28 +69,28 @@ export default function MethodologyPage() {
         </section>
 
         {/* Rejection Criteria */}
-        <section className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 space-y-4 shadow-xl">
-          <h2 className="font-serif text-xl font-bold text-white">
+        <section className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm dark:shadow-xl">
+          <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
             Automatic Disqualification Criteria
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Products exhibiting any of the following traits are immediately rejected from our catalog:
           </p>
-          <ul className="space-y-2 text-xs text-slate-300">
+          <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
             <li className="flex items-start gap-2">
-              <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <XCircle className="w-4 h-4 text-red-500 dark:text-red-400 shrink-0 mt-0.5" />
               <span>Manipulated customer reviews or deceptive five-star campaigns on third-party marketplaces.</span>
             </li>
             <li className="flex items-start gap-2">
-              <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <XCircle className="w-4 h-4 text-red-500 dark:text-red-400 shrink-0 mt-0.5" />
               <span>Generic dropshipped white-label goods lacking verified warranty service.</span>
             </li>
             <li className="flex items-start gap-2">
-              <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <XCircle className="w-4 h-4 text-red-500 dark:text-red-400 shrink-0 mt-0.5" />
               <span>Exaggerated medical, health, or financial guarantee claims.</span>
             </li>
             <li className="flex items-start gap-2">
-              <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <XCircle className="w-4 h-4 text-red-500 dark:text-red-400 shrink-0 mt-0.5" />
               <span>Forced recurring subscription traps on products that should function as one-time utilities.</span>
             </li>
           </ul>

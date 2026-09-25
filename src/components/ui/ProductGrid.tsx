@@ -15,9 +15,9 @@ export function ProductGrid({
 }: ProductGridProps) {
   if (items.length === 0) {
     return (
-      <div className="rounded-3xl bg-slate-900/40 backdrop-blur-xl border border-white/10 p-12 text-center my-6 shadow-xl">
-        <p className="text-white font-bold text-base">{emptyMessage}</p>
-        <p className="text-xs text-slate-300 mt-2 max-w-md mx-auto">
+      <div className="rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-lg border border-purple-100 dark:border-white/10 hover:border-purple-300 dark:hover:border-blue-400/40 shadow-sm dark:shadow-none p-12 text-center my-6">
+        <p className="text-slate-900 dark:text-white font-bold text-base">{emptyMessage}</p>
+        <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 max-w-md mx-auto">
           Try loosening your search terms or clearing selected merchant/category filters.
         </p>
       </div>

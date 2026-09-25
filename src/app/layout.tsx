@@ -45,19 +45,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark bg-slate-950 text-slate-100`}>
-      <body suppressHydrationWarning className="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden flex flex-col antialiased selection:bg-blue-500/30 selection:text-white">
-        {/* Persistent ambient blur glow spheres in fixed positions */}
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <body suppressHydrationWarning className="min-h-screen bg-[#f4f0fa] text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 relative overflow-x-hidden flex flex-col antialiased selection:bg-purple-500/30 selection:text-purple-900 dark:selection:bg-blue-500/30 dark:selection:text-white">
+        {/* Persistent ambient blur glow spheres in fixed positions (lavender day / indigo dark) */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-          {/* Top-left: Indigo/Blue orb */}
-          <div className="h-[500px] w-[500px] bg-blue-600/15 blur-[160px] pointer-events-none fixed -top-40 -left-40 z-0 rounded-full" />
-          {/* Center-right: Violet/Purple orb */}
-          <div className="h-[600px] w-[600px] bg-indigo-600/10 blur-[180px] pointer-events-none fixed top-1/3 -right-40 z-0 rounded-full" />
-          {/* Bottom-left: Subtle emerald or cyan orb */}
-          <div className="h-[500px] w-[500px] bg-sky-500/10 blur-[160px] pointer-events-none fixed -bottom-40 left-1/4 z-0 rounded-full" />
+          {/* Top-left orb */}
+          <div className="h-[500px] w-[500px] bg-purple-300/40 dark:bg-blue-600/15 blur-[150px] pointer-events-none fixed -top-40 -left-40 z-0 rounded-full transition-colors duration-500" />
+          {/* Center-right orb */}
+          <div className="h-[600px] w-[600px] bg-fuchsia-200/30 dark:bg-indigo-600/10 blur-[180px] pointer-events-none fixed top-1/3 -right-40 z-0 rounded-full transition-colors duration-500" />
+          {/* Bottom-left orb */}
+          <div className="h-[500px] w-[500px] bg-indigo-200/30 dark:bg-sky-500/10 blur-[150px] pointer-events-none fixed -bottom-40 left-1/4 z-0 rounded-full transition-colors duration-500" />
         </div>
 
-        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="relative z-10 flex flex-col min-h-screen">
             {/* Skip to Content for WCAG 2.2 AA Accessibility */}
             <a

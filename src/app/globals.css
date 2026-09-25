@@ -3,35 +3,36 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* CORE DARK GLASSMORPHISM TOKENS */
-  --background: #020617;        /* deep cosmic slate-950 */
-  --surface: rgba(15, 23, 42, 0.4);           /* translucent cards */
-  --surface-muted: rgba(30, 41, 59, 0.3);
-  --text: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --border: rgba(255, 255, 255, 0.1);
+  /* DAY MODE: LAVENDER GLASSMORPHISM TOKENS */
+  --background: #f4f0fa;        /* soft lavender canvas */
+  --surface: rgba(255, 255, 255, 0.75);       /* frosted white/lavender cards */
+  --surface-muted: rgba(243, 238, 251, 0.65);
+  --text: #0F172A;              /* deep slate-900 for high-contrast readability */
+  --text-secondary: #64748B;    /* slate-500 */
+  --border: rgba(216, 180, 254, 0.4);         /* purple-300/40 subtle borders */
 
   /* PRIMARY ACCENT — buttons, links, active states */
-  --accent: #3B82F6;
-  --accent-hover: #60A5FA;
-  --accent-soft: rgba(59, 130, 246, 0.15);
+  --accent: #7C3AED;            /* rich purple */
+  --accent-hover: #6D28D9;
+  --accent-soft: rgba(124, 58, 237, 0.1);
 
   /* SEMANTIC ACCENT FAMILIES */
-  --coral: #F08A78;        --coral-soft: rgba(240, 138, 120, 0.15);
-  --amber: #F59E0B;        --amber-soft: rgba(245, 158, 11, 0.12);
-  --featured: rgba(30, 41, 59, 0.4);
-  --success: #10B981;      --success-soft: rgba(16, 185, 129, 0.15);
-  --purple: #A855F7;       --purple-soft: rgba(168, 85, 247, 0.15);
-  --gumroad-pink: #FF90E8;
-  --amazon-navy: #232F3E;  --amazon-orange: #FF9900;
+  --coral: #E11D48;        --coral-soft: rgba(225, 29, 72, 0.1);
+  --amber: #D97706;        --amber-soft: rgba(217, 119, 6, 0.12);
+  --featured: rgba(243, 238, 251, 0.75);
+  --success: #059669;      --success-soft: rgba(5, 150, 105, 0.12);
+  --purple: #8B5CF6;       --purple-soft: rgba(139, 92, 246, 0.12);
+  --gumroad-pink: #DB2777;
+  --amazon-navy: #1E293B;  --amazon-orange: #EA580C;
 
-  --soft: #94A3B8;
-  --warning: #F59E0B;
-  --danger: #EF4444;
+  --soft: #64748B;
+  --warning: #D97706;
+  --danger: #DC2626;
   --font-serif: "Newsreader", "Georgia", "Cambria", serif;
 }
 
 .dark {
+  /* NIGHT MODE: COSMIC GLASSMORPHISM TOKENS */
   --background: #020617;        /* deep cosmic slate-950 */
   --surface: rgba(15, 23, 42, 0.4);           /* translucent cards */
   --surface-muted: rgba(30, 41, 59, 0.3);
@@ -86,8 +87,8 @@ html {
 }
 
 body {
-  background-color: #020617;
-  color: #F8FAFC;
+  background-color: var(--background);
+  color: var(--text);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -95,7 +96,7 @@ body {
 }
 
 /* Touch targets utility (minimum 44x44px for accessibility) */
-.touch-target {
+:where(.touch-target) {
   min-height: 44px;
   min-width: 44px;
   display: inline-flex;
@@ -259,43 +260,67 @@ textarea:focus-visible {
 
 /* 5. SIDEBAR FILTERS */
 .filters-card {
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(216, 180, 254, 0.6);
   border-radius: 1.5rem;
+  box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.05);
+}
+.dark .filters-card {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 .filters-card h4 {           /* section labels: CATEGORY, FORMAT / TYPE */
   font-size: 11px; letter-spacing: 0.08em;
-  color: #93C5FD; font-weight: 700;
+  color: #7C3AED; font-weight: 700;
+}
+.dark .filters-card h4 {
+  color: #93C5FD;
 }
 .filter-link {
   display: block; padding: 10px 12px;
   min-height: 44px;
-  border-radius: 0.75rem; color: #94A3B8;
+  border-radius: 0.75rem; color: #64748B;
   transition: background .15s, color .15s;
   text-decoration: none;
 }
-.filter-link:hover  { background: rgba(255, 255, 255, 0.06); color: #F8FAFC; }
-.filter-link.selected { background: rgba(59, 130, 246, 0.15); color: #93C5FD; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.25); }
-.filter-count { float: right; color: #64748B; font-size: 11px; }  /* e.g. "(12)" */
+.dark .filter-link {
+  color: #94A3B8;
+}
+.filter-link:hover  { background: rgba(124, 58, 237, 0.08); color: #0F172A; }
+.dark .filter-link:hover  { background: rgba(255, 255, 255, 0.06); color: #F8FAFC; }
+.filter-link.selected { background: rgba(124, 58, 237, 0.12); color: #6D28D9; font-weight: 600; border: 1px solid rgba(124, 58, 237, 0.25); }
+.dark .filter-link.selected { background: rgba(59, 130, 246, 0.15); color: #93C5FD; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.25); }
+.filter-count { float: right; color: #94A3B8; font-size: 11px; }  /* e.g. "(12)" */
+.dark .filter-count { color: #64748B; }
 
 /* 6. PRODUCT CARDS */
 .product-card {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #f3e8ff; /* purple-100 */
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.05);
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s, background-color .25s;
 }
 .product-card:hover {
   transform: translateY(-4px);
+  border-color: #d8b4fe; /* purple-300 */
+  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.1);
+}
+.dark .product-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+.dark .product-card:hover {
   border-color: rgba(96, 165, 250, 0.4);
   background: rgba(255, 255, 255, 0.07);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.15);
 }
-.product-card:hover .product-title { color: #93C5FD; }
+.product-card:hover .product-title { color: #7C3AED; }
+.dark .product-card:hover .product-title { color: #93C5FD; }
 
 /* Mobile-first card price row: stacked on phone, row on sm+ */
 .card-price-row {

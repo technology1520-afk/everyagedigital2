@@ -151,24 +151,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </span>
             </div>
 
-            <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
+            <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
               {product.name}
             </h1>
 
-            <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+            <p className="mt-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
               {product.description}
             </p>
           </div>
 
           {/* Price & Primary Purchase Card - Stacked Glass Panel */}
-          <div className="rounded-3xl bg-white/[0.04] backdrop-blur-xl border border-white/10 p-5 sm:p-6 space-y-4 shadow-xl shadow-black/20">
+          <div className="rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-purple-100 dark:border-white/10 p-5 sm:p-6 space-y-4 shadow-sm dark:shadow-xl dark:shadow-black/20">
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
               <PriceStatus offer={offer} freshness={freshness} size="lg" />
               <FreshnessLabel freshness={freshness} />
             </div>
 
             {offer?.shippingNote && (
-              <p className="text-xs text-slate-300 flex items-center gap-1.5">
+              <p className="text-xs text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
                 <Globe className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span>{offer.shippingNote}</span>
               </p>
@@ -181,7 +181,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   href={`/api/go/${product.id}`}
                   target="_blank"
                   rel="sponsored nofollow noopener"
-                  className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25 transition-all min-h-[44px]"
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-sm font-semibold bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 transition-all min-h-[44px]"
                 >
                   <span>
                     {freshness?.isStale
@@ -193,7 +193,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   <ExternalLink className="w-4 h-4 opacity-80" />
                 </a>
               ) : (
-                <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-xs text-slate-300">
+                <div className="p-3 bg-white/80 dark:bg-white/5 border border-purple-100 dark:border-white/10 rounded-xl text-xs text-slate-600 dark:text-slate-300">
                   No direct partner merchant offer currently available.
                 </div>
               )}
@@ -208,21 +208,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
           {/* Who Should Buy vs Avoid (Crucial Editorial Requirement) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md rounded-2xl p-4">
-              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-300 mb-1.5">
-                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 mb-1.5">
+                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>Best For</span>
               </div>
-              <p className="text-xs text-emerald-200/90 leading-relaxed">
+              <p className="text-xs text-emerald-900/90 dark:text-emerald-200/90 leading-relaxed">
                 {product.bestFor}
               </p>
             </div>
 
             <div className="bg-amber-500/10 border border-amber-500/20 backdrop-blur-md rounded-2xl p-4">
-              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 mb-1.5">
-                <XCircle className="w-4 h-4 text-amber-400 shrink-0" />
+              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1.5">
+                <XCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span>Not Ideal For</span>
               </div>
-              <p className="text-xs text-amber-200/90 leading-relaxed">
+              <p className="text-xs text-amber-900/90 dark:text-amber-200/90 leading-relaxed">
                 {product.notFor}
               </p>
             </div>
@@ -231,13 +231,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
           {/* Features, Benefits & Limitations */}
           <div className="space-y-4 pt-2">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-2">
                 Key Features & Specifications
               </h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-800 dark:text-slate-200">
                 {product.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 bg-white/[0.03] backdrop-blur-md p-2.5 rounded-xl border border-white/10">
-                    <Check className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2 bg-white/80 dark:bg-white/[0.03] backdrop-blur-md p-2.5 rounded-xl border border-purple-100 dark:border-white/10">
+                    <Check className="w-3.5 h-3.5 text-purple-600 dark:text-blue-400 shrink-0 mt-0.5" />
                     <span>{f}</span>
                   </li>
                 ))}
@@ -245,13 +245,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-2">
                 Real-World Trade-Offs & Limitations
               </h3>
-              <ul className="space-y-2 text-xs text-slate-300">
+              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                 {product.limitations.map((limit, i) => (
-                  <li key={i} className="flex items-start gap-2 bg-white/[0.03] backdrop-blur-md p-2.5 rounded-xl border border-white/10">
-                    <Info className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2 bg-white/80 dark:bg-white/[0.03] backdrop-blur-md p-2.5 rounded-xl border border-purple-100 dark:border-white/10">
+                    <Info className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
                     <span>{limit}</span>
                   </li>
                 ))}
@@ -260,10 +260,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           {/* Editorial Notes */}
-          <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl p-4 text-xs text-slate-300 space-y-1">
-            <span className="font-semibold text-white block">Editorial Assessment Note:</span>
-            <p className="leading-relaxed text-slate-300">{product.editorialNotes}</p>
-            <div className="text-[11px] text-slate-400 pt-1 flex items-center gap-2">
+          <div className="bg-white/80 dark:bg-white/[0.03] backdrop-blur-md border border-purple-100 dark:border-white/10 rounded-2xl p-4 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+            <span className="font-semibold text-slate-900 dark:text-white block">Editorial Assessment Note:</span>
+            <p className="leading-relaxed text-slate-600 dark:text-slate-300">{product.editorialNotes}</p>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 pt-1 flex items-center gap-2">
               <span>Testing Status: {product.handsOnTested ? 'Hands-on Tested' : 'Verified Spec Audit'}</span>
               <span>•</span>
               <span>Confidence: {product.editorialConfidence}</span>
@@ -277,24 +277,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       {/* Related Curated Collection (if part of one) */}
       {relatedCollection && (
-        <div className="bg-indigo-950/30 border border-indigo-500/20 backdrop-blur-xl rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+        <div className="bg-purple-100/40 dark:bg-indigo-950/30 border border-purple-200/60 dark:border-indigo-500/20 backdrop-blur-xl rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm dark:shadow-xl">
           <div className="flex items-center gap-3">
-            <Layers className="w-8 h-8 text-blue-400 shrink-0" />
+            <Layers className="w-8 h-8 text-purple-600 dark:text-blue-400 shrink-0" />
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-wider text-blue-300 font-semibold">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-purple-700 dark:text-blue-300 font-semibold">
                 Part of a Curated Setup
               </span>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 {relatedCollection.title}
               </h3>
-              <p className="text-xs text-slate-300 mt-0.5">
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
                 {relatedCollection.subtitle}
               </p>
             </div>
           </div>
           <Link
             href={`/collection/${relatedCollection.slug}`}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/15 rounded-xl text-xs font-semibold text-white transition-all shrink-0"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 border border-purple-200/60 dark:border-white/15 rounded-xl text-xs font-semibold text-slate-800 dark:text-white transition-all shrink-0"
           >
             <span>View Full Setup</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -304,17 +304,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       {/* Alternative Recommendations */}
       {alternatives.length > 0 && (
-        <section className="pt-8 border-t border-white/10">
+        <section className="pt-8 border-t border-purple-200/50 dark:border-white/10">
           <div className="flex items-baseline justify-between mb-6">
             <div>
-              <h2 className="font-serif text-2xl font-bold text-white">
+              <h2 className="font-serif text-2xl font-bold text-slate-900 dark:text-white">
                 Alternative Recommendations
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                 Other tested options in {product.category} for different budgets or workflows.
               </p>
             </div>
-            <Link href={`/category/${product.category.toLowerCase().replace(/\s+/g, '-')}`} className="text-xs text-blue-400 hover:text-blue-300 font-semibold">
+            <Link href={`/category/${product.category.toLowerCase().replace(/\s+/g, '-')}`} className="text-xs text-purple-600 hover:text-purple-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold">
               See all in {product.category} &rarr;
             </Link>
           </div>

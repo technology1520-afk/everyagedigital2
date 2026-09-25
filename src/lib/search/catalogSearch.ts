@@ -381,12 +381,27 @@ export function isBookProduct(p: Product): boolean {
 }
 
 export function getAllBooks(): Book[] {
+  if (catalogRepository.getBackendMode().mode === 'supabase') {
+    const activeProds = catalogRepository.getProducts({ status: 'active' });
+    const bookProducts = activeProds.filter(isBookProduct);
+    return bookProducts.map(p => {
+      const offer = catalogRepository.getOfferForProduct(p.id);
+      return mapProductToBook(p, offer);
+    });
+  }
   return BOOKS;
 }
 
 export async function getAllBooksAsync(): Promise<Book[]> {
   const allProducts = await catalogRepository.getAllProducts({ status: 'active' });
   const bookProducts = allProducts.filter(isBookProduct);
+
+  if (catalogRepository.getBackendMode().mode === 'supabase') {
+    return bookProducts.map(p => {
+      const offer = catalogRepository.getOfferForProduct(p.id);
+      return mapProductToBook(p, offer);
+    });
+  }
 
   if (bookProducts.length > 0) {
     return bookProducts.map(p => {
@@ -399,6 +414,14 @@ export async function getAllBooksAsync(): Promise<Book[]> {
 }
 
 export function getBookBySlug(slug: string): Book | undefined {
+  if (catalogRepository.getBackendMode().mode === 'supabase') {
+    const product = catalogRepository.getProductBySlugSync(slug);
+    if (product && isBookProduct(product)) {
+      const offer = catalogRepository.getOfferForProduct(product.id);
+      return mapProductToBook(product, offer);
+    }
+    return undefined;
+  }
   return BOOKS.find(b => b.slug === slug);
 }
 
@@ -407,6 +430,9 @@ export async function getBookBySlugAsync(slug: string): Promise<Book | undefined
   if (product && isBookProduct(product)) {
     const offer = catalogRepository.getOfferForProduct(product.id);
     return mapProductToBook(product, offer);
+  }
+  if (catalogRepository.getBackendMode().mode === 'supabase') {
+    return undefined;
   }
   return getBookBySlug(slug);
 }

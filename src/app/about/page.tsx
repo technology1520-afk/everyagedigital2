@@ -15,20 +15,20 @@ export default function AboutPage() {
       <Breadcrumbs items={[{ label: 'About Us' }]} />
 
       <div className="space-y-4">
-        <span className="text-xs font-mono uppercase tracking-widest text-[#1D438A] font-semibold">
+        <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
           Publisher & Mission
         </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-neutral-900 leading-tight">
+        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
           Curated clearly. Recommended intelligently.
         </h1>
-        <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
           EveryAge Digital was founded to cut through modern ecommerce noise, fabricated customer reviews, and low-quality drop-shipped listings.
         </p>
       </div>
 
-      <div className="prose prose-neutral text-xs sm:text-sm text-neutral-700 space-y-6 leading-relaxed">
-        <section className="bg-white border border-[#E2E5EB] rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs">
-          <h2 className="font-serif text-xl font-bold text-neutral-900">
+      <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-6 leading-relaxed">
+        <section className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm dark:shadow-xl">
+          <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
             What We Do
           </h2>
           <p>
@@ -40,25 +40,25 @@ export default function AboutPage() {
         </section>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="bg-white border border-[#E2E5EB] rounded-2xl p-6 space-y-2.5">
-            <ShieldCheck className="w-6 h-6 text-[#1D438A]" />
-            <h3 className="font-bold text-neutral-900 text-sm">No Bought Rankings</h3>
-            <p className="text-xs text-neutral-600 leading-relaxed">
+          <div className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 space-y-2.5 shadow-sm dark:shadow-xl">
+            <ShieldCheck className="w-6 h-6 text-purple-600 dark:text-blue-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">No Bought Rankings</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               We never accept money to rank one product above another. Paid placements are strictly labeled as &ldquo;Sponsored&rdquo; and excluded from organic editorial choices.
             </p>
           </div>
 
-          <div className="bg-white border border-[#E2E5EB] rounded-2xl p-6 space-y-2.5">
-            <Target className="w-6 h-6 text-[#1D438A]" />
-            <h3 className="font-bold text-neutral-900 text-sm">Explicit Trade-Offs</h3>
-            <p className="text-xs text-neutral-600 leading-relaxed">
+          <div className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 space-y-2.5 shadow-sm dark:shadow-xl">
+            <Target className="w-6 h-6 text-purple-600 dark:text-blue-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">Explicit Trade-Offs</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               Every single product card documents not only who the item is best for, but who should avoid it. No single tool is right for everyone.
             </p>
           </div>
         </section>
 
-        <section className="bg-[#F0F1ED] border border-[#E2E5EB] rounded-2xl p-6 sm:p-8 space-y-4">
-          <h2 className="font-serif text-xl font-bold text-neutral-900">
+        <section className="bg-purple-100/40 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm dark:shadow-xl">
+          <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
             Affiliate Transparency
           </h2>
           <p>
@@ -67,7 +67,7 @@ export default function AboutPage() {
           <div className="pt-2">
             <Link
               href="/affiliate-disclosure"
-              className="inline-flex items-center gap-1.5 font-semibold text-[#1D438A] hover:underline"
+              className="inline-flex items-center gap-1.5 font-semibold text-purple-600 hover:text-purple-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline"
             >
               <span>Read our full Affiliate Disclosure Statement</span>
               <ArrowRight className="w-3.5 h-3.5" />

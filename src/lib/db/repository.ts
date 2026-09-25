@@ -134,7 +134,7 @@ class CatalogRepository {
       this.links = [];
       this.ownedProducts = JSON.parse(JSON.stringify(INITIAL_OWNED));
       this.collections = JSON.parse(JSON.stringify(INITIAL_COLLECTIONS));
-      this.books = JSON.parse(JSON.stringify(INITIAL_BOOKS));
+      this.books = [];
       this.clicks = [];
       this.assistantLogs = [];
 

@@ -2,8 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { getBookBySlug, getBookBySlugAsync, getProductById } from '../../../lib/search/catalogSearch';
-import { BOOKS } from '../../../data/seedCatalog';
+import { getBookBySlugAsync, getProductById } from '../../../lib/search/catalogSearch';
 import { MerchantBadge } from '../../../components/ui/MerchantBadge';
 import { WishlistButton } from '../../../components/ui/WishlistButton';
 import { AffiliateDisclosure } from '../../../components/ui/AffiliateDisclosure';
@@ -20,7 +19,7 @@ interface BookPageProps {
 
 export async function generateMetadata({ params }: BookPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const book = (await getBookBySlugAsync(slug)) || getBookBySlug(slug);
+  const book = await getBookBySlugAsync(slug);
   if (!book) return { title: 'Book Not Found' };
 
   return {
@@ -36,7 +35,7 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
 
 export default async function BookDetailPage({ params }: BookPageProps) {
   const { slug } = await params;
-  const book = (await getBookBySlugAsync(slug)) || getBookBySlug(slug);
+  const book = await getBookBySlugAsync(slug);
 
   if (!book) {
     notFound();

@@ -22,22 +22,22 @@ export default async function DealsPage() {
       <Breadcrumbs items={[{ label: 'Deals & Best Value' }]} />
 
       <div className="max-w-3xl space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs font-semibold border border-amber-500/20 backdrop-blur-md">
-          <Flame className="w-3.5 h-3.5 text-amber-400" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 text-xs font-semibold border border-amber-500/20 backdrop-blur-md">
+          <Flame className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
           <span>Price-Sensitive Curations</span>
         </div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white">
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
           Verified Deals & Practical Value
         </h1>
-        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
           We monitor price fluctuations across partner merchant catalogs. Below are items currently exhibiting verified merchant markdowns or recognized with our &ldquo;Best Value&rdquo; badge.
         </p>
       </div>
 
-      <div className="bg-white/[0.04] backdrop-blur-md border border-white/10 rounded-2xl p-4 text-xs text-slate-300 flex items-start gap-2.5 shadow-sm">
-        <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+      <div className="bg-white/80 dark:bg-white/[0.04] backdrop-blur-md border border-purple-100 dark:border-white/10 rounded-2xl p-4 text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2.5 shadow-xs">
+        <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-white">No Fake Urgency:</strong> We never display artificial countdown timers, fake &ldquo;only 2 left!&rdquo; warnings, or inflated reference MSRPs. Prices reflect the latest verified merchant feeds.
+          <strong className="text-slate-900 dark:text-white">No Fake Urgency:</strong> We never display artificial countdown timers, fake &ldquo;only 2 left!&rdquo; warnings, or inflated reference MSRPs. Prices reflect the latest verified merchant feeds.
         </div>
       </div>
 

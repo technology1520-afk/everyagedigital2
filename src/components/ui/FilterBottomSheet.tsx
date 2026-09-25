@@ -69,15 +69,15 @@ export function FilterBottomSheet({
         role="dialog"
         aria-modal="true"
         aria-label="Filter Options"
-        className="relative backdrop-blur-2xl bg-slate-950/95 text-slate-100 rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl z-10 animate-in slide-in-from-bottom duration-250 border-t border-white/10"
+        className="relative backdrop-blur-2xl bg-white/95 dark:bg-slate-950/95 text-slate-900 dark:text-slate-100 rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl z-10 animate-in slide-in-from-bottom duration-250 border-t border-purple-200/60 dark:border-white/10"
       >
         {/* Drag Handle & Top Bar */}
-        <div className="pt-3 pb-3 px-5 border-b border-white/10 flex flex-col items-center">
-          <div className="w-12 h-1.5 bg-white/20 rounded-full mb-3" />
+        <div className="pt-3 pb-3 px-5 border-b border-purple-200/50 dark:border-white/10 flex flex-col items-center">
+          <div className="w-12 h-1.5 bg-slate-300 dark:bg-white/20 rounded-full mb-3" />
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-white">Catalog Filters</span>
-              <span className="text-xs bg-blue-600/30 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded-full font-semibold">
+              <span className="font-bold text-sm text-slate-900 dark:text-white">Catalog Filters</span>
+              <span className="text-xs bg-purple-100 text-purple-900 border border-purple-300 dark:bg-blue-600/30 dark:text-blue-300 dark:border-blue-500/30 px-2 py-0.5 rounded-full font-semibold">
                 {totalResults} items
               </span>
             </div>
@@ -85,7 +85,7 @@ export function FilterBottomSheet({
               type="button"
               onClick={onClose}
               aria-label="Close filters"
-              className="touch-target p-2 text-slate-400 hover:text-white rounded-full cursor-pointer"
+              className="touch-target p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-full cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -107,20 +107,20 @@ export function FilterBottomSheet({
         </div>
 
         {/* Bottom Sticky Action Bar */}
-        <div className="p-4 border-t border-white/10 bg-slate-950/80 backdrop-blur-md flex items-center gap-3 pb-safe">
+        <div className="p-4 border-t border-purple-200/50 dark:border-white/10 bg-white/90 dark:bg-slate-950/80 backdrop-blur-md flex items-center gap-3 pb-safe">
           <button
             type="button"
             onClick={() => {
               onChange({ query: filters.query, sortBy: filters.sortBy });
             }}
-            className="touch-target flex-1 py-3 rounded-xl border border-white/10 text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+            className="touch-target flex-1 py-3 rounded-xl border border-purple-200/60 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-purple-100/50 dark:hover:bg-white/5 transition-colors cursor-pointer"
           >
             Reset All
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="touch-target flex-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+            className="touch-target flex-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <Check className="w-4 h-4" />
             <span>Apply Filters ({totalResults})</span>

@@ -6,7 +6,7 @@ import { BookCard } from '../../components/ui/BookCard';
 import { AffiliateDisclosure } from '../../components/ui/AffiliateDisclosure';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -21,10 +21,13 @@ export default async function BooksPage() {
 
   // Query and filter live book products from Supabase
   const bookProducts = allProducts.filter(isBookProduct);
+  const isSupabase = catalogRepository.getBackendMode().mode === 'supabase';
 
-  const books = bookProducts.length > 0
+  const books = isSupabase
     ? bookProducts.map(p => mapProductToBook(p, catalogRepository.getOfferForProduct(p.id)))
-    : getAllBooks();
+    : (bookProducts.length > 0
+        ? bookProducts.map(p => mapProductToBook(p, catalogRepository.getOfferForProduct(p.id)))
+        : getAllBooks());
 
   const owned = getAllOwnedProducts();
 
@@ -34,13 +37,13 @@ export default async function BooksPage() {
 
       {/* Header */}
       <div className="max-w-3xl space-y-3">
-        <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-semibold">
+        <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
           Curated Reading & Knowledge
         </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text)] text-white leading-tight">
+        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text)] leading-tight">
           Books, Guides & Practical Wisdom
         </h1>
-        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
           Skip generic airport bestsellers. We hand-pick books and digital guides that build enduring mental frameworks for deep focus, commercial acumen, and daily creative discipline.
         </p>
       </div>
@@ -48,22 +51,22 @@ export default async function BooksPage() {
       <AffiliateDisclosure variant="banner" isAmazon />
 
       {/* 1. Our Direct Publisher Guides */}
-      <section className="bg-indigo-950/30 border border-indigo-500/20 backdrop-blur-xl rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
+      <section className="bg-purple-100/40 dark:bg-indigo-950/30 border border-purple-200/60 dark:border-indigo-500/20 backdrop-blur-xl rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm dark:shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-xs font-mono uppercase tracking-wider text-indigo-400 font-semibold">
+            <span className="text-xs font-mono uppercase tracking-wider text-purple-700 dark:text-indigo-400 font-semibold">
               In-House Publications
             </span>
-            <h2 className="font-serif text-2xl font-bold text-white mt-0.5">
+            <h2 className="font-serif text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
               EveryAge Digital Field Guides & Notion Systems
             </h2>
-            <p className="text-xs text-slate-300 mt-1">
+            <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
               Authored directly by our editorial staff. Delivered immediately in PDF & Notion formats.
             </p>
           </div>
           <Link
             href="/shop/own-products"
-            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 shrink-0"
+            className="text-xs font-semibold text-purple-600 hover:text-purple-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1 shrink-0"
           >
             <span>All In-House Guides</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -74,27 +77,27 @@ export default async function BooksPage() {
           {owned.map(item => (
             <div
               key={item.id}
-              className="rounded-2xl bg-white/[0.04] backdrop-blur-lg border border-white/10 hover:border-blue-400/40 hover:bg-white/[0.07] hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-black/20 p-5 flex flex-col justify-between"
+              className="rounded-2xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-lg border border-purple-100 dark:border-white/10 hover:border-purple-300 dark:hover:border-blue-400/40 hover:-translate-y-1 transition-all duration-300 shadow-sm dark:shadow-lg p-5 flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                  <span className="font-semibold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                  <span className="font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
                     Direct Download
                   </span>
-                  <span className="font-mono text-slate-400">{item.fileFormat}</span>
+                  <span className="font-mono text-slate-500 dark:text-slate-400">{item.fileFormat}</span>
                 </div>
-                <h3 className="text-base font-bold text-white mt-2">
-                  <Link href={`/shop/own-products/${item.slug}`} className="hover:text-blue-300 transition-colors">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mt-2">
+                  <Link href={`/shop/own-products/${item.slug}`} className="hover:text-purple-600 dark:hover:text-blue-300 transition-colors">
                     {item.title}
                   </Link>
                 </h3>
-                <p className="text-xs text-slate-300 mt-2 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 line-clamp-2 leading-relaxed">
                   {item.tagline}
                 </p>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between">
-                <span className="text-base font-bold text-white">
+              <div className="mt-5 pt-3 border-t border-purple-100 dark:border-white/10 flex items-center justify-between">
+                <span className="text-base font-bold text-slate-900 dark:text-white">
                   ${item.price.toFixed(2)}
                 </span>
                 <Link
@@ -111,25 +114,37 @@ export default async function BooksPage() {
 
       {/* 2. Editorial Curated Book Recommendations */}
       <section className="space-y-6">
-        <div className="flex items-baseline justify-between border-b border-white/10 pb-3">
+        <div className="flex items-baseline justify-between border-b border-purple-200/50 dark:border-white/10 pb-3">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-[var(--text)] text-white">
+            <h2 className="font-serif text-2xl font-bold text-[var(--text)]">
               Vetted Books on Focus & Business
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
               Available in print, Kindle, and audiobook via verified book merchants.
             </p>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
             {books.length} Selected Texts
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-          {books.map(book => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </div>
+        {books.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+            {books.map(book => (
+              <BookCard key={book.id} book={book} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-lg border border-purple-100 dark:border-white/10 p-12 text-center my-6 space-y-3 shadow-sm dark:shadow-none">
+            <BookOpen className="w-8 h-8 text-slate-400 dark:text-slate-500 mx-auto opacity-70" />
+            <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+              No books available
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+              No curated books or guides are currently available in the catalog. New recommendations will appear here once published.
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );
