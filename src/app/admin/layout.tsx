@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   LayoutDashboard, 
   Package, 
@@ -43,15 +44,23 @@ export default function AdminLayout({
       <aside className="hidden md:flex md:w-64 bg-slate-950/80 dark:bg-slate-950/90 backdrop-blur-2xl text-white flex-shrink-0 flex-col justify-between border-r border-white/10 relative z-10">
         <div>
           {/* Brand Header */}
-          <div className="p-5 border-b border-white/10 flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#234F9E]" />
-                <span className="font-bold text-sm tracking-tight text-white uppercase">EveryAge Digital</span>
+          <div className="p-4 border-b border-white/10 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg overflow-hidden bg-white p-0.5 shrink-0 border border-white/10 shadow-xs">
+                <Image
+                  src="/logo-mark.png"
+                  alt="EveryAge Digital Logo"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 block mt-0.5">
-                Owner Control Center
-              </span>
+              <div>
+                <span className="font-bold text-xs tracking-tight text-white uppercase block leading-none">EveryAge Digital</span>
+                <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 block mt-1">
+                  Control Center
+                </span>
+              </div>
             </div>
             <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded font-mono">
               v1.0

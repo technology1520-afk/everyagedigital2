@@ -24,18 +24,34 @@ export const metadata: Metadata = {
     template: "%s | EveryAge Digital"
   },
   description: "A curated affiliate commerce storefront and digital-product store helping you discover useful everyday products, books, and knowledge resources.",
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '512x512', type: 'image/png' },
+      { url: '/logo-mark.png', sizes: '192x192', type: 'image/png' }
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
+    ]
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://everyagedigital.com",
     siteName: "EveryAge Digital",
     title: "EveryAge Digital — Curated Products, Books & Digital Resources",
-    description: "Curated products, useful books, digital resources, and everyday essentials recommended with editorial clarity."
+    description: "Curated products, useful books, digital resources, and everyday essentials recommended with editorial clarity.",
+    images: [{
+      url: '/logo.png',
+      width: 1024,
+      height: 1024,
+      alt: 'EveryAge Digital'
+    }]
   },
   twitter: {
     card: "summary_large_image",
     title: "EveryAge Digital",
-    description: "Curated affiliate commerce storefront and digital store."
+    description: "Curated affiliate commerce storefront and digital store.",
+    images: ['/logo.png']
   }
 };
 

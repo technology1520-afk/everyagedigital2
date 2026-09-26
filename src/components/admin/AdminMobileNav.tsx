@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
@@ -52,9 +53,17 @@ export function AdminMobileNav() {
   return (
     <div className="md:hidden backdrop-blur-2xl bg-slate-950/90 text-white border-b border-white/10 sticky top-0 z-30">
       {/* Top Header Row */}
-      <div className="flex items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#234F9E]" />
+      <div className="flex items-center justify-between px-4 py-2.5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg overflow-hidden bg-white p-0.5 shrink-0 border border-white/10 shadow-xs">
+            <Image
+              src="/logo-mark.png"
+              alt="EveryAge Digital Logo"
+              width={28}
+              height={28}
+              className="w-full h-full object-contain"
+            />
+          </div>
           <div>
             <span className="font-bold text-xs tracking-tight uppercase block leading-none">EveryAge Admin</span>
             <span className="text-[10px] font-mono text-neutral-400">Control Center</span>

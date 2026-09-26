@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronDown } from 'lucide-react';
 
 interface FooterSection {
@@ -64,6 +65,37 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-purple-200/50 dark:border-white/10 bg-white/70 dark:bg-slate-950/80 backdrop-blur-xl text-slate-600 dark:text-slate-400 py-12 px-4 sm:px-6 lg:px-8 mt-16">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
+        {/* Brand Banner with Logo */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-purple-200/40 dark:border-white/10">
+          <Link href="/" className="flex items-center gap-3.5 group">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white p-1 border border-purple-200/60 dark:border-white/10 shadow-sm shrink-0 group-hover:scale-105 transition-transform duration-200">
+              <Image
+                src="/logo-mark.png"
+                alt="EveryAge Digital Logo"
+                width={48}
+                height={48}
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-serif text-2xl font-bold text-slate-900 dark:text-white">EveryAge</span>
+                <span className="text-xs font-mono uppercase tracking-widest text-purple-700 dark:text-blue-400 font-semibold bg-purple-500/10 border border-purple-500/20 dark:bg-blue-500/10 dark:border-blue-500/20 px-1.5 py-0.5 rounded-md">
+                  Digital
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Thoughtfully curated everyday gear, digital toolkits, and enduring knowledge guides.
+              </p>
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Independent Editorial Commerce</span>
+          </div>
+        </div>
+
         {/* Mobile Accordion Navigation (Phones only, md:hidden) */}
         <div className="md:hidden divide-y divide-purple-200/40 dark:divide-white/10 border-y border-purple-200/40 dark:border-white/10">
           {FOOTER_SECTIONS.map(section => {
