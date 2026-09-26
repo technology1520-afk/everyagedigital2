@@ -28,7 +28,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: CollectionPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const collection = await getCollectionBySlugAsync(slug);
+  const collection = await getCollectionBySlugAsync(slug, { storefrontOnly: true });
   if (!collection) return { title: 'Collection Not Found' };
 
   return {
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
 
 export default async function CollectionPage({ params }: CollectionPageProps) {
   const { slug } = await params;
-  const collection = await getCollectionBySlugAsync(slug);
+  const collection = await getCollectionBySlugAsync(slug, { storefrontOnly: true });
 
   if (!collection) {
     notFound();
@@ -59,6 +59,11 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   const activeProducts = rawProducts.filter(
     (p): p is NonNullable<typeof p> => Boolean(p && p.status === 'active')
   );
+
+  // If 0 active products remain, call notFound() per Requirement 2
+  if (activeProducts.length === 0) {
+    notFound();
+  }
 
   // Map to BundleItem view models with live offers & affiliate URLs, strictly requiring price > 0
   const bundleItems: BundleItem[] = activeProducts
@@ -91,10 +96,10 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     .filter((book): book is NonNullable<typeof book> => Boolean(book));
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32 space-y-12">
       <Breadcrumbs
         items={[
-          { label: 'Collections', href: '/' },
+          { label: 'Collections', href: '/collections' },
           { label: collection.title }
         ]}
       />

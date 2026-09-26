@@ -293,20 +293,39 @@ export async function getDealsAsync(): Promise<EnrichedProduct[]> {
     });
 }
 
-export function getAllCollections(): Collection[] {
-  return COLLECTIONS;
+export function getAllCollections(options?: { storefrontOnly?: boolean }): Collection[] {
+  const activeProducts = catalogRepository.getProducts({ status: 'active' });
+  const activeSet = new Set(activeProducts.map(p => p.id));
+  const baseCollections = catalogRepository.getCollections();
+  const cols = baseCollections.map(c => ({
+    ...c,
+    activeProductCount: (c.productIds || []).filter(id => activeSet.has(id)).length
+  }));
+  if (options?.storefrontOnly) {
+    return cols.filter(c => c.status === 'published' && (c.activeProductCount || 0) > 0);
+  }
+  return cols;
 }
 
-export async function getAllCollectionsAsync(): Promise<Collection[]> {
-  return catalogRepository.getAllCollections();
+export async function getAllCollectionsAsync(options?: { storefrontOnly?: boolean }): Promise<Collection[]> {
+  return catalogRepository.getAllCollections(options);
 }
 
-export function getCollectionBySlug(slug: string): Collection | undefined {
-  return COLLECTIONS.find(c => c.slug === slug);
+export function getCollectionBySlug(slug: string, options?: { storefrontOnly?: boolean }): Collection | undefined {
+  const col = catalogRepository.getCollectionBySlugSync(slug);
+  if (!col) return undefined;
+  const activeProducts = catalogRepository.getProducts({ status: 'active' });
+  const activeSet = new Set(activeProducts.map(p => p.id));
+  const activeCount = (col.productIds || []).filter(id => activeSet.has(id)).length;
+  const enriched = { ...col, activeProductCount: activeCount };
+  if (options?.storefrontOnly) {
+    if (enriched.status !== 'published' || activeCount <= 0) return undefined;
+  }
+  return enriched;
 }
 
-export async function getCollectionBySlugAsync(slug: string): Promise<Collection | undefined> {
-  return catalogRepository.getCollectionBySlug(slug);
+export async function getCollectionBySlugAsync(slug: string, options?: { storefrontOnly?: boolean }): Promise<Collection | undefined> {
+  return catalogRepository.getCollectionBySlug(slug, options);
 }
 
 /**

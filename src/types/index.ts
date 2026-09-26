@@ -120,6 +120,7 @@ export interface Collection {
   coverImage: string;
   lastReviewedAt: string;
   status: 'published' | 'draft';
+  activeProductCount?: number;
 }
 
 export interface Book {

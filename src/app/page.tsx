@@ -11,12 +11,14 @@ import {
   searchCatalog, 
   searchCatalogAsync,
   getAllCollections, 
+  getAllCollectionsAsync,
   getAllBooks, 
   getAllBooksAsync,
   getAllCategories, 
   getAllCategoriesAsync,
   getAllOwnedProducts 
 } from '../lib/search/catalogSearch';
+import { Collection } from '../types';
 import { ProductCard } from '../components/ui/ProductCard';
 import { CollectionCard } from '../components/ui/CollectionCard';
 import { BookCard } from '../components/ui/BookCard';
@@ -28,7 +30,7 @@ export const revalidate = 0;
 export default async function HomePage() {
   const featuredSearch = await searchCatalogAsync({ editorialPickOnly: true, sortBy: 'editorial_picks' });
   const featuredProducts = featuredSearch.items.slice(0, 4);
-  const collections = getAllCollections().slice(0, 3);
+  const collections = (await getAllCollectionsAsync({ storefrontOnly: true })).slice(0, 3);
   const books = (await getAllBooksAsync()).slice(0, 3);
   const categories = (await getAllCategoriesAsync()) || getAllCategories();
   const ownedProducts = getAllOwnedProducts();
@@ -197,7 +199,7 @@ export default async function HomePage() {
             </p>
           </div>
           <Link
-            href="/collection/home-office-starter-kit"
+            href="/collections"
             className="text-xs font-semibold text-purple-600 hover:text-purple-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
           >
             <span>Explore Collections</span>
@@ -205,11 +207,20 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {collections.map(col => (
-            <CollectionCard key={col.id} collection={col} />
-          ))}
-        </div>
+        {collections.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {collections.map((col: Collection) => (
+              <CollectionCard key={col.id} collection={col} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-lg border border-purple-100 dark:border-white/10 p-10 text-center my-4 space-y-2 shadow-sm dark:shadow-none">
+            <p className="text-slate-900 dark:text-white font-bold text-base">Collections updating</p>
+            <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+              Our editorial team is updating gear bundles. Check back shortly or browse all individual products.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* 5. AI Shopping Receptionist Callout Banner */}

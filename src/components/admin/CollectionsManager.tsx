@@ -235,7 +235,8 @@ export function CollectionsManager({
                 </tr>
               ) : (
                 filteredCollections.map(col => {
-                  const productCount = (col.productIds || []).length;
+                  const activeProductIds = new Set(activeProducts.map(p => p.id));
+                  const activeProductCount = (col.productIds || []).filter(id => activeProductIds.has(id)).length;
                   return (
                     <tr key={col.id} className="hover:bg-purple-50/40 dark:hover:bg-white/[0.03] transition-colors">
                       <td className="py-3.5 px-4">
@@ -264,23 +265,25 @@ export function CollectionsManager({
 
                       <td className="py-3.5 px-4 font-mono text-[11px]">
                         <Link
-                          href={`/collection/${col.slug}`}
+                          href={`/collections/${col.slug}`}
                           target="_blank"
                           className="text-purple-600 dark:text-blue-400 hover:underline flex items-center gap-1"
                         >
-                          <span>/collection/{col.slug}</span>
+                          <span>/collections/{col.slug}</span>
                           <ExternalLink className="w-3 h-3 text-slate-400" />
                         </Link>
                       </td>
 
                       <td className="py-3.5 px-4 text-center">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                          productCount > 0 
-                            ? 'bg-purple-100 text-purple-800 dark:bg-blue-500/10 dark:text-blue-300' 
-                            : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
-                        }`}>
-                          {productCount} {productCount === 1 ? 'item' : 'items'}
-                        </span>
+                        {activeProductCount > 0 ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800 dark:bg-blue-500/10 dark:text-blue-300">
+                            {activeProductCount} {activeProductCount === 1 ? 'item' : 'items'}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300 dark:border-amber-800/50">
+                            <span>Empty (Hidden on Storefront)</span>
+                          </span>
+                        )}
                       </td>
 
                       <td className="py-3.5 px-4 text-center">
@@ -296,7 +299,7 @@ export function CollectionsManager({
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <Link
-                            href={`/collection/${col.slug}`}
+                            href={`/collections/${col.slug}`}
                             target="_blank"
                             title="View Live Storefront"
                             className="p-1.5 text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-blue-400 rounded-lg hover:bg-white/80 dark:hover:bg-white/10 transition-colors"

@@ -947,7 +947,17 @@ class CatalogRepository {
   }
 
   // --- COLLECTIONS & BUNDLES ---
-  public async getCollectionBySlug(slug: string): Promise<Collection | undefined> {
+  public getCollections(): Collection[] {
+    return this.collections.length > 0 ? this.collections : INITIAL_COLLECTIONS;
+  }
+
+  public getCollectionBySlugSync(slug: string): Collection | undefined {
+    return this.collections.find(c => c.slug === slug) || INITIAL_COLLECTIONS.find(c => c.slug === slug);
+  }
+
+  public async getCollectionBySlug(slug: string, options?: { storefrontOnly?: boolean }): Promise<Collection | undefined> {
+    let col: Collection | undefined = undefined;
+
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
@@ -960,7 +970,18 @@ class CatalogRepository {
         if (!error && data) {
           const row = data;
           const seed = INITIAL_COLLECTIONS.find(c => c.slug === slug || c.id === row.id);
-          const col: Collection = {
+          const rawProductIds: string[] = Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []);
+
+          // Count only active products in Supabase
+          const { data: activeProds } = await supabase
+            .from(TABLE_PRODUCTS)
+            .select('id')
+            .in('id', rawProductIds.length > 0 ? rawProductIds : ['__none__'])
+            .eq('status', 'active');
+
+          const activeIds = (activeProds || []).map(p => p.id);
+
+          col = {
             id: row.id,
             slug: row.slug,
             title: row.title,
@@ -971,29 +992,59 @@ class CatalogRepository {
               'Must prioritize daily durability and utility',
               'Direct merchant fulfillment with verified warranties'
             ],
-            productIds: Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []),
+            productIds: rawProductIds,
             bookIds: seed?.bookIds || [],
             coverImage: (row.cover_image as string) || seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
             lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
-            status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published')
+            status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published'),
+            activeProductCount: activeIds.length
           };
-          return col;
         }
       } catch (err) {
         console.error('[CatalogRepository] getCollectionBySlug Supabase error:', err);
       }
+    } else {
+      const found = this.collections.find(c => c.slug === slug) || INITIAL_COLLECTIONS.find(c => c.slug === slug);
+      if (found) {
+        const activeIds = (found.productIds || []).filter(pId => {
+          const p = this.products.find(prod => prod.id === pId);
+          return p && p.status === 'active';
+        });
+        col = {
+          ...found,
+          activeProductCount: activeIds.length
+        };
+      }
     }
-    return this.collections.find(c => c.slug === slug) || INITIAL_COLLECTIONS.find(c => c.slug === slug);
+
+    if (!col) return undefined;
+    if (options?.storefrontOnly) {
+      if (col.status !== 'published' || (col.activeProductCount ?? 0) <= 0) {
+        return undefined;
+      }
+    }
+    return col;
   }
 
-  public async getAllCollections(): Promise<Collection[]> {
+  public async getAllCollections(options?: { storefrontOnly?: boolean }): Promise<Collection[]> {
+    let result: Collection[] = [];
+
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
-        const { data, error } = await supabase.from('collections').select('*');
-        if (!error && data && data.length > 0) {
-          return data.map(row => {
+        const [colsRes, activeProdsRes] = await Promise.all([
+          supabase.from('collections').select('*'),
+          supabase.from(TABLE_PRODUCTS).select('id').eq('status', 'active')
+        ]);
+
+        const activeIdSet = new Set((activeProdsRes.data || []).map(p => p.id));
+
+        if (!colsRes.error && colsRes.data && colsRes.data.length > 0) {
+          result = colsRes.data.map(row => {
             const seed = INITIAL_COLLECTIONS.find(c => c.slug === row.slug || c.id === row.id);
+            const rawProductIds: string[] = Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []);
+            const validActiveCount = rawProductIds.filter(id => activeIdSet.has(id)).length;
+
             return {
               id: row.id,
               slug: row.slug,
@@ -1005,11 +1056,12 @@ class CatalogRepository {
                 'Must prioritize daily durability and utility',
                 'Direct merchant fulfillment with verified warranties'
               ],
-              productIds: Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []),
+              productIds: rawProductIds,
               bookIds: seed?.bookIds || [],
               coverImage: (row.cover_image as string) || seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
               lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
-              status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published')
+              status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published'),
+              activeProductCount: validActiveCount
             };
           });
         }
@@ -1017,7 +1069,24 @@ class CatalogRepository {
         console.error('[CatalogRepository] getAllCollections Supabase error:', err);
       }
     }
-    return this.collections.length > 0 ? this.collections : INITIAL_COLLECTIONS;
+
+    if (result.length === 0) {
+      const baseCollections = this.collections.length > 0 ? this.collections : INITIAL_COLLECTIONS;
+      const activeIdSet = new Set(this.products.filter(p => p.status === 'active').map(p => p.id));
+      result = baseCollections.map(c => {
+        const count = (c.productIds || []).filter(id => activeIdSet.has(id)).length;
+        return {
+          ...c,
+          activeProductCount: count
+        };
+      });
+    }
+
+    if (options?.storefrontOnly) {
+      result = result.filter(c => c.status === 'published' && (c.activeProductCount ?? 0) > 0);
+    }
+
+    return result;
   }
 
   public async createCollection(input: {

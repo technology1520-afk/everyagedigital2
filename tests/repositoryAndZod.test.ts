@@ -108,4 +108,33 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
     expect(['supabase', 'in-memory-mock']).toContain(backend.mode);
     expect(backend.details).toBeTruthy();
   });
+
+  it('filters out empty collections on storefront while keeping all collections in admin', async () => {
+    // 1. Fetch all collections for admin (returns all collections with dynamic count)
+    const adminCollections = await catalogRepository.getAllCollections();
+    expect(adminCollections.length).toBeGreaterThan(0);
+    for (const c of adminCollections) {
+      expect(typeof c.activeProductCount).toBe('number');
+    }
+
+    // 2. Fetch collections with storefrontOnly: true
+    const storefrontCollections = await catalogRepository.getAllCollections({ storefrontOnly: true });
+    // Every storefront collection must have activeProductCount > 0 and status === 'published'
+    for (const sc of storefrontCollections) {
+      expect(sc.status).toBe('published');
+      expect(sc.activeProductCount).toBeGreaterThan(0);
+    }
+
+    // 3. Any bundle with 0 active products should not be returned by getCollectionBySlug({ storefrontOnly: true })
+    const emptyCollection = adminCollections.find(c => (c.activeProductCount ?? 0) === 0);
+    if (emptyCollection) {
+      const publicResult = await catalogRepository.getCollectionBySlug(emptyCollection.slug, { storefrontOnly: true });
+      expect(publicResult).toBeUndefined();
+
+      // But admin lookup without storefrontOnly returns it
+      const adminResult = await catalogRepository.getCollectionBySlug(emptyCollection.slug);
+      expect(adminResult).toBeDefined();
+      expect(adminResult?.activeProductCount).toBe(0);
+    }
+  });
 });

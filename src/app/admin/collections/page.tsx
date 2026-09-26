@@ -12,11 +12,17 @@ export default async function AdminCollectionsPage() {
   ]);
 
   const activeProducts = allProducts.filter(p => p && p.status === 'active');
+  const activeProductIds = new Set(activeProducts.map(p => p.id));
+
+  const enrichedCollections = collections.map(col => ({
+    ...col,
+    activeProductCount: (col.productIds || []).filter(id => activeProductIds.has(id)).length
+  }));
 
   return (
     <div className="max-w-6xl mx-auto">
       <CollectionsManager 
-        initialCollections={collections} 
+        initialCollections={enrichedCollections} 
         activeProducts={activeProducts} 
       />
     </div>
