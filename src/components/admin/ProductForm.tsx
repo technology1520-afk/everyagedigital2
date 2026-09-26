@@ -131,20 +131,21 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto pb-20 lg:pb-0">
       {/* Top Banner / Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => router.back()}
-            className="p-2 rounded-lg border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-600 transition-colors"
+            aria-label="Go back"
+            className="p-2.5 rounded-xl border border-white/10 bg-white/10 text-slate-300 hover:text-white hover:bg-white/15 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-neutral-900 tracking-tight">
+            <h1 className="text-2xl font-bold text-white tracking-tight">
               {isEditing ? `Edit Product: ${title || 'Draft'}` : 'Add New Curated Product'}
             </h1>
-            <p className="text-xs text-neutral-500">
+            <p className="text-sm text-slate-400 mt-0.5">
               {isEditing ? 'Update catalog metadata and merchant offers' : 'Publish a new vetted affiliate offer to EveryAge Digital'}
             </p>
           </div>
@@ -156,10 +157,10 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
             onClick={() => {
               setStatus('draft');
             }}
-            className={`px-3 py-2 rounded-lg text-xs font-medium border transition-colors ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-colors ${
               status === 'draft'
-                ? 'bg-amber-100 text-amber-900 border-amber-300 font-semibold'
-                : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-semibold'
+                : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
             }`}
           >
             Draft Mode
@@ -168,7 +169,7 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] transition-colors shadow-xs disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             <span>{loading ? 'Saving to Catalog...' : isEditing ? 'Update & Publish' : 'Publish Product'}</span>
@@ -178,15 +179,15 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
 
       {/* Notifications */}
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+        <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-300 flex items-start gap-2.5">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2.5">
-          <CheckCircle2 className="w-4 h-4 shrink-0" />
+        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300 flex items-center gap-2.5">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
           <span>Product successfully saved and synchronized across storefront routes!</span>
         </div>
       )}
@@ -195,14 +196,14 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
         {/* Main Product Info (8 cols) */}
         <div className="lg:col-span-8 space-y-6">
           {/* Card 1: Core Identification */}
-          <div className="bg-white p-6 rounded-xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-slate-100 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               1. Catalog Identity & SEO Slug
             </h2>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-800">
-                Product Title <span className="text-rose-500">*</span>
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
+                Product Title <span className="text-rose-400">*</span>
               </label>
               <input
                 type="text"
@@ -210,25 +211,25 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                 value={title}
                 onChange={e => handleTitleChange(e.target.value)}
                 placeholder="e.g. BenQ ScreenBar Pro Monitor Light"
-                className="w-full px-3 py-2 text-sm bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white text-neutral-900"
+                className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors"
               />
             </div>
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-semibold text-neutral-800">
-                  URL Slug <span className="text-rose-500">*</span>
+                <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
+                  URL Slug <span className="text-rose-400">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => setAutoSlug(!autoSlug)}
-                  className="text-[11px] text-[#234F9E] hover:underline"
+                  className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   {autoSlug ? 'Lock auto-generator' : 'Auto-sync from title'}
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-neutral-400 font-mono">/product/</span>
+                <span className="text-sm text-slate-400 font-mono">/product/</span>
                 <input
                   type="text"
                   required
@@ -238,14 +239,14 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                     setSlug(e.target.value);
                   }}
                   placeholder="benq-screenbar-pro"
-                  className="flex-1 px-3 py-1.5 text-xs font-mono bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white text-neutral-900"
+                  className="flex-1 bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm font-mono transition-colors"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-800">
-                Editorial Description <span className="text-rose-500">*</span>
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
+                Editorial Description <span className="text-rose-400">*</span>
               </label>
               <textarea
                 required
@@ -253,20 +254,20 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 placeholder="Provide a clear, objective editorial summary highlighting utility, build quality, and tested performance..."
-                className="w-full px-3 py-2 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] focus:bg-white text-neutral-900"
+                className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors"
               />
             </div>
           </div>
 
           {/* Card 2: Editorial Verdict (Best For / Not For) */}
-          <div className="bg-white p-6 rounded-xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-slate-100 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               2. Editorial Stance & Testing Verdict
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-emerald-900">
+                <label className="block text-sm font-semibold text-emerald-300">
                   Best For (Ideal Shopper Profile)
                 </label>
                 <textarea
@@ -274,12 +275,12 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                   value={bestFor}
                   onChange={e => setBestFor(e.target.value)}
                   placeholder="e.g. Remote software developers and designers working long desk hours."
-                  className="w-full px-3 py-2 text-xs bg-emerald-50/30 border border-emerald-200 rounded-lg focus:outline-none focus:border-emerald-600 text-neutral-900"
+                  className="w-full bg-slate-950/60 border border-emerald-500/30 text-white placeholder-slate-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 rounded-xl p-3 text-sm transition-colors"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-amber-900">
+                <label className="block text-sm font-semibold text-amber-300">
                   Not Ideal For (Honest Limitation)
                 </label>
                 <textarea
@@ -287,37 +288,37 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                   value={notFor}
                   onChange={e => setNotFor(e.target.value)}
                   placeholder="e.g. Laptops with ultra-thin bezels or users wanting RGB lighting."
-                  className="w-full px-3 py-2 text-xs bg-amber-50/30 border border-amber-200 rounded-lg focus:outline-none focus:border-amber-600 text-neutral-900"
+                  className="w-full bg-slate-950/60 border border-amber-500/30 text-white placeholder-slate-500 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl p-3 text-sm transition-colors"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5 pt-2">
-              <label className="block text-xs font-semibold text-neutral-800">
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                 Editorial Badge / Distinction
               </label>
               <select
                 value={editorialBadge}
                 onChange={e => setEditorialBadge(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E] text-neutral-900"
+                className="w-full bg-slate-950/60 border border-white/20 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors [&>option]:bg-slate-900 [&>option]:text-white"
               >
-                <option value="Editor's Choice">Editor&apos;s Choice</option>
-                <option value="Best Value">Best Value</option>
-                <option value="Premium Pick">Premium Pick</option>
-                <option value="">No Special Badge</option>
+                <option value="Editor's Choice" className="bg-slate-900 text-white">Editor&apos;s Choice</option>
+                <option value="Best Value" className="bg-slate-900 text-white">Best Value</option>
+                <option value="Premium Pick" className="bg-slate-900 text-white">Premium Pick</option>
+                <option value="" className="bg-slate-900 text-white">No Special Badge</option>
               </select>
             </div>
           </div>
 
           {/* Card 3: SEO Meta */}
-          <div className="bg-white p-6 rounded-xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-slate-100 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               3. SEO Search Snippet Preview
             </h2>
 
             <div className="space-y-3">
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-neutral-800">
+                <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                   Meta Title
                 </label>
                 <input
@@ -325,12 +326,12 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                   value={metaTitle}
                   onChange={e => setMetaTitle(e.target.value)}
                   placeholder={title ? `${title} | Review & Live Offers` : 'Title | EveryAge Digital'}
-                  className="w-full px-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                  className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-neutral-800">
+                <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                   Meta Description
                 </label>
                 <textarea
@@ -338,7 +339,7 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                   value={metaDescription}
                   onChange={e => setMetaDescription(e.target.value)}
                   placeholder="Honest review, tested performance data, and live merchant pricing."
-                  className="w-full px-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                  className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors"
                 />
               </div>
             </div>
@@ -348,38 +349,38 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
         {/* Sidebar Settings: Merchant, Affiliate Link, Media, Status (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
           {/* Card: Status & Categorization */}
-          <div className="bg-white p-6 rounded-xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-slate-100 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Publishing & Category
             </h2>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-800">
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                 Publishing Status
               </label>
               <select
                 value={status}
                 onChange={e => setStatus(e.target.value as ProductStatus)}
-                className="w-full px-3 py-2 text-xs font-semibold bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                className="w-full bg-slate-950/60 border border-white/20 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm font-semibold transition-colors [&>option]:bg-slate-900 [&>option]:text-white"
               >
-                <option value="active">Active (Visible on Storefront)</option>
-                <option value="draft">Draft (Private in Admin)</option>
-                <option value="paused">Paused (Temporarily Hidden)</option>
-                <option value="archived">Archived</option>
+                <option value="active" className="bg-slate-900 text-white">Active (Visible on Storefront)</option>
+                <option value="draft" className="bg-slate-900 text-white">Draft (Private in Admin)</option>
+                <option value="paused" className="bg-slate-900 text-white">Paused (Temporarily Hidden)</option>
+                <option value="archived" className="bg-slate-900 text-white">Archived</option>
               </select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-800">
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                 Primary Category
               </label>
               <select
                 value={categoryId}
                 onChange={e => setCategoryId(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                className="w-full bg-slate-950/60 border border-white/20 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors [&>option]:bg-slate-900 [&>option]:text-white"
               >
                 {categories.map(c => (
-                  <option key={c.id} value={c.name}>
+                  <option key={c.id} value={c.name} className="bg-slate-900 text-white">
                     {c.name}
                   </option>
                 ))}
@@ -388,30 +389,30 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
           </div>
 
           {/* Card: Merchant & Outbound Affiliate Link */}
-          <div className="bg-white p-6 rounded-xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-slate-100 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Merchant & Affiliate Tag
             </h2>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-800">
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                 Merchant / Partner
               </label>
               <select
                 value={merchantId}
                 onChange={e => setMerchantId(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                className="w-full bg-slate-950/60 border border-white/20 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors [&>option]:bg-slate-900 [&>option]:text-white"
               >
-                <option value="Amazon">Amazon Associates</option>
-                <option value="Gumroad">Gumroad Partner</option>
-                <option value="Direct Partner">Direct Brand Program</option>
-                <option value="Impact">Impact Radius</option>
+                <option value="Amazon" className="bg-slate-900 text-white">Amazon Associates</option>
+                <option value="Gumroad" className="bg-slate-900 text-white">Gumroad Partner</option>
+                <option value="Direct Partner" className="bg-slate-900 text-white">Direct Brand Program</option>
+                <option value="Impact" className="bg-slate-900 text-white">Impact Radius</option>
               </select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-800">
-                Affiliate Outbound URL <span className="text-rose-500">*</span>
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
+                Affiliate Outbound URL <span className="text-rose-400">*</span>
               </label>
               <input
                 type="url"
@@ -419,17 +420,17 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                 value={affiliateUrl}
                 onChange={e => setAffiliateUrl(e.target.value)}
                 placeholder="https://www.amazon.com/dp/... or https://gumroad.com/l/..."
-                className="w-full px-3 py-2 text-xs font-mono bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm font-mono transition-colors"
               />
-              <p className="text-[10px] text-neutral-500">
-                Verified per network format. Storefront renders with <code className="bg-neutral-100 px-1 py-0.5 rounded font-mono">rel=&quot;sponsored nofollow noopener&quot;</code>.
+              <p className="text-[11px] text-slate-400 mt-1">
+                Verified per network format. Storefront renders with <code className="bg-white/10 text-slate-300 px-1 py-0.5 rounded font-mono">rel=&quot;sponsored nofollow noopener&quot;</code>.
               </p>
             </div>
 
             {/* Pricing Range */}
             <div className="grid grid-cols-2 gap-3 pt-2">
               <div className="space-y-1">
-                <label className="block text-[11px] font-semibold text-neutral-700">
+                <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                   Price Min ($)
                 </label>
                 <input
@@ -446,12 +447,12 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                       setPriceMin(isNaN(num) ? 0 : num);
                     }
                   }}
-                  className="w-full px-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                  className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm font-mono transition-colors"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="block text-[11px] font-semibold text-neutral-700">
+                <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                   Price Max ($)
                 </label>
                 <input
@@ -467,20 +468,20 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                       setPriceMax(isNaN(num) ? '' : num);
                     }
                   }}
-                  className="w-full px-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                  className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm font-mono transition-colors"
                 />
               </div>
             </div>
           </div>
 
           {/* Card: Media & Live Image Preview */}
-          <div className="bg-white p-6 rounded-xl border border-neutral-200/80 shadow-xs space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-slate-100 shadow-xl space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Product Visual Media
             </h2>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-800">
+              <label className="block text-sm font-semibold text-slate-200 dark:text-slate-200">
                 Image CDN URL
               </label>
               <input
@@ -489,12 +490,12 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                 value={imageUrl}
                 onChange={e => setImageUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full px-3 py-1.5 text-xs bg-[#F7F7F4] border border-neutral-200 rounded-lg focus:outline-none focus:border-[#234F9E]"
+                className="w-full bg-slate-950/60 border border-white/20 text-white placeholder-slate-500 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 rounded-xl p-3 text-sm transition-colors"
               />
             </div>
 
             {/* Image Preview Box */}
-            <div className="relative aspect-video w-full bg-[#F0F1ED] rounded-lg overflow-hidden border border-neutral-200 flex items-center justify-center">
+            <div className="relative aspect-video w-full bg-slate-950/60 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center">
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -502,7 +503,7 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-neutral-400 flex flex-col items-center gap-1 text-xs">
+                <div className="text-slate-500 flex flex-col items-center gap-1 text-xs">
                   <ImageIcon className="w-6 h-6" />
                   <span>Image preview</span>
                 </div>
@@ -513,11 +514,11 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
       </div>
 
       {/* Sticky Bottom Save Action on Mobile (lg:hidden) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-neutral-200 p-3 px-4 z-30 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] pb-safe flex items-center justify-between gap-3">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-xl border-t border-white/10 p-3 px-4 z-30 shadow-2xl pb-safe flex items-center justify-between gap-3">
         <button
           type="button"
           onClick={() => setStatus('draft')}
-          className="touch-target px-3.5 py-2.5 rounded-xl text-xs font-medium border border-neutral-200 bg-[#F7F7F4] text-neutral-700 hover:bg-neutral-100 transition-colors min-h-[44px]"
+          className="touch-target px-3.5 py-2.5 rounded-xl text-xs font-medium border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-colors min-h-[44px]"
         >
           Draft Mode
         </button>
@@ -525,7 +526,7 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
         <button
           type="submit"
           disabled={loading}
-          className="touch-target flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#234F9E] text-white text-xs font-semibold hover:bg-[#193B7A] transition-colors shadow-xs disabled:opacity-50 min-h-[44px]"
+          className="touch-target flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 disabled:opacity-50 min-h-[44px]"
         >
           <Save className="w-4 h-4" />
           <span>{loading ? 'Saving...' : isEditing ? 'Update & Publish' : 'Publish Product'}</span>

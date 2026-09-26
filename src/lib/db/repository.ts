@@ -917,6 +917,80 @@ class CatalogRepository {
     return true;
   }
 
+  // --- COLLECTIONS ---
+  public async getCollectionBySlug(slug: string): Promise<Collection | undefined> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data, error } = await supabase
+          .from('collections')
+          .select('*')
+          .eq('slug', slug)
+          .maybeSingle();
+
+        if (!error && data) {
+          const row = data;
+          const seed = INITIAL_COLLECTIONS.find(c => c.slug === slug || c.id === row.id);
+          const col: Collection = {
+            id: row.id,
+            slug: row.slug,
+            title: row.title,
+            subtitle: seed?.subtitle || row.description || '',
+            introduction: seed?.introduction || row.description || '',
+            selectionCriteria: seed?.selectionCriteria || [
+              'Must have undergone hands-on editorial vetting',
+              'Must prioritize daily durability and utility',
+              'Direct merchant fulfillment with verified warranties'
+            ],
+            productIds: Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []),
+            bookIds: seed?.bookIds || [],
+            coverImage: seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
+            lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
+            status: (row.status as Collection['status']) || 'published'
+          };
+          return col;
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] getCollectionBySlug Supabase error:', err);
+      }
+    }
+    return this.collections.find(c => c.slug === slug) || INITIAL_COLLECTIONS.find(c => c.slug === slug);
+  }
+
+  public async getAllCollections(): Promise<Collection[]> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data, error } = await supabase.from('collections').select('*');
+        if (!error && data && data.length > 0) {
+          return data.map(row => {
+            const seed = INITIAL_COLLECTIONS.find(c => c.slug === row.slug || c.id === row.id);
+            return {
+              id: row.id,
+              slug: row.slug,
+              title: row.title,
+              subtitle: seed?.subtitle || row.description || '',
+              introduction: seed?.introduction || row.description || '',
+              selectionCriteria: seed?.selectionCriteria || [
+                'Must have undergone hands-on editorial vetting',
+                'Must prioritize daily durability and utility',
+                'Direct merchant fulfillment with verified warranties'
+              ],
+              productIds: Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []),
+              bookIds: seed?.bookIds || [],
+              coverImage: seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
+              lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
+              status: (row.status as Collection['status']) || 'published'
+            };
+          });
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] getAllCollections Supabase error:', err);
+      }
+    }
+    return this.collections.length > 0 ? this.collections : INITIAL_COLLECTIONS;
+  }
+
   // --- OWN PRODUCTS ---
   public getOwnProducts(): OwnedProduct[] {
     return this.ownedProducts;

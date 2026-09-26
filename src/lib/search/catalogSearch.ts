@@ -297,8 +297,16 @@ export function getAllCollections(): Collection[] {
   return COLLECTIONS;
 }
 
+export async function getAllCollectionsAsync(): Promise<Collection[]> {
+  return catalogRepository.getAllCollections();
+}
+
 export function getCollectionBySlug(slug: string): Collection | undefined {
   return COLLECTIONS.find(c => c.slug === slug);
+}
+
+export async function getCollectionBySlugAsync(slug: string): Promise<Collection | undefined> {
+  return catalogRepository.getCollectionBySlug(slug);
 }
 
 /**
