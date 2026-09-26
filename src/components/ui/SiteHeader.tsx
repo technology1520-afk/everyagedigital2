@@ -82,23 +82,13 @@ export function SiteHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 relative">
         {/* Logo & Brand Identity */}
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group touch-target">
-            <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden bg-white p-0.5 border border-purple-200/60 dark:border-white/10 shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-200">
-              <Image
-                src="/logo-mark.png"
-                alt="EveryAge Digital Logo"
-                width={36}
-                height={36}
-                className="w-full h-full object-contain"
-                priority
-              />
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-blue-400 transition-colors">
-                EveryAge
-              </span>
-              <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-purple-700 dark:text-blue-400 font-semibold bg-purple-500/10 border border-purple-500/20 dark:bg-blue-500/10 dark:border-blue-500/20 px-1.5 sm:px-2 py-0.5 rounded-md backdrop-blur-md">
-                Digital
+          <Link href="/" className="hover:opacity-90 transition-opacity touch-target">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0">
+                <Image alt="EveryAge Digital" className="h-full w-full object-contain" height={36} priority src="/logo.png" width={36}/>
+              </div>
+              <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight">
+                EveryAge <span className="text-xs uppercase tracking-widest text-blue-500 font-semibold ml-1">Digital</span>
               </span>
             </div>
           </Link>

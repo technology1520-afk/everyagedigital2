@@ -55,18 +55,19 @@ export function AdminMobileNav() {
       {/* Top Header Row */}
       <div className="flex items-center justify-between px-4 py-2.5">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg overflow-hidden bg-white p-0.5 shrink-0 border border-white/10 shadow-xs">
+          <div className="h-8 w-8 overflow-hidden rounded-xl bg-white p-0.5 shadow-sm flex items-center justify-center shrink-0">
             <Image
-              src="/logo-mark.png"
+              src="/logo.png"
               alt="EveryAge Digital Logo"
               width={28}
               height={28}
-              className="w-full h-full object-contain"
+              className="h-full w-full object-contain"
+              priority
             />
           </div>
           <div>
-            <span className="font-bold text-xs tracking-tight uppercase block leading-none">EveryAge Admin</span>
-            <span className="text-[10px] font-mono text-neutral-400">Control Center</span>
+            <span className="font-bold text-xs tracking-tight uppercase block leading-none">EVERYAGE DIGITAL</span>
+            <span className="text-[9px] uppercase font-mono tracking-widest text-neutral-400 block mt-0.5">OWNER CONTROL CENTER</span>
           </div>
         </div>
 

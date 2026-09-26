@@ -19,19 +19,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://everyagedigital.com'),
-  title: {
-    default: "EveryAge Digital — Curated Products, Books & Digital Resources",
-    template: "%s | EveryAge Digital"
-  },
+  title: "EveryAge Digital | Curated Commerce",
   description: "A curated affiliate commerce storefront and digital-product store helping you discover useful everyday products, books, and knowledge resources.",
   icons: {
-    icon: [
-      { url: '/icon.png', sizes: '512x512', type: 'image/png' },
-      { url: '/logo-mark.png', sizes: '192x192', type: 'image/png' }
-    ],
-    apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
-    ]
+    icon: "/icon.png",
+    apple: "/icon.png",
   },
   openGraph: {
     type: "website",

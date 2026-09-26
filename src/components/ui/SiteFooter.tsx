@@ -67,21 +67,21 @@ export function SiteFooter() {
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
         {/* Brand Banner with Logo */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-purple-200/40 dark:border-white/10">
-          <Link href="/" className="flex items-center gap-3.5 group">
-            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white p-1 border border-purple-200/60 dark:border-white/10 shadow-sm shrink-0 group-hover:scale-105 transition-transform duration-200">
+          <Link href="/" className="flex items-center gap-3.5 group hover:opacity-90 transition-opacity">
+            <div className="h-11 w-11 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0">
               <Image
-                src="/logo-mark.png"
+                src="/logo.png"
                 alt="EveryAge Digital Logo"
-                width={48}
-                height={48}
-                className="w-full h-full object-contain"
+                width={40}
+                height={40}
+                className="h-full w-full object-contain"
               />
             </div>
             <div>
               <div className="flex items-baseline gap-1.5">
                 <span className="font-serif text-2xl font-bold text-slate-900 dark:text-white">EveryAge</span>
                 <span className="text-xs font-mono uppercase tracking-widest text-purple-700 dark:text-blue-400 font-semibold bg-purple-500/10 border border-purple-500/20 dark:bg-blue-500/10 dark:border-blue-500/20 px-1.5 py-0.5 rounded-md">
-                  Digital
+                  DIGITAL
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">

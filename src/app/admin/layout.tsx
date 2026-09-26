@@ -44,25 +44,28 @@ export default function AdminLayout({
       <aside className="hidden md:flex md:w-64 bg-slate-950/80 dark:bg-slate-950/90 backdrop-blur-2xl text-white flex-shrink-0 flex-col justify-between border-r border-white/10 relative z-10">
         <div>
           {/* Brand Header */}
-          <div className="p-4 border-b border-white/10 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg overflow-hidden bg-white p-0.5 shrink-0 border border-white/10 shadow-xs">
+          <div className="p-4 border-b border-white/10 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="h-9 w-9 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0">
                 <Image
-                  src="/logo-mark.png"
+                  src="/logo.png"
                   alt="EveryAge Digital Logo"
                   width={32}
                   height={32}
-                  className="w-full h-full object-contain"
+                  className="h-full w-full object-contain"
+                  priority
                 />
               </div>
-              <div>
-                <span className="font-bold text-xs tracking-tight text-white uppercase block leading-none">EveryAge Digital</span>
-                <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 block mt-1">
-                  Control Center
+              <div className="min-w-0">
+                <span className="font-bold text-xs tracking-tight text-white uppercase block leading-tight truncate">
+                  EVERYAGE DIGITAL
+                </span>
+                <span className="text-[9px] uppercase font-mono tracking-widest text-neutral-400 block mt-0.5 truncate">
+                  OWNER CONTROL CENTER
                 </span>
               </div>
             </div>
-            <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded font-mono">
+            <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded font-mono shrink-0">
               v1.0
             </span>
           </div>
