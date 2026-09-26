@@ -1269,6 +1269,52 @@ class CatalogRepository {
     return true;
   }
 
+  public async cleanupOrphanedBundleProducts(): Promise<{ cleanedCount: number; message: string }> {
+    let cleaned = 0;
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data: prods } = await supabase.from(TABLE_PRODUCTS).select('id');
+        const prodIdSet = new Set((prods || []).map(p => p.id));
+
+        // 1. Delete orphaned rows from collection_products join table if present
+        try {
+          const { data: cpRows } = await supabase.from('collection_products').select('collection_id, product_id');
+          if (Array.isArray(cpRows)) {
+            const orphaned = cpRows.filter(r => !prodIdSet.has(r.product_id));
+            for (const row of orphaned) {
+              await supabase.from('collection_products').delete().eq('collection_id', row.collection_id).eq('product_id', row.product_id);
+              cleaned++;
+            }
+          }
+        } catch {
+          // ignore if table doesn't exist
+        }
+
+        // 2. Clean up collections product_ids JSONB array
+        try {
+          const { data: cols } = await supabase.from('collections').select('id, product_ids');
+          if (Array.isArray(cols)) {
+            for (const col of cols) {
+              const rawIds: string[] = Array.isArray(col.product_ids) ? col.product_ids : [];
+              const validIds = rawIds.filter(id => prodIdSet.has(id));
+              if (validIds.length !== rawIds.length) {
+                await supabase.from('collections').update({ product_ids: validIds }).eq('id', col.id);
+                cleaned += (rawIds.length - validIds.length);
+              }
+            }
+          }
+        } catch {}
+
+        return { cleanedCount: cleaned, message: `Cleaned ${cleaned} orphaned product link(s).` };
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Database error';
+        return { cleanedCount: 0, message: msg };
+      }
+    }
+    return { cleanedCount: 0, message: 'In-memory mode: all product links valid.' };
+  }
+
   public async manageBundleProducts(
     bundleSlug: string,
     action: 'add' | 'remove',

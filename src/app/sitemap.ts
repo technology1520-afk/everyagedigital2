@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/assistant',
     '/compare',
     '/shop/own-products',
+    '/collections',
     '/about',
     '/methodology',
     '/affiliate-disclosure',
@@ -34,7 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const collectionRoutes = COLLECTIONS.map(c => ({
-    url: `${baseUrl}/collection/${c.slug}`,
+    url: `${baseUrl}/collections/${c.slug}`,
     lastModified: new Date(c.lastReviewedAt),
     changeFrequency: 'weekly' as const,
     priority: 0.8

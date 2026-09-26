@@ -293,7 +293,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
           <Link
-            href={`/collection/${relatedCollection.slug}`}
+            href={`/collections/${relatedCollection.slug}`}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 border border-purple-200/60 dark:border-white/15 rounded-xl text-xs font-semibold text-slate-800 dark:text-white transition-all shrink-0"
           >
             <span>View Full Setup</span>

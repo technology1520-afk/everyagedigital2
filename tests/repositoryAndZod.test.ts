@@ -136,5 +136,10 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
       expect(adminResult).toBeDefined();
       expect(adminResult?.activeProductCount).toBe(0);
     }
+
+    // 4. Test cleanupOrphanedBundleProducts
+    const cleanupRes = await catalogRepository.cleanupOrphanedBundleProducts();
+    expect(cleanupRes).toHaveProperty('cleanedCount');
+    expect(cleanupRes).toHaveProperty('message');
   });
 });

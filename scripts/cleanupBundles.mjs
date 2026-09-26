@@ -68,7 +68,7 @@ async function main() {
   try {
     const { data: collections, error: cErr } = await supabase
       .from('collections')
-      .select('id, slug, title, product_ids, status, is_active');
+      .select('id, slug, title, product_ids, status');
 
     if (!cErr && Array.isArray(collections)) {
       console.log(`[cleanupBundles] Found ${collections.length} collections in DB:`);

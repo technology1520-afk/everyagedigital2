@@ -15,7 +15,7 @@ export function MobileTabBar() {
 
   const tabs = [
     { name: 'Shop', href: '/shop', icon: ShoppingBag },
-    { name: 'Collections', href: '/collection/home-office-starter-kit', icon: Compass },
+    { name: 'Collections', href: '/collections', icon: Compass },
     { name: 'Books', href: '/books', icon: BookOpen },
     { name: 'Deals', href: '/deals', icon: Flame },
     { name: 'Assistant', href: '/assistant', icon: Sparkles, highlight: true },

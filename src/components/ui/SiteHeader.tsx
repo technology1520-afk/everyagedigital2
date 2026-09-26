@@ -63,7 +63,7 @@ export function SiteHeader() {
 
   const navLinks = [
     { name: 'Shop All', href: '/shop', icon: ShoppingBag },
-    { name: 'Collections', href: '/collection/home-office-starter-kit', icon: Compass },
+    { name: 'Collections', href: '/collections', icon: Compass },
     { name: 'Books & Guides', href: '/books', icon: BookOpen },
     { name: 'Deals', href: '/deals', icon: Flame },
     { name: 'AI Assistant', href: '/assistant', icon: Sparkles, highlight: true },

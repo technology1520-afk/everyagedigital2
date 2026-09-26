@@ -15,13 +15,15 @@ import {
   Layers,
   Sparkles,
   ExternalLink,
-  Package
+  Package,
+  RefreshCw
 } from 'lucide-react';
 import { Collection, Product } from '../../types';
 import { 
   createCollectionAction, 
   updateCollectionAction, 
-  deleteCollectionAction 
+  deleteCollectionAction,
+  cleanupCollectionOrphansAction
 } from '../../app/actions/admin';
 
 interface CollectionsManagerProps {
@@ -159,6 +161,13 @@ export function CollectionsManager({
     });
   };
 
+  const handleCleanupOrphans = () => {
+    startTransition(async () => {
+      const res = await cleanupCollectionOrphansAction();
+      alert(res.message);
+    });
+  };
+
   const filteredCollections = collections.filter(c => {
     const q = searchQuery.toLowerCase();
     return c.title.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q) || (c.introduction || '').toLowerCase().includes(q);
@@ -183,14 +192,27 @@ export function CollectionsManager({
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={openCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-semibold shadow-md transition-all cursor-pointer self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Create New Bundle</span>
-        </button>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={handleCleanupOrphans}
+            disabled={isPending}
+            title="Clean up deleted or orphaned product references across all bundles"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-purple-200/70 dark:border-white/10 bg-white/60 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isPending ? 'animate-spin' : ''}`} />
+            <span>Clean Orphaned Rows</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-semibold shadow-md transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create New Bundle</span>
+          </button>
+        </div>
       </div>
 
       {/* Search & Overview Stats Bar */}
@@ -280,8 +302,9 @@ export function CollectionsManager({
                             {activeProductCount} {activeProductCount === 1 ? 'item' : 'items'}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300 dark:border-amber-800/50">
-                            <span>Empty (Hidden on Storefront)</span>
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300 dark:border-amber-800/50">
+                            <span className="font-bold">0 Items</span>
+                            <span className="text-amber-700 dark:text-amber-400 font-medium">(Hidden on Storefront)</span>
                           </span>
                         )}
                       </td>

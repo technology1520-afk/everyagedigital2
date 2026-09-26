@@ -221,6 +221,7 @@ export async function createCollectionAction(data: {
   const result = await catalogRepository.createCollection(data);
   if (result.success) {
     revalidatePath('/admin/collections');
+    revalidatePath('/collections');
     revalidatePath(`/collection/${data.slug}`);
     revalidatePath(`/collections/${data.slug}`);
     revalidatePath('/');
@@ -244,6 +245,7 @@ export async function updateCollectionAction(
   const result = await catalogRepository.updateCollection(id, data);
   if (result.success) {
     revalidatePath('/admin/collections');
+    revalidatePath('/collections');
     if (result.collection) {
       revalidatePath(`/collection/${result.collection.slug}`);
       revalidatePath(`/collections/${result.collection.slug}`);
@@ -259,7 +261,18 @@ export async function deleteCollectionAction(id: string) {
   const success = await catalogRepository.deleteCollection(id);
   if (success) {
     revalidatePath('/admin/collections');
+    revalidatePath('/collections');
     revalidatePath('/');
   }
   return { success };
 }
+
+// 14. Clean Orphaned Bundle Links
+export async function cleanupCollectionOrphansAction() {
+  await assertAdmin();
+  const res = await catalogRepository.cleanupOrphanedBundleProducts();
+  revalidatePath('/admin/collections');
+  revalidatePath('/collections');
+  return res;
+}
+

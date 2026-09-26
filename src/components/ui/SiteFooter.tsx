@@ -17,7 +17,7 @@ const FOOTER_SECTIONS: FooterSection[] = [
       { label: 'All Products', href: '/shop' },
       { label: 'Books & Guides', href: '/books' },
       { label: 'Verified Deals', href: '/deals' },
-      { label: 'Curated Collections', href: '/collection/home-office-starter-kit' },
+      { label: 'Curated Collections', href: '/collections' },
       { label: 'Our Digital Products', href: '/shop/own-products' },
     ]
   },
