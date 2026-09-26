@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { logoutAdminAction } from '../actions/admin';
 import { AdminMobileNav } from '../../components/admin/AdminMobileNav';
+import { Sidebar } from '../../components/admin/Sidebar';
 
 export default function AdminLayout({
   children
@@ -41,120 +42,7 @@ export default function AdminLayout({
       <AdminMobileNav />
 
       {/* Desktop Sidebar Navigation */}
-      <aside className="hidden md:flex md:w-64 bg-slate-950/80 dark:bg-slate-950/90 backdrop-blur-2xl text-white flex-shrink-0 flex-col justify-between border-r border-white/10 relative z-10">
-        <div>
-          {/* Brand Header */}
-          <div className="p-4 border-b border-white/10 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="h-9 w-9 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0">
-                <Image
-                  src="/logo.png"
-                  alt="EveryAge Digital Logo"
-                  width={32}
-                  height={32}
-                  className="h-full w-full object-contain"
-                  priority
-                />
-              </div>
-              <div className="min-w-0">
-                <span className="font-bold text-xs tracking-tight text-white uppercase block leading-tight truncate">
-                  EVERYAGE DIGITAL
-                </span>
-                <span className="text-[9px] uppercase font-mono tracking-widest text-neutral-400 block mt-0.5 truncate">
-                  OWNER CONTROL CENTER
-                </span>
-              </div>
-            </div>
-            <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded font-mono shrink-0">
-              v1.0
-            </span>
-          </div>
-
-          {/* Nav Items */}
-          <nav className="p-3 space-y-1 text-sm font-medium">
-            <Link
-              href="/admin"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-            >
-              <LayoutDashboard className="w-4 h-4 text-neutral-400" />
-              <span>Dashboard</span>
-            </Link>
-
-            <Link
-              href="/admin/products"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-            >
-              <Package className="w-4 h-4 text-neutral-400" />
-              <span>Products</span>
-            </Link>
-
-            <Link
-              href="/admin/links"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-            >
-              <Link2 className="w-4 h-4 text-neutral-400" />
-              <span>Affiliate Links</span>
-            </Link>
-
-            <Link
-              href="/admin/categories"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-            >
-              <Layers className="w-4 h-4 text-neutral-400" />
-              <span>Categories</span>
-            </Link>
-
-            <Link
-              href="/admin/own-products"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-            >
-              <FileBox className="w-4 h-4 text-neutral-400" />
-              <span>Own Products</span>
-            </Link>
-
-            <Link
-              href="/admin/assistant"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-            >
-              <Bot className="w-4 h-4 text-neutral-400" />
-              <span>Assistant Logs</span>
-            </Link>
-
-            <Link
-              href="/admin/settings"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-            >
-              <Settings className="w-4 h-4 text-neutral-400" />
-              <span>Settings</span>
-            </Link>
-          </nav>
-        </div>
-
-        {/* Footer actions */}
-        <div className="p-4 border-t border-white/10 space-y-2 text-xs">
-          <Link
-            href="/"
-            target="_blank"
-            className="flex items-center justify-between px-3 py-2 rounded bg-neutral-900 text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
-          >
-            <span className="flex items-center gap-2">
-              <ExternalLink className="w-3.5 h-3.5 text-neutral-400" />
-              <span>View Storefront</span>
-            </span>
-            <span className="text-[10px] text-neutral-500">Live</span>
-          </Link>
-
-          <form action={logoutAdminAction}>
-            <button
-              type="submit"
-              className="w-full flex items-center gap-2 px-3 py-2 rounded text-neutral-400 hover:text-rose-400 hover:bg-neutral-900/50 transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Sign Out</span>
-            </button>
-          </form>
-        </div>
-      </aside>
+      <Sidebar />
 
       {/* Main Administrative Content Area */}
       <div className="flex-1 flex flex-col min-w-0 relative z-10">

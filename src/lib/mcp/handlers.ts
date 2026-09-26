@@ -7,7 +7,11 @@ import {
   GetClicksInputSchema, 
   MarkPriceCheckedInputSchema, 
   GetStalePricesInputSchema, 
-  StoreStatsInputSchema 
+  StoreStatsInputSchema,
+  ListBundlesInputSchema,
+  CreateBundleInputSchema,
+  ManageBundleProductsInputSchema,
+  DeleteBundleInputSchema
 } from './schema';
 import { sanitizeErrorMessage } from './auth';
 import { Product } from '../../types';
@@ -251,6 +255,132 @@ export async function handleStoreStats(args: unknown): Promise<McpToolResponse> 
 }
 
 /**
+ * 9. list_bundles
+ * Returns all bundles and their attached products.
+ */
+export async function handleListBundles(args: unknown): Promise<McpToolResponse> {
+  const parsed = ListBundlesInputSchema.safeParse(args || {});
+  if (!parsed.success) {
+    return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
+  }
+
+  const [collections, allProducts] = await Promise.all([
+    catalogRepository.getAllCollections(),
+    catalogRepository.getAllProducts()
+  ]);
+
+  let filtered = collections;
+  if (parsed.data.status) {
+    filtered = filtered.filter(c => c.status === parsed.data.status);
+  }
+
+  const bundles = filtered.map(c => {
+    const products = (c.productIds || [])
+      .map(pId => allProducts.find(p => p.id === pId || p.slug === pId))
+      .filter((p): p is NonNullable<typeof p> => Boolean(p))
+      .map(p => ({
+        id: p.id,
+        slug: p.slug,
+        title: p.name,
+        category: p.category,
+        price_min: p.priceMin,
+        status: p.status
+      }));
+
+    return {
+      id: c.id,
+      slug: c.slug,
+      title: c.title,
+      description: c.introduction || c.subtitle || '',
+      cover_image: c.coverImage,
+      status: c.status || 'published',
+      product_count: products.length,
+      products
+    };
+  });
+
+  return { ok: true, data: { bundles } };
+}
+
+/**
+ * 10. create_bundle
+ * Args: title, slug, description, product_slugs
+ */
+export async function handleCreateBundle(args: unknown): Promise<McpToolResponse> {
+  const parsed = CreateBundleInputSchema.safeParse(args);
+  if (!parsed.success) {
+    return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
+  }
+
+  const data = parsed.data;
+  const slug = data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  const allProducts = await catalogRepository.getAllProducts();
+  const productIds: string[] = [];
+  if (data.product_slugs && data.product_slugs.length > 0) {
+    for (const pSlug of data.product_slugs) {
+      const prod = allProducts.find(p => p.slug === pSlug || p.id === pSlug);
+      if (prod) {
+        productIds.push(prod.id);
+      }
+    }
+  }
+
+  const result = await catalogRepository.createCollection({
+    title: data.title,
+    slug,
+    description: data.description || '',
+    coverImage: data.cover_image,
+    productIds,
+    status: 'published'
+  });
+
+  if (!result.success || !result.collection) {
+    return { ok: false, error: sanitizeErrorMessage(result.error || 'Failed to create bundle') };
+  }
+
+  return { ok: true, data: { bundle: result.collection } };
+}
+
+/**
+ * 11. manage_bundle_products
+ * Args: bundle_slug, action ("add" | "remove"), product_slugs
+ */
+export async function handleManageBundleProducts(args: unknown): Promise<McpToolResponse> {
+  const parsed = ManageBundleProductsInputSchema.safeParse(args);
+  if (!parsed.success) {
+    return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
+  }
+
+  const { bundle_slug, action, product_slugs } = parsed.data;
+  const result = await catalogRepository.manageBundleProducts(bundle_slug, action, product_slugs);
+
+  if (!result.success || !result.collection) {
+    return { ok: false, error: sanitizeErrorMessage(result.error || 'Failed to manage bundle products') };
+  }
+
+  return { ok: true, data: { bundle: result.collection } };
+}
+
+/**
+ * 12. delete_bundle
+ * Args: bundle_slug
+ */
+export async function handleDeleteBundle(args: unknown): Promise<McpToolResponse> {
+  const parsed = DeleteBundleInputSchema.safeParse(args);
+  if (!parsed.success) {
+    return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
+  }
+
+  const success = await catalogRepository.deleteCollection(parsed.data.bundle_slug);
+  if (!success) {
+    return { ok: false, error: sanitizeErrorMessage('Failed to delete bundle') };
+  }
+
+  return { ok: true, data: { message: `Bundle "${parsed.data.bundle_slug}" deleted successfully` } };
+}
+
+/**
  * Dispatcher mapping tool name to handler
  */
 export async function executeMcpTool(name: string, args: unknown): Promise<McpToolResponse> {
@@ -271,6 +401,14 @@ export async function executeMcpTool(name: string, args: unknown): Promise<McpTo
       return handleGetStalePrices(args);
     case 'store_stats':
       return handleStoreStats(args);
+    case 'list_bundles':
+      return handleListBundles(args);
+    case 'create_bundle':
+      return handleCreateBundle(args);
+    case 'manage_bundle_products':
+      return handleManageBundleProducts(args);
+    case 'delete_bundle':
+      return handleDeleteBundle(args);
     default:
       return { ok: false, error: sanitizeErrorMessage(`Unknown MCP tool: "${name}"`) };
   }

@@ -29,9 +29,9 @@ describe('Master MCP Server Specification & Verification', () => {
     resetMcpRateLimits();
   });
 
-  it('tools/list returns exactly 8 tools with valid JSON schemas', async () => {
+  it('tools/list returns exactly 12 tools with valid JSON schemas', async () => {
     // Direct MCP definition check
-    expect(MCP_TOOLS.length).toBe(8);
+    expect(MCP_TOOLS.length).toBe(12);
     const expectedNames = [
       'list_products',
       'add_product',
@@ -40,7 +40,11 @@ describe('Master MCP Server Specification & Verification', () => {
       'get_clicks',
       'mark_price_checked',
       'get_stale_prices',
-      'store_stats'
+      'store_stats',
+      'list_bundles',
+      'create_bundle',
+      'manage_bundle_products',
+      'delete_bundle'
     ];
     const toolNames = MCP_TOOLS.map(t => t.name);
     expect(toolNames).toEqual(expectedNames);
@@ -58,7 +62,7 @@ describe('Master MCP Server Specification & Verification', () => {
 
     const json = await res.json();
     expect(json.ok).toBe(true);
-    expect(json.data.tools.length).toBe(8);
+    expect(json.data.tools.length).toBe(12);
   });
 
   it('missing/invalid bearer token → 401', async () => {
@@ -430,6 +434,124 @@ describe('Master MCP Server Specification & Verification', () => {
     expect(stored?.editorialNotes).toBe('Revised long-term verdict after extensive daily testing.');
     expect(stored?.editorialBadge).toBe('Best Value');
     expect(stored?.handsOnTested).toBe(true);
+  });
+
+  it('bundle MCP tools: create, list, manage, and delete bundles', async () => {
+    // 1. List bundles initial
+    const listReq1 = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'list_bundles',
+        arguments: {}
+      }
+    });
+    const listRes1 = await POST(listReq1);
+    expect(listRes1.status).toBe(200);
+    const listJson1 = await listRes1.json();
+    expect(listJson1.ok).toBe(true);
+    expect(Array.isArray(listJson1.data.bundles)).toBe(true);
+    const initialBundleCount = listJson1.data.bundles.length;
+
+    const allProducts = await catalogRepository.getAllProducts();
+    const slug1 = allProducts[0]?.slug || 'prod-1';
+    const slug2 = allProducts[1]?.slug || 'prod-2';
+    const slug3 = allProducts[2]?.slug || 'prod-3';
+
+    // 2. Create bundle with products
+    const createReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'create_bundle',
+        arguments: {
+          title: 'Remote Deep Focus Station',
+          slug: 'remote-deep-focus-station',
+          description: 'A curated bundle for high productivity and focus.',
+          product_slugs: [slug1, slug2]
+        }
+      }
+    });
+    const createRes = await POST(createReq);
+    expect(createRes.status).toBe(200);
+    const createJson = await createRes.json();
+    expect(createJson.ok).toBe(true);
+    expect(createJson.data.bundle).toBeDefined();
+    expect(createJson.data.bundle.slug).toBe('remote-deep-focus-station');
+
+    // 3. List bundles and verify new bundle exists
+    const listReq2 = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'list_bundles',
+        arguments: {}
+      }
+    });
+    const listRes2 = await POST(listReq2);
+    const listJson2 = await listRes2.json();
+    expect(listJson2.data.bundles.length).toBe(initialBundleCount + 1);
+    const createdBundle = listJson2.data.bundles.find((b: any) => b.slug === 'remote-deep-focus-station');
+    expect(createdBundle).toBeDefined();
+
+    // 4. Manage bundle products: add a product
+    const manageAddReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'manage_bundle_products',
+        arguments: {
+          bundle_slug: 'remote-deep-focus-station',
+          action: 'add',
+          product_slugs: [slug3]
+        }
+      }
+    });
+    const manageAddRes = await POST(manageAddReq);
+    expect(manageAddRes.status).toBe(200);
+    const manageAddJson = await manageAddRes.json();
+    expect(manageAddJson.ok).toBe(true);
+
+    // 5. Manage bundle products: remove a product
+    const manageRemoveReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'manage_bundle_products',
+        arguments: {
+          bundle_slug: 'remote-deep-focus-station',
+          action: 'remove',
+          product_slugs: [slug1]
+        }
+      }
+    });
+    const manageRemoveRes = await POST(manageRemoveReq);
+    expect(manageRemoveRes.status).toBe(200);
+    const manageRemoveJson = await manageRemoveRes.json();
+    expect(manageRemoveJson.ok).toBe(true);
+
+    // 6. Delete bundle
+    const deleteReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'delete_bundle',
+        arguments: {
+          bundle_slug: 'remote-deep-focus-station'
+        }
+      }
+    });
+    const deleteRes = await POST(deleteReq);
+    expect(deleteRes.status).toBe(200);
+    const deleteJson = await deleteRes.json();
+    expect(deleteJson.ok).toBe(true);
+
+    // Verify bundle is removed
+    const listReq3 = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'list_bundles',
+        arguments: {}
+      }
+    });
+    const listRes3 = await POST(listReq3);
+    const listJson3 = await listRes3.json();
+    const stillExists = listJson3.data.bundles.some((b: any) => b.slug === 'remote-deep-focus-station');
+    expect(stillExists).toBe(false);
   });
 
   it('sanitizeErrorMessage strips tokens and credentials from errors', () => {

@@ -57,11 +57,11 @@ export function BundleProductList({ items, collectionTitle }: BundleProductListP
     }
   };
 
-  const selectedItems = items.filter(item => selectedIds.has(item.id));
+  const selectedItems = items.filter(item => selectedIds.has(item.id) && typeof item.price === 'number' && item.price > 0);
   const selectedCount = selectedItems.length;
-  const totalCount = items.length;
+  const totalCount = items.filter(item => typeof item.price === 'number' && item.price > 0).length;
   const totalPrice = selectedItems.reduce((acc, item) => {
-    const val = typeof item.price === 'number' && !isNaN(item.price) ? item.price : 0;
+    const val = typeof item.price === 'number' && !isNaN(item.price) && item.price > 0 ? item.price : 0;
     return acc + val;
   }, 0);
 

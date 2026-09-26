@@ -745,6 +745,28 @@ class CatalogRepository {
           console.warn('[CatalogRepository] Affiliate links delete warning:', e);
         }
 
+        // Delete from collection_products join table
+        try {
+          await supabase.from('collection_products').delete().eq('product_id', id);
+        } catch {
+          // ignore if table does not exist
+        }
+
+        // Clean up from collections.product_ids array in Supabase
+        try {
+          const { data: cols } = await supabase.from('collections').select('id, product_ids');
+          if (cols && Array.isArray(cols)) {
+            for (const col of cols) {
+              if (Array.isArray(col.product_ids) && col.product_ids.includes(id)) {
+                const nextIds = col.product_ids.filter((pId: string) => pId !== id);
+                await supabase.from('collections').update({ product_ids: nextIds }).eq('id', col.id);
+              }
+            }
+          }
+        } catch {
+          // ignore
+        }
+
         // 2. Delete product from products table
         const { error: sbError } = await supabase.from(TABLE_PRODUCTS).delete().eq('id', id);
 
@@ -772,6 +794,13 @@ class CatalogRepository {
       this.products.splice(index, 1);
       this.offers = this.offers.filter(o => o.productId !== id);
       this.links = this.links.filter(l => l.productId !== id);
+    }
+
+    // Clean up product from all collections in memory
+    for (const c of this.collections) {
+      if (Array.isArray(c.productIds)) {
+        c.productIds = c.productIds.filter(pId => pId !== id);
+      }
     }
     if (this.getBackendMode().mode === 'in-memory-mock' && index === -1) {
       return false;
@@ -917,7 +946,7 @@ class CatalogRepository {
     return true;
   }
 
-  // --- COLLECTIONS ---
+  // --- COLLECTIONS & BUNDLES ---
   public async getCollectionBySlug(slug: string): Promise<Collection | undefined> {
     if (this.getBackendMode().mode === 'supabase') {
       try {
@@ -944,9 +973,9 @@ class CatalogRepository {
             ],
             productIds: Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []),
             bookIds: seed?.bookIds || [],
-            coverImage: seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
+            coverImage: (row.cover_image as string) || seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
             lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
-            status: (row.status as Collection['status']) || 'published'
+            status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published')
           };
           return col;
         }
@@ -978,9 +1007,9 @@ class CatalogRepository {
               ],
               productIds: Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []),
               bookIds: seed?.bookIds || [],
-              coverImage: seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
+              coverImage: (row.cover_image as string) || seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
               lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
-              status: (row.status as Collection['status']) || 'published'
+              status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published')
             };
           });
         }
@@ -989,6 +1018,218 @@ class CatalogRepository {
       }
     }
     return this.collections.length > 0 ? this.collections : INITIAL_COLLECTIONS;
+  }
+
+  public async createCollection(input: {
+    title: string;
+    slug: string;
+    description?: string;
+    coverImage?: string;
+    productIds?: string[];
+    status?: 'published' | 'draft';
+  }): Promise<{ success: boolean; collection?: Collection; error?: string }> {
+    const cleanSlug = input.slug.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/(^-|-$)/g, '');
+    const newId = `col-${Date.now()}`;
+    const now = new Date().toISOString();
+    const productIds = Array.isArray(input.productIds) ? Array.from(new Set(input.productIds)) : [];
+    const status = input.status || 'published';
+    const coverImage = input.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80';
+    const desc = input.description || '';
+
+    const newCol: Collection = {
+      id: newId,
+      slug: cleanSlug,
+      title: input.title,
+      subtitle: desc,
+      introduction: desc,
+      selectionCriteria: [
+        'Must have undergone hands-on editorial vetting',
+        'Must prioritize daily durability and utility',
+        'Direct merchant fulfillment with verified warranties'
+      ],
+      productIds,
+      bookIds: [],
+      coverImage,
+      lastReviewedAt: now,
+      status
+    };
+
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const row: Record<string, unknown> = {
+          id: newId,
+          slug: cleanSlug,
+          title: input.title,
+          description: desc,
+          product_ids: productIds,
+          last_reviewed_at: now,
+          status,
+          created_at: now
+        };
+
+        const { error: sbError } = await supabase.from('collections').insert(row);
+        if (sbError) {
+          console.error('[CatalogRepository] Supabase createCollection error:', sbError);
+          return { success: false, error: sbError.message };
+        }
+
+        // Try inserting into collection_products if table exists
+        if (productIds.length > 0) {
+          try {
+            const joinRows = productIds.map((pId, idx) => ({
+              collection_id: newId,
+              product_id: pId,
+              sort_order: idx
+            }));
+            await supabase.from('collection_products').insert(joinRows);
+          } catch {
+            // ignore if join table does not exist
+          }
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Database error';
+        console.error('[CatalogRepository] Supabase createCollection exception:', err);
+        return { success: false, error: message };
+      }
+    }
+
+    this.collections.unshift(newCol);
+    return { success: true, collection: newCol };
+  }
+
+  public async updateCollection(
+    idOrSlug: string,
+    input: Partial<{
+      title: string;
+      slug: string;
+      description: string;
+      coverImage: string;
+      productIds: string[];
+      status: 'published' | 'draft';
+    }>
+  ): Promise<{ success: boolean; collection?: Collection; error?: string }> {
+    const existing = await this.getCollectionBySlug(idOrSlug) || this.collections.find(c => c.id === idOrSlug);
+    if (!existing) {
+      return { success: false, error: 'Collection not found' };
+    }
+
+    const now = new Date().toISOString();
+    if (input.title) existing.title = input.title;
+    if (input.slug) existing.slug = input.slug.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/(^-|-$)/g, '');
+    if (input.description !== undefined) {
+      existing.subtitle = input.description;
+      existing.introduction = input.description;
+    }
+    if (input.coverImage) existing.coverImage = input.coverImage;
+    if (input.status) existing.status = input.status;
+    if (input.productIds) existing.productIds = Array.from(new Set(input.productIds));
+    existing.lastReviewedAt = now;
+
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const updateRow: Record<string, unknown> = {
+          title: existing.title,
+          slug: existing.slug,
+          description: existing.introduction,
+          product_ids: existing.productIds,
+          last_reviewed_at: now,
+          status: existing.status
+        };
+
+        const { error: sbError } = await supabase
+          .from('collections')
+          .update(updateRow)
+          .eq('id', existing.id);
+
+        if (sbError) {
+          console.error('[CatalogRepository] Supabase updateCollection error:', sbError);
+          return { success: false, error: sbError.message };
+        }
+
+        // Try syncing collection_products join table if exists
+        try {
+          await supabase.from('collection_products').delete().eq('collection_id', existing.id);
+          if (existing.productIds.length > 0) {
+            const joinRows = existing.productIds.map((pId, idx) => ({
+              collection_id: existing.id,
+              product_id: pId,
+              sort_order: idx
+            }));
+            await supabase.from('collection_products').insert(joinRows);
+          }
+        } catch {
+          // ignore if join table does not exist
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Database error';
+        console.error('[CatalogRepository] Supabase updateCollection exception:', err);
+        return { success: false, error: message };
+      }
+    }
+
+    const memIdx = this.collections.findIndex(c => c.id === existing.id);
+    if (memIdx >= 0) this.collections[memIdx] = existing;
+    else this.collections.push(existing);
+
+    return { success: true, collection: existing };
+  }
+
+  public async deleteCollection(idOrSlug: string): Promise<boolean> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        try {
+          await supabase.from('collection_products').delete().eq('collection_id', idOrSlug);
+        } catch {}
+
+        const { error: err1 } = await supabase.from('collections').delete().eq('id', idOrSlug);
+        if (err1) {
+          await supabase.from('collections').delete().eq('slug', idOrSlug);
+        }
+      } catch (err) {
+        console.error('[CatalogRepository] Supabase deleteCollection error:', err);
+      }
+    }
+
+    const idx = this.collections.findIndex(c => c.id === idOrSlug || c.slug === idOrSlug);
+    if (idx >= 0) {
+      this.collections.splice(idx, 1);
+    }
+    return true;
+  }
+
+  public async manageBundleProducts(
+    bundleSlug: string,
+    action: 'add' | 'remove',
+    productSlugs: string[]
+  ): Promise<{ success: boolean; collection?: Collection; error?: string }> {
+    const col = await this.getCollectionBySlug(bundleSlug);
+    if (!col) {
+      return { success: false, error: `Bundle with slug "${bundleSlug}" not found` };
+    }
+
+    const allProducts = await this.getAllProducts();
+    const targetProductIds: string[] = [];
+    for (const pSlug of productSlugs) {
+      const p = allProducts.find(prod => prod.slug === pSlug || prod.id === pSlug);
+      if (p) targetProductIds.push(p.id);
+    }
+
+    if (targetProductIds.length === 0) {
+      return { success: false, error: 'None of the specified product slugs were found in the catalog' };
+    }
+
+    let updatedIds = [...col.productIds];
+    if (action === 'add') {
+      updatedIds = Array.from(new Set([...updatedIds, ...targetProductIds]));
+    } else if (action === 'remove') {
+      const removeSet = new Set(targetProductIds);
+      updatedIds = updatedIds.filter(id => !removeSet.has(id));
+    }
+
+    return this.updateCollection(col.id, { productIds: updatedIds });
   }
 
   // --- OWN PRODUCTS ---

@@ -73,6 +73,37 @@ export type GetStalePricesInput = z.infer<typeof GetStalePricesInputSchema>;
 export const StoreStatsInputSchema = z.object({});
 export type StoreStatsInput = z.infer<typeof StoreStatsInputSchema>;
 
+// 9. list_bundles
+export const ListBundlesInputSchema = z.object({
+  status: z.enum(['published', 'draft']).optional()
+}).optional().default({});
+export type ListBundlesInput = z.infer<typeof ListBundlesInputSchema>;
+
+// 10. create_bundle
+export const CreateBundleInputSchema = z.object({
+  title: z.string().min(2, 'Title must be at least 2 characters'),
+  slug: z.string().min(2).optional(),
+  description: z.string().optional(),
+  product_slugs: z.array(z.string()).default([]).optional(),
+  cover_image: z.string().url('Cover image must be a valid URL').optional()
+});
+export type CreateBundleInput = z.infer<typeof CreateBundleInputSchema>;
+
+// 11. manage_bundle_products
+export const ManageBundleProductsInputSchema = z.object({
+  bundle_slug: z.string().min(1, 'Bundle slug is required'),
+  action: z.enum(['add', 'remove']),
+  product_slugs: z.array(z.string()).min(1, 'At least one product slug is required')
+});
+export type ManageBundleProductsInput = z.infer<typeof ManageBundleProductsInputSchema>;
+
+// 12. delete_bundle
+export const DeleteBundleInputSchema = z.object({
+  bundle_slug: z.string().min(1, 'Bundle slug is required')
+});
+export type DeleteBundleInput = z.infer<typeof DeleteBundleInputSchema>;
+
+
 export interface McpToolDefinition {
   name: string;
   description: string;
@@ -220,6 +251,71 @@ export const MCP_TOOLS: McpToolDefinition[] = [
     inputSchema: {
       type: 'object',
       properties: {}
+    }
+  },
+  {
+    name: 'list_bundles',
+    description: 'Returns all curated bundles/collections and their attached products.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        status: {
+          type: 'string',
+          enum: ['published', 'draft'],
+          description: 'Optional filter by publication status'
+        }
+      }
+    }
+  },
+  {
+    name: 'create_bundle',
+    description: 'Create a new curated bundle or collection with metadata and attached product slugs.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string', description: 'Bundle title (min 2 chars)' },
+        slug: { type: 'string', description: 'URL slug (optional, auto-generated from title if omitted)' },
+        description: { type: 'string', description: 'Editorial context / description of the bundle' },
+        product_slugs: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Array of product slugs to include in the bundle'
+        },
+        cover_image: { type: 'string', description: 'Cover image URL' }
+      },
+      required: ['title']
+    }
+  },
+  {
+    name: 'manage_bundle_products',
+    description: 'Add or remove products from an existing curated bundle by slugs.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        bundle_slug: { type: 'string', description: 'Slug of the bundle to modify' },
+        action: {
+          type: 'string',
+          enum: ['add', 'remove'],
+          description: 'Action to perform: "add" or "remove"'
+        },
+        product_slugs: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Array of product slugs to add or remove'
+        }
+      },
+      required: ['bundle_slug', 'action', 'product_slugs']
+    }
+  },
+  {
+    name: 'delete_bundle',
+    description: 'Delete a curated bundle/collection by slug.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        bundle_slug: { type: 'string', description: 'Slug of the bundle to delete' }
+      },
+      required: ['bundle_slug']
     }
   }
 ];

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { 
@@ -11,7 +12,7 @@ import { BookCard } from '../../../components/ui/BookCard';
 import { Breadcrumbs } from '../../../components/ui/Breadcrumbs';
 import { ShareButton } from '../../../components/ui/ShareButton';
 import { BundleProductList, BundleItem } from '../../../components/collection/BundleProductList';
-import { Check, Calendar } from 'lucide-react';
+import { Check, Calendar, Layers, ArrowRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -53,26 +54,35 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   const rawProducts = await Promise.all(
     collection.productIds.map(id => catalogRepository.getProductById(id))
   );
-  const products = rawProducts.filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-  // Map to BundleItem view models with live offers & affiliate URLs
-  const bundleItems: BundleItem[] = products.map(p => {
-    const offer = catalogRepository.getOfferForProduct(p.id);
-    const price = offer && typeof offer.price === 'number' && !isNaN(offer.price) ? offer.price : 0;
-    return {
-      id: p.id,
-      slug: p.slug,
-      name: p.name,
-      category: p.category,
-      imageUrl: p.imageUrl,
-      price,
-      originalPrice: offer?.originalPrice,
-      merchantName: offer?.merchantName || p.sourceProvider || 'Direct Merchant',
-      affiliateUrl: offer?.affiliateUrl || p.officialUrl || '#',
-      whyCurated: p.bestFor || p.editorialNotes || p.description,
-      sourceProductId: p.sourceProductId
-    };
-  });
+  // Filter out any products that no longer exist or are marked archived/deleted in Supabase
+  const activeProducts = rawProducts.filter(
+    (p): p is NonNullable<typeof p> => Boolean(p && p.status === 'active')
+  );
+
+  // Map to BundleItem view models with live offers & affiliate URLs, strictly requiring price > 0
+  const bundleItems: BundleItem[] = activeProducts
+    .map(p => {
+      const offer = catalogRepository.getOfferForProduct(p.id);
+      const price = offer && typeof offer.price === 'number' && !isNaN(offer.price) && offer.price > 0
+        ? offer.price
+        : (typeof p.priceMin === 'number' && p.priceMin > 0 ? p.priceMin : 0);
+
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        category: p.category,
+        imageUrl: p.imageUrl,
+        price,
+        originalPrice: offer?.originalPrice,
+        merchantName: offer?.merchantName || p.sourceProvider || 'Direct Merchant',
+        affiliateUrl: offer?.affiliateUrl || p.officialUrl || '#',
+        whyCurated: p.bestFor || p.editorialNotes || p.description,
+        sourceProductId: p.sourceProductId
+      };
+    })
+    .filter(item => item && item.price > 0);
 
   // 2. Resolve companion books in collection (if any)
   const allBooks = await getAllBooksAsync();
@@ -154,11 +164,34 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         </div>
       </div>
 
-      {/* Interactive Bundle Product List + Sticky Checkout Bar */}
-      <BundleProductList
-        items={bundleItems}
-        collectionTitle={collection.title}
-      />
+      {/* Interactive Bundle Product List + Sticky Checkout Bar or Clean Fallback */}
+      {bundleItems.length === 0 ? (
+        <div className="rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 p-8 sm:p-12 text-center space-y-4 shadow-xl">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
+            <Layers className="w-6 h-6" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            Bundle updating or currently unavailable
+          </h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
+            The products originally curated for this bundle are currently undergoing editorial re-evaluation or stock verification. Check back soon for our refreshed recommendations.
+          </p>
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold text-xs hover:opacity-90 transition-opacity"
+            >
+              <span>Browse Active Products</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <BundleProductList
+          items={bundleItems}
+          collectionTitle={collection.title}
+        />
+      )}
 
       {/* Included Books & Knowledge Guides (if any) */}
       {books.length > 0 && (

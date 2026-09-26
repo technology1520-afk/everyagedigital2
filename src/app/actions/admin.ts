@@ -203,3 +203,63 @@ export async function updateOwnProductAction(id: string, input: Partial<OwnProdu
   }
   return { success: false, error: 'Owned product not found' };
 }
+
+// 11. Create Collection / Bundle
+export async function createCollectionAction(data: {
+  title: string;
+  slug: string;
+  description?: string;
+  coverImage?: string;
+  productIds?: string[];
+  status?: 'published' | 'draft';
+}) {
+  await assertAdmin();
+  if (!data.title || !data.slug) {
+    return { success: false, error: 'Title and slug are required' };
+  }
+
+  const result = await catalogRepository.createCollection(data);
+  if (result.success) {
+    revalidatePath('/admin/collections');
+    revalidatePath(`/collection/${data.slug}`);
+    revalidatePath(`/collections/${data.slug}`);
+    revalidatePath('/');
+  }
+  return result;
+}
+
+// 12. Update Collection / Bundle
+export async function updateCollectionAction(
+  id: string,
+  data: Partial<{
+    title: string;
+    slug: string;
+    description: string;
+    coverImage: string;
+    productIds: string[];
+    status: 'published' | 'draft';
+  }>
+) {
+  await assertAdmin();
+  const result = await catalogRepository.updateCollection(id, data);
+  if (result.success) {
+    revalidatePath('/admin/collections');
+    if (result.collection) {
+      revalidatePath(`/collection/${result.collection.slug}`);
+      revalidatePath(`/collections/${result.collection.slug}`);
+    }
+    revalidatePath('/');
+  }
+  return result;
+}
+
+// 13. Delete Collection / Bundle
+export async function deleteCollectionAction(id: string) {
+  await assertAdmin();
+  const success = await catalogRepository.deleteCollection(id);
+  if (success) {
+    revalidatePath('/admin/collections');
+    revalidatePath('/');
+  }
+  return { success };
+}

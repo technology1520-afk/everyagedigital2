@@ -1,10 +1,2 @@
-import { redirect } from 'next/navigation';
+export { default, generateMetadata, generateStaticParams } from '../../collection/[slug]/page';
 
-export default async function CollectionsRedirectPage({
-  params
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  redirect(`/collection/${slug}`);
-}

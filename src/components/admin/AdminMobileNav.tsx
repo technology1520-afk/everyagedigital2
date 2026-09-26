@@ -13,9 +13,10 @@ import {
   Bot, 
   Settings, 
   ExternalLink, 
-  LogOut, 
+  Boxes,
   Menu, 
-  X 
+  X,
+  LogOut 
 } from 'lucide-react';
 import { logoutAdminAction } from '../../app/actions/admin';
 
@@ -24,6 +25,7 @@ const ADMIN_LINKS = [
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/links', label: 'Affiliate Links', icon: Link2 },
   { href: '/admin/categories', label: 'Categories', icon: Layers },
+  { href: '/admin/collections', label: 'Collections', icon: Boxes },
   { href: '/admin/own-products', label: 'Own Products', icon: FileBox },
   { href: '/admin/assistant', label: 'Assistant Logs', icon: Bot },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
