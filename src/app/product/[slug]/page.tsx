@@ -320,8 +320,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
-            {alternatives.map(item => (
-              <ProductCard key={item.product.id} item={item} />
+            {alternatives.map((item, idx) => (
+              <ProductCard key={item.product.id} item={item} index={idx} priority={false} />
             ))}
           </div>
         </section>

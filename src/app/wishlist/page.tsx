@@ -88,8 +88,8 @@ export default function WishlistPage() {
                 Saved Hardware & Essentials ({savedProducts.length})
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {savedProducts.map(item => (
-                  <ProductCard key={item.product.id} item={item} />
+                {savedProducts.map((item, idx) => (
+                  <ProductCard key={item.product.id} item={item} index={idx} priority={idx < 2} />
                 ))}
               </div>
             </section>

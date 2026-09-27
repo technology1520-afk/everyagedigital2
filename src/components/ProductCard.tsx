@@ -15,16 +15,19 @@ export interface ProductCardProps {
   showCompare?: boolean;
   className?: string;
   priority?: boolean;
+  index?: number;
 }
 
 export function ProductCard({
   item,
   showCompare = true,
   className = '',
-  priority = false
+  priority,
+  index
 }: ProductCardProps) {
   const { product, offer, freshness } = item;
   const isAmazon = offer?.merchantName === 'Amazon';
+  const isPriority = priority !== undefined ? priority : (index !== undefined ? index < 2 : false);
 
   const getBadgeInfo = () => {
     if (product.editorialBadge) {
@@ -84,8 +87,8 @@ export function ProductCard({
             src={product.imageUrl}
             alt={product.altText}
             fill
-            sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
-            priority={priority}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            priority={isPriority}
             className="object-contain group-hover:scale-105 transition-transform duration-300"
           />
         </Link>

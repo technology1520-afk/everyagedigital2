@@ -101,7 +101,7 @@ class CatalogRepository {
 
   constructor() {
     this.reset();
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV === 'development') {
       const backend = this.getBackendMode();
       console.log(`[CatalogRepository] Backend mode: ${backend.mode} (${backend.details})`);
     }

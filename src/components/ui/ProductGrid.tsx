@@ -33,7 +33,7 @@ export function ProductGrid({
   return (
     <div className={`${gridClass} ${className}`.trim()}>
       {items.map((item, idx) => (
-        <ProductCard key={item.product.id} item={item} priority={idx < 2} />
+        <ProductCard key={item.product.id} item={item} index={idx} priority={idx < 2} />
       ))}
     </div>
   );

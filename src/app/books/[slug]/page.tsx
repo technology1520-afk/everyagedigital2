@@ -197,8 +197,8 @@ export default async function BookDetailPage({ params }: BookPageProps) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {relatedProducts.map(item => (
-              <ProductCard key={item.product.id} item={item} />
+            {relatedProducts.map((item, idx) => (
+              <ProductCard key={item.product.id} item={item} index={idx} priority={false} />
             ))}
           </div>
         </section>
