@@ -90,7 +90,7 @@ export function SiteHeader() {
               <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight flex items-center">
                 EveryAge <span className="text-xs uppercase tracking-widest text-blue-500 font-semibold ml-1">Digital</span>
               </span>
-              <span className="hidden [html[data-seasonal='halloween']_&]:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/20 text-orange-300 border border-orange-400/40 shadow-xs animate-pulse">
+              <span className="hidden [html[data-seasonal=halloween]_&]:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/20 text-orange-300 border border-orange-400/40 shadow-xs animate-pulse">
                 🎃 Spooky Season Edition
               </span>
             </div>

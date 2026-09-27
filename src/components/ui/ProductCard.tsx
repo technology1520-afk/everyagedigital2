@@ -76,12 +76,12 @@ export function ProductCard({
     product.slug?.toLowerCase().includes('halloween') ||
     product.name?.toLowerCase().includes('halloween') ||
     product.category?.toLowerCase().includes('halloween') ||
-    (Array.isArray(product.tags) && product.tags.some(t => t.toLowerCase().includes('halloween') || t.toLowerCase().includes('spooky')))
+    (Array.isArray(productAny.tags) && productAny.tags.some((t: string) => String(t).toLowerCase().includes('halloween') || String(t).toLowerCase().includes('spooky')))
   );
 
   return (
     <article
-      className={`group relative rounded-2xl bg-white/80 dark:bg-white/[0.04] [html[data-seasonal='halloween']_&]:bg-slate-950/80 [html[data-seasonal='halloween']_&]:border-orange-500/20 [html[data-seasonal='halloween']_&]:hover:border-orange-500/60 [html[data-seasonal='halloween']_&]:shadow-lg [html[data-seasonal='halloween']_&]:shadow-black/40 backdrop-blur-lg border border-purple-100 dark:border-white/10 hover:border-purple-300 dark:hover:border-blue-400/40 hover:-translate-y-1 transition-all duration-300 shadow-sm dark:shadow-none overflow-hidden flex flex-col justify-between ${className}`}
+      className={`group relative rounded-2xl bg-white/80 dark:bg-white/[0.04] [html[data-seasonal=halloween]_&]:bg-slate-950/80 [html[data-seasonal=halloween]_&]:border-orange-500/20 [html[data-seasonal=halloween]_&]:hover:border-orange-500/60 [html[data-seasonal=halloween]_&]:shadow-lg [html[data-seasonal=halloween]_&]:shadow-black/40 backdrop-blur-lg border border-purple-100 dark:border-white/10 hover:border-purple-300 dark:hover:border-blue-400/40 hover:-translate-y-1 transition-all duration-300 shadow-sm dark:shadow-none overflow-hidden flex flex-col justify-between ${className}`}
     >
       {/* Top Media & Actions */}
       <div
@@ -138,36 +138,36 @@ export function ProductCard({
           </div>
 
           {/* Title */}
-          <h3 className="font-semibold text-xs sm:text-base text-slate-900 dark:text-white [html[data-seasonal='halloween']_&]:text-amber-50 leading-snug line-clamp-2 mb-2">
-            <Link href={`/product/${product.slug}`} className="group-hover:text-purple-600 dark:group-hover:text-blue-300 [html[data-seasonal='halloween']_&]:group-hover:text-orange-300 focus:outline-hidden transition-colors">
+          <h3 className="font-semibold text-xs sm:text-base text-slate-900 dark:text-white [html[data-seasonal=halloween]_&]:text-amber-50 leading-snug line-clamp-2 mb-2">
+            <Link href={`/product/${product.slug}`} className="group-hover:text-purple-600 dark:group-hover:text-blue-300 [html[data-seasonal=halloween]_&]:group-hover:text-orange-300 focus:outline-hidden transition-colors">
               {product.name}
             </Link>
           </h3>
 
           {/* Description */}
           {product.description && (
-            <p className="text-xs leading-relaxed text-slate-300 [html[data-seasonal='halloween']_&]:text-orange-200/70 line-clamp-2 mb-3">
+            <p className="text-xs leading-relaxed text-slate-300 [html[data-seasonal=halloween]_&]:text-orange-200/70 line-clamp-2 mb-3">
               {product.description}
             </p>
           )}
 
           {/* Best for highlight */}
           {product.bestFor && (
-            <div className="card-best-for text-[11px] p-2 rounded-lg bg-white/[0.04] border border-white/5 text-slate-300 [html[data-seasonal='halloween']_&]:bg-orange-950/40 [html[data-seasonal='halloween']_&]:border-orange-500/20 [html[data-seasonal='halloween']_&]:text-orange-200 line-clamp-1">
-              <strong className="text-white [html[data-seasonal='halloween']_&]:text-orange-100 font-medium">Best for:</strong> {product.bestFor}
+            <div className="card-best-for text-[11px] p-2 rounded-lg bg-white/[0.04] border border-white/5 text-slate-300 [html[data-seasonal=halloween]_&]:bg-orange-950/40 [html[data-seasonal=halloween]_&]:border-orange-500/20 [html[data-seasonal=halloween]_&]:text-orange-200 line-clamp-1">
+              <strong className="text-white [html[data-seasonal=halloween]_&]:text-orange-100 font-medium">Best for:</strong> {product.bestFor}
             </div>
           )}
         </div>
 
         {/* Price + CTA Row (Stacked full-width on phone, side-by-side on sm+) */}
         <div className="mt-3.5 sm:mt-4">
-          <div className="card-price-row border-t border-purple-100 dark:border-white/10 [html[data-seasonal='halloween']_&]:border-orange-500/20 pt-3">
+          <div className="card-price-row border-t border-purple-100 dark:border-white/10 [html[data-seasonal=halloween]_&]:border-orange-500/20 pt-3">
             <div>
               {freshness?.isStale ? (
                 <span className="price-stale block text-xs text-amber-600 dark:text-amber-400 italic">Check current price &uarr;</span>
               ) : displayPrice !== null ? (
                 <div className="flex items-baseline gap-1.5">
-                  <span className="card-price-val text-lg font-bold text-white [html[data-seasonal='halloween']_&]:text-amber-300">${displayPrice.toFixed(2)}</span>
+                  <span className="card-price-val text-lg font-bold text-white [html[data-seasonal=halloween]_&]:text-amber-300">${displayPrice.toFixed(2)}</span>
                   {offer?.originalPrice && offer.originalPrice > displayPrice && (
                     <span className="line-through text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
                       ${offer.originalPrice.toFixed(2)}
@@ -175,7 +175,7 @@ export function ProductCard({
                   )}
                 </div>
               ) : (
-                <span className="text-sm font-medium text-slate-400 [html[data-seasonal='halloween']_&]:text-orange-200">Check Price</span>
+                <span className="text-sm font-medium text-slate-400 [html[data-seasonal=halloween]_&]:text-orange-200">Check Price</span>
               )}
             </div>
 
@@ -185,14 +185,14 @@ export function ProductCard({
                   href={`/api/go/${product.id}`}
                   target="_blank"
                   rel="sponsored nofollow noopener"
-                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal='halloween']_&]:bg-gradient-to-r [html[data-seasonal='halloween']_&]:from-orange-600 [html[data-seasonal='halloween']_&]:to-amber-600 [html[data-seasonal='halloween']_&]:hover:from-orange-500 [html[data-seasonal='halloween']_&]:hover:to-amber-500 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 [html[data-seasonal='halloween']_&]:shadow-orange-600/30 transition-all"
+                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:hover:from-orange-500 [html[data-seasonal=halloween]_&]:hover:to-amber-500 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 [html[data-seasonal=halloween]_&]:shadow-orange-600/30 transition-all"
                 >
                   <span>View Deal &rarr;</span>
                 </a>
               ) : (
                 <Link
                   href={`/product/${product.slug}`}
-                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal='halloween']_&]:bg-gradient-to-r [html[data-seasonal='halloween']_&]:from-orange-600 [html[data-seasonal='halloween']_&]:to-amber-600 [html[data-seasonal='halloween']_&]:hover:from-orange-500 [html[data-seasonal='halloween']_&]:hover:to-amber-500 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 [html[data-seasonal='halloween']_&]:shadow-orange-600/30 transition-all"
+                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:hover:from-orange-500 [html[data-seasonal=halloween]_&]:hover:to-amber-500 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 [html[data-seasonal=halloween]_&]:shadow-orange-600/30 transition-all"
                 >
                   <span>View Deal &rarr;</span>
                 </Link>
@@ -201,7 +201,7 @@ export function ProductCard({
           </div>
 
           {/* Affiliate disclosure micro-text under the button */}
-          <p className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 [html[data-seasonal='halloween']_&]:text-orange-300/60 text-right mt-1 sm:mt-1.5 leading-tight">
+          <p className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 [html[data-seasonal=halloween]_&]:text-orange-300/60 text-right mt-1 sm:mt-1.5 leading-tight">
             {isAmazon
               ? 'Paid Amazon link'
               : 'Direct merchant link'}
