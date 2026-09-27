@@ -719,7 +719,7 @@ export const COLLECTIONS: Collection[] = [
     ],
     productIds: ['prod-1', 'prod-2', 'prod-7'],
     bookIds: ['book-1'],
-    coverImage: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80',
     lastReviewedAt: '2026-03-18T12:00:00Z',
     status: 'published'
   },

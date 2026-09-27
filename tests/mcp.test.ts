@@ -29,9 +29,9 @@ describe('Master MCP Server Specification & Verification', () => {
     resetMcpRateLimits();
   });
 
-  it('tools/list returns exactly 12 tools with valid JSON schemas', async () => {
+  it('tools/list returns exactly 13 tools with valid JSON schemas', async () => {
     // Direct MCP definition check
-    expect(MCP_TOOLS.length).toBe(12);
+    expect(MCP_TOOLS.length).toBe(13);
     const expectedNames = [
       'list_products',
       'add_product',
@@ -43,6 +43,7 @@ describe('Master MCP Server Specification & Verification', () => {
       'store_stats',
       'list_bundles',
       'create_bundle',
+      'update_bundle',
       'manage_bundle_products',
       'delete_bundle'
     ];
@@ -62,7 +63,7 @@ describe('Master MCP Server Specification & Verification', () => {
 
     const json = await res.json();
     expect(json.ok).toBe(true);
-    expect(json.data.tools.length).toBe(12);
+    expect(json.data.tools.length).toBe(13);
   });
 
   it('missing/invalid bearer token → 401', async () => {
@@ -552,6 +553,67 @@ describe('Master MCP Server Specification & Verification', () => {
     const listJson3 = await listRes3.json();
     const stillExists = listJson3.data.bundles.some((b: any) => b.slug === 'remote-deep-focus-station');
     expect(stillExists).toBe(false);
+  });
+
+  it('create_bundle auto-grabs cover_image from first product when omitted, and update_bundle updates metadata & cover_image', async () => {
+    const products = catalogRepository.getProducts();
+    const p1 = products[0];
+    const p2 = products[1];
+
+    // 1. Create bundle without cover_image
+    const createReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'create_bundle',
+        arguments: {
+          title: 'Automated Cover Bundle',
+          slug: 'automated-cover-bundle',
+          description: 'A bundle testing dynamic cover image assignment',
+          product_slugs: [p1.slug, p2.slug]
+        }
+      }
+    });
+
+    const createRes = await POST(createReq);
+    expect(createRes.status).toBe(200);
+    const createJson = await createRes.json();
+    expect(createJson.ok).toBe(true);
+    // Should have auto-grabbed p1.imageUrl as coverImage
+    expect(createJson.data.bundle.coverImage).toBe(p1.imageUrl);
+
+    // 2. Update bundle with explicit cover_image
+    const customCover = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c';
+    const updateReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'update_bundle',
+        arguments: {
+          bundle_slug: 'automated-cover-bundle',
+          title: 'Automated Cover Bundle (Updated)',
+          cover_image: customCover
+        }
+      }
+    });
+
+    const updateRes = await POST(updateReq);
+    expect(updateRes.status).toBe(200);
+    const updateJson = await updateRes.json();
+    expect(updateJson.ok).toBe(true);
+    expect(updateJson.data.bundle.coverImage).toBe(customCover);
+    expect(updateJson.data.bundle.title).toBe('Automated Cover Bundle (Updated)');
+
+    // 3. Clean up: delete bundle
+    const deleteReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'delete_bundle',
+        arguments: {
+          bundle_slug: 'automated-cover-bundle'
+        }
+      }
+    });
+    const deleteRes = await POST(deleteReq);
+    expect(deleteRes.status).toBe(200);
   });
 
   it('sanitizeErrorMessage strips tokens and credentials from errors', () => {

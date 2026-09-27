@@ -24,3 +24,12 @@ ALTER TABLE collection_products ADD CONSTRAINT fk_product FOREIGN KEY (product_i
 -- 5. Helpful indices
 CREATE INDEX IF NOT EXISTS idx_collection_products_product ON collection_products(product_id);
 CREATE INDEX IF NOT EXISTS idx_collection_products_collection ON collection_products(collection_id);
+
+-- 6. Update Halloween bundle cover_image with outdoor decor kit image
+UPDATE collections 
+SET cover_image = (
+  SELECT image_url FROM products 
+  WHERE title ILIKE '%50-Piece Halloween%' LIMIT 1
+)
+WHERE slug = 'halloween-house-family-kit' OR slug = 'halloween-house-and-family-kit';
+

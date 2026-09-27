@@ -56,7 +56,7 @@ export function CollectionsManager({
     setFormTitle('');
     setFormSlug('');
     setFormDescription('');
-    setFormCoverImage('https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80');
+    setFormCoverImage('');
     setFormStatus('published');
     setSelectedProductIds(new Set());
     setProductPickerSearch('');

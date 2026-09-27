@@ -10,6 +10,7 @@ import {
   StoreStatsInputSchema,
   ListBundlesInputSchema,
   CreateBundleInputSchema,
+  UpdateBundleInputSchema,
   ManageBundleProductsInputSchema,
   DeleteBundleInputSchema
 } from './schema';
@@ -317,20 +318,28 @@ export async function handleCreateBundle(args: unknown): Promise<McpToolResponse
 
   const allProducts = await catalogRepository.getAllProducts();
   const productIds: string[] = [];
+  let firstProductImage: string | undefined = undefined;
+
   if (data.product_slugs && data.product_slugs.length > 0) {
     for (const pSlug of data.product_slugs) {
       const prod = allProducts.find(p => p.slug === pSlug || p.id === pSlug);
       if (prod) {
         productIds.push(prod.id);
+        if (!firstProductImage && prod.imageUrl) {
+          firstProductImage = prod.imageUrl;
+        }
       }
     }
   }
+
+  // If cover_image is omitted, grab image_url from the first item in product_slugs
+  const coverImage = (data.cover_image && data.cover_image.trim()) ? data.cover_image : firstProductImage;
 
   const result = await catalogRepository.createCollection({
     title: data.title,
     slug,
     description: data.description || '',
-    coverImage: data.cover_image,
+    coverImage,
     productIds,
     status: 'published'
   });
@@ -343,7 +352,58 @@ export async function handleCreateBundle(args: unknown): Promise<McpToolResponse
 }
 
 /**
- * 11. manage_bundle_products
+ * 11. update_bundle
+ * Args: bundle_slug, title, slug, description, product_slugs, cover_image, status
+ */
+export async function handleUpdateBundle(args: unknown): Promise<McpToolResponse> {
+  const parsed = UpdateBundleInputSchema.safeParse(args);
+  if (!parsed.success) {
+    return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
+  }
+
+  const data = parsed.data;
+  const allProducts = await catalogRepository.getAllProducts();
+
+  let productIds: string[] | undefined = undefined;
+  let firstProductImage: string | undefined = undefined;
+
+  if (data.product_slugs !== undefined) {
+    productIds = [];
+    for (const pSlug of data.product_slugs) {
+      const prod = allProducts.find(p => p.slug === pSlug || p.id === pSlug);
+      if (prod) {
+        productIds.push(prod.id);
+        if (!firstProductImage && prod.imageUrl) {
+          firstProductImage = prod.imageUrl;
+        }
+      }
+    }
+  }
+
+  let coverImage = data.cover_image;
+  // If cover_image is omitted and product_slugs was provided, auto-grab from first product
+  if (!coverImage && firstProductImage) {
+    coverImage = firstProductImage;
+  }
+
+  const result = await catalogRepository.updateCollection(data.bundle_slug, {
+    title: data.title,
+    slug: data.slug,
+    description: data.description,
+    coverImage,
+    productIds,
+    status: data.status
+  });
+
+  if (!result.success || !result.collection) {
+    return { ok: false, error: sanitizeErrorMessage(result.error || 'Failed to update bundle') };
+  }
+
+  return { ok: true, data: { bundle: result.collection } };
+}
+
+/**
+ * 12. manage_bundle_products
  * Args: bundle_slug, action ("add" | "remove"), product_slugs
  */
 export async function handleManageBundleProducts(args: unknown): Promise<McpToolResponse> {
@@ -363,7 +423,7 @@ export async function handleManageBundleProducts(args: unknown): Promise<McpTool
 }
 
 /**
- * 12. delete_bundle
+ * 13. delete_bundle
  * Args: bundle_slug
  */
 export async function handleDeleteBundle(args: unknown): Promise<McpToolResponse> {
@@ -405,6 +465,8 @@ export async function executeMcpTool(name: string, args: unknown): Promise<McpTo
       return handleListBundles(args);
     case 'create_bundle':
       return handleCreateBundle(args);
+    case 'update_bundle':
+      return handleUpdateBundle(args);
     case 'manage_bundle_products':
       return handleManageBundleProducts(args);
     case 'delete_bundle':

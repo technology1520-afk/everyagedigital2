@@ -122,6 +122,17 @@ export interface Collection {
   productIds: string[];
   bookIds?: string[];
   coverImage: string;
+  cover_image?: string;
+  products?: Array<{
+    id: string;
+    slug?: string;
+    title?: string;
+    name?: string;
+    image_url?: string;
+    imageUrl?: string;
+    price?: number;
+    [key: string]: unknown;
+  }>;
   lastReviewedAt: string;
   status: 'published' | 'draft';
   activeProductCount?: number;

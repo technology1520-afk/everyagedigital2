@@ -961,25 +961,60 @@ class CatalogRepository {
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
-        const { data, error } = await supabase
-          .from('collections')
-          .select('*')
-          .eq('slug', slug)
-          .maybeSingle();
+        const slugsToTry = [slug];
+        if (slug === 'halloween-house-family-kit') slugsToTry.push('halloween-house-and-family-kit');
+        else if (slug === 'halloween-house-and-family-kit') slugsToTry.push('halloween-house-family-kit');
+
+        let data = null;
+        let error = null;
+
+        for (const s of slugsToTry) {
+          const res = await supabase
+            .from('collections')
+            .select('*')
+            .eq('slug', s)
+            .maybeSingle();
+          if (res.data) {
+            data = res.data;
+            break;
+          }
+          if (res.error && !error) {
+            error = res.error;
+          }
+        }
 
         if (!error && data) {
           const row = data;
-          const seed = INITIAL_COLLECTIONS.find(c => c.slug === slug || c.id === row.id);
+          const seed = INITIAL_COLLECTIONS.find(c => c.slug === row.slug || c.id === row.id);
           const rawProductIds: string[] = Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []);
 
-          // Count only active products in Supabase
+          // Count and fetch active products in Supabase
           const { data: activeProds } = await supabase
             .from(TABLE_PRODUCTS)
-            .select('id')
+            .select('id, slug, title, image_url, status')
             .in('id', rawProductIds.length > 0 ? rawProductIds : ['__none__'])
             .eq('status', 'active');
 
-          const activeIds = (activeProds || []).map(p => p.id);
+          const activeProdsList = activeProds || [];
+          const activeIds = activeProdsList.map(p => p.id);
+          const firstProductImage = activeProdsList[0]?.image_url;
+
+          // Dynamic image resolution: remove desk photo fallback
+          let coverImg = (row.cover_image as string);
+          if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
+            coverImg = firstProductImage || seed?.coverImage || '';
+          }
+          if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg')) {
+            coverImg = firstProductImage || '/placeholder-bundle.png';
+          }
+
+          const resolvedProducts = activeProdsList.map(p => ({
+            id: p.id,
+            slug: p.slug,
+            title: p.title,
+            image_url: p.image_url,
+            imageUrl: p.image_url
+          }));
 
           col = {
             id: row.id,
@@ -994,7 +1029,9 @@ class CatalogRepository {
             ],
             productIds: rawProductIds,
             bookIds: seed?.bookIds || [],
-            coverImage: (row.cover_image as string) || seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
+            coverImage: coverImg,
+            cover_image: coverImg,
+            products: resolvedProducts,
             lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
             status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published'),
             activeProductCount: activeIds.length
@@ -1004,15 +1041,31 @@ class CatalogRepository {
         console.error('[CatalogRepository] getCollectionBySlug Supabase error:', err);
       }
     } else {
-      const found = this.collections.find(c => c.slug === slug) || INITIAL_COLLECTIONS.find(c => c.slug === slug);
+      const found = this.collections.find(c => c.slug === slug || (slug === 'halloween-house-family-kit' && c.slug === 'halloween-house-and-family-kit')) 
+        || INITIAL_COLLECTIONS.find(c => c.slug === slug || (slug === 'halloween-house-family-kit' && c.slug === 'halloween-house-and-family-kit'));
       if (found) {
-        const activeIds = (found.productIds || []).filter(pId => {
-          const p = this.products.find(prod => prod.id === pId);
-          return p && p.status === 'active';
-        });
+        const activeProds = (found.productIds || []).map(pId => {
+          return this.products.find(prod => (prod.id === pId || prod.slug === pId) && prod.status === 'active');
+        }).filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+        const firstProductImage = activeProds[0]?.imageUrl;
+        let coverImg = (found as any).cover_image || found.coverImage;
+        if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
+          coverImg = firstProductImage || '/placeholder-bundle.png';
+        }
+
         col = {
           ...found,
-          activeProductCount: activeIds.length
+          coverImage: coverImg,
+          cover_image: coverImg,
+          products: activeProds.map(p => ({
+            id: p.id,
+            slug: p.slug,
+            title: p.name,
+            image_url: p.imageUrl,
+            imageUrl: p.imageUrl
+          })),
+          activeProductCount: activeProds.length
         };
       }
     }
@@ -1034,16 +1087,29 @@ class CatalogRepository {
         const supabase = getSupabaseAdminClient();
         const [colsRes, activeProdsRes] = await Promise.all([
           supabase.from('collections').select('*'),
-          supabase.from(TABLE_PRODUCTS).select('id').eq('status', 'active')
+          supabase.from(TABLE_PRODUCTS).select('id, slug, title, image_url, status').eq('status', 'active')
         ]);
 
-        const activeIdSet = new Set((activeProdsRes.data || []).map(p => p.id));
+        const activeProds = activeProdsRes.data || [];
+        const activeProdsMap = new Map(activeProds.map(p => [p.id, p]));
 
         if (!colsRes.error && colsRes.data && colsRes.data.length > 0) {
           result = colsRes.data.map(row => {
             const seed = INITIAL_COLLECTIONS.find(c => c.slug === row.slug || c.id === row.id);
             const rawProductIds: string[] = Array.isArray(row.product_ids) ? row.product_ids : (seed?.productIds || []);
-            const validActiveCount = rawProductIds.filter(id => activeIdSet.has(id)).length;
+            const matchingProducts = rawProductIds
+              .map(id => activeProdsMap.get(id))
+              .filter(Boolean) as typeof activeProds;
+            const validActiveCount = matchingProducts.length;
+            const firstProductImage = matchingProducts[0]?.image_url;
+
+            let coverImg = (row.cover_image as string);
+            if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
+              coverImg = firstProductImage || seed?.coverImage || '';
+            }
+            if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg')) {
+              coverImg = firstProductImage || '/placeholder-bundle.png';
+            }
 
             return {
               id: row.id,
@@ -1058,7 +1124,15 @@ class CatalogRepository {
               ],
               productIds: rawProductIds,
               bookIds: seed?.bookIds || [],
-              coverImage: (row.cover_image as string) || seed?.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80',
+              coverImage: coverImg,
+              cover_image: coverImg,
+              products: matchingProducts.map(p => ({
+                id: p.id,
+                slug: p.slug,
+                title: p.title,
+                image_url: p.image_url,
+                imageUrl: p.image_url
+              })),
               lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
               status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published'),
               activeProductCount: validActiveCount
@@ -1072,12 +1146,27 @@ class CatalogRepository {
 
     if (result.length === 0) {
       const baseCollections = this.collections.length > 0 ? this.collections : INITIAL_COLLECTIONS;
-      const activeIdSet = new Set(this.products.filter(p => p.status === 'active').map(p => p.id));
+      const activeProds = this.products.filter(p => p.status === 'active');
+      const activeMap = new Map(activeProds.map(p => [p.id, p]));
       result = baseCollections.map(c => {
-        const count = (c.productIds || []).filter(id => activeIdSet.has(id)).length;
+        const matching = (c.productIds || []).map(id => activeMap.get(id)).filter(Boolean) as typeof activeProds;
+        const firstProductImage = matching[0]?.imageUrl;
+        let coverImg = (c as any).cover_image || c.coverImage;
+        if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
+          coverImg = firstProductImage || '/placeholder-bundle.png';
+        }
         return {
           ...c,
-          activeProductCount: count
+          coverImage: coverImg,
+          cover_image: coverImg,
+          products: matching.map(p => ({
+            id: p.id,
+            slug: p.slug,
+            title: p.name,
+            image_url: p.imageUrl,
+            imageUrl: p.imageUrl
+          })),
+          activeProductCount: matching.length
         };
       });
     }
@@ -1102,8 +1191,21 @@ class CatalogRepository {
     const now = new Date().toISOString();
     const productIds = Array.isArray(input.productIds) ? Array.from(new Set(input.productIds)) : [];
     const status = input.status || 'published';
-    const coverImage = input.coverImage || 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=80';
     const desc = input.description || '';
+
+    // Dynamic resolution for cover image
+    let coverImage = input.coverImage;
+    if (!coverImage || coverImage.includes('photo-1518455027359-f3f8164ba6bd') || coverImage.includes('/desk.jpg') || coverImage.includes('placeholder')) {
+      if (productIds.length > 0) {
+        const firstProd = await this.getProductById(productIds[0]);
+        if (firstProd?.imageUrl) {
+          coverImage = firstProd.imageUrl;
+        }
+      }
+    }
+    if (!coverImage) {
+      coverImage = '/placeholder-bundle.png';
+    }
 
     const newCol: Collection = {
       id: newId,
@@ -1119,6 +1221,7 @@ class CatalogRepository {
       productIds,
       bookIds: [],
       coverImage,
+      cover_image: coverImage,
       lastReviewedAt: now,
       status
     };
@@ -1132,12 +1235,19 @@ class CatalogRepository {
           title: input.title,
           description: desc,
           product_ids: productIds,
+          cover_image: coverImage,
           last_reviewed_at: now,
           status,
           created_at: now
         };
 
-        const { error: sbError } = await supabase.from('collections').insert(row);
+        let { error: sbError } = await supabase.from('collections').insert(row);
+        if (sbError && (sbError.code === 'PGRST204' || sbError.message.includes('cover_image'))) {
+          delete row.cover_image;
+          const retry = await supabase.from('collections').insert(row);
+          sbError = retry.error;
+        }
+
         if (sbError) {
           console.error('[CatalogRepository] Supabase createCollection error:', sbError);
           return { success: false, error: sbError.message };
@@ -1190,9 +1300,21 @@ class CatalogRepository {
       existing.subtitle = input.description;
       existing.introduction = input.description;
     }
-    if (input.coverImage) existing.coverImage = input.coverImage;
-    if (input.status) existing.status = input.status;
     if (input.productIds) existing.productIds = Array.from(new Set(input.productIds));
+    if (input.coverImage) {
+      existing.coverImage = input.coverImage;
+      existing.cover_image = input.coverImage;
+    } else if (input.productIds && input.productIds.length > 0) {
+      const isCurrentDeskOrPlaceholder = !existing.coverImage || existing.coverImage.includes('photo-1518455027359-f3f8164ba6bd') || existing.coverImage.includes('/desk.jpg') || existing.coverImage.includes('placeholder');
+      if (isCurrentDeskOrPlaceholder) {
+        const firstProd = await this.getProductById(input.productIds[0]);
+        if (firstProd?.imageUrl) {
+          existing.coverImage = firstProd.imageUrl;
+          existing.cover_image = firstProd.imageUrl;
+        }
+      }
+    }
+    if (input.status) existing.status = input.status;
     existing.lastReviewedAt = now;
 
     if (this.getBackendMode().mode === 'supabase') {
@@ -1203,14 +1325,24 @@ class CatalogRepository {
           slug: existing.slug,
           description: existing.introduction,
           product_ids: existing.productIds,
+          cover_image: existing.coverImage,
           last_reviewed_at: now,
           status: existing.status
         };
 
-        const { error: sbError } = await supabase
+        let { error: sbError } = await supabase
           .from('collections')
           .update(updateRow)
           .eq('id', existing.id);
+
+        if (sbError && (sbError.code === 'PGRST204' || sbError.message.includes('cover_image'))) {
+          delete updateRow.cover_image;
+          const retry = await supabase
+            .from('collections')
+            .update(updateRow)
+            .eq('id', existing.id);
+          sbError = retry.error;
+        }
 
         if (sbError) {
           console.error('[CatalogRepository] Supabase updateCollection error:', sbError);

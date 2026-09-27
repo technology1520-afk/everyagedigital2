@@ -142,4 +142,20 @@ describe('Master Prompt §13: Repository CRUD & Zod Validation', () => {
     expect(cleanupRes).toHaveProperty('cleanedCount');
     expect(cleanupRes).toHaveProperty('message');
   });
+
+  it('dynamically resolves bundle cover image from first product and removes hardcoded desk photo', async () => {
+    const collections = await catalogRepository.getAllCollections();
+    expect(collections.length).toBeGreaterThan(0);
+
+    for (const c of collections) {
+      // Must not use hardcoded desk photo
+      expect(c.coverImage).not.toContain('photo-1518455027359-f3f8164ba6bd');
+      expect(c.coverImage).not.toContain('/desk.jpg');
+      expect(c.cover_image).toBeDefined();
+
+      if (c.products && c.products.length > 0) {
+        expect(c.products[0].image_url).toBeDefined();
+      }
+    }
+  });
 });

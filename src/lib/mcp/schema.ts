@@ -85,11 +85,23 @@ export const CreateBundleInputSchema = z.object({
   slug: z.string().min(2).optional(),
   description: z.string().optional(),
   product_slugs: z.array(z.string()).default([]).optional(),
-  cover_image: z.string().url('Cover image must be a valid URL').optional()
+  cover_image: z.string().optional()
 });
 export type CreateBundleInput = z.infer<typeof CreateBundleInputSchema>;
 
-// 11. manage_bundle_products
+// 11. update_bundle
+export const UpdateBundleInputSchema = z.object({
+  bundle_slug: z.string().min(1, 'Bundle slug is required'),
+  title: z.string().min(2).optional(),
+  slug: z.string().min(2).optional(),
+  description: z.string().optional(),
+  product_slugs: z.array(z.string()).optional(),
+  cover_image: z.string().optional(),
+  status: z.enum(['published', 'draft']).optional()
+});
+export type UpdateBundleInput = z.infer<typeof UpdateBundleInputSchema>;
+
+// 12. manage_bundle_products
 export const ManageBundleProductsInputSchema = z.object({
   bundle_slug: z.string().min(1, 'Bundle slug is required'),
   action: z.enum(['add', 'remove']),
@@ -97,7 +109,7 @@ export const ManageBundleProductsInputSchema = z.object({
 });
 export type ManageBundleProductsInput = z.infer<typeof ManageBundleProductsInputSchema>;
 
-// 12. delete_bundle
+// 13. delete_bundle
 export const DeleteBundleInputSchema = z.object({
   bundle_slug: z.string().min(1, 'Bundle slug is required')
 });
@@ -284,6 +296,31 @@ export const MCP_TOOLS: McpToolDefinition[] = [
         cover_image: { type: 'string', description: 'Cover image URL' }
       },
       required: ['title']
+    }
+  },
+  {
+    name: 'update_bundle',
+    description: 'Update an existing curated bundle/collection metadata, cover image, or products.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        bundle_slug: { type: 'string', description: 'Slug or ID of the bundle to update' },
+        title: { type: 'string', description: 'Updated bundle title' },
+        slug: { type: 'string', description: 'Updated URL slug' },
+        description: { type: 'string', description: 'Updated editorial description' },
+        product_slugs: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Updated array of product slugs'
+        },
+        cover_image: { type: 'string', description: 'Updated cover image URL' },
+        status: {
+          type: 'string',
+          enum: ['published', 'draft'],
+          description: 'Publishing status'
+        }
+      },
+      required: ['bundle_slug']
     }
   },
   {

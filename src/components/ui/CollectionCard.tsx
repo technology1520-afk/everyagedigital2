@@ -15,6 +15,14 @@ interface CollectionCardProps {
 export function CollectionCard({ collection, className = '', priority = false }: CollectionCardProps) {
   const totalItems = collection.activeProductCount ?? (collection.productIds.length + (collection.bookIds?.length || 0));
 
+  const rawCover = collection.cover_image || collection.coverImage;
+  const isDesk = typeof rawCover === 'string' && (rawCover.includes('photo-1518455027359-f3f8164ba6bd') || rawCover.includes('/desk.jpg'));
+  const isPlaceholder = !rawCover || rawCover.includes('placeholder') || isDesk;
+
+  const bundleCoverImage = (!isPlaceholder && rawCover)
+    ? rawCover
+    : collection.products?.[0]?.image_url || collection.products?.[0]?.imageUrl || '/placeholder-bundle.png';
+
   return (
     <article
       className={`product-card group rounded-2xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-lg border border-purple-100 dark:border-white/10 hover:border-purple-300 dark:hover:border-blue-400/40 hover:-translate-y-1 transition-all duration-300 shadow-sm dark:shadow-none overflow-hidden flex flex-col justify-between ${className}`}
@@ -22,7 +30,7 @@ export function CollectionCard({ collection, className = '', priority = false }:
       <div className="relative aspect-16/9 w-full bg-slate-100 dark:bg-slate-950/40 overflow-hidden">
         <Link href={`/collections/${collection.slug}`} className="block w-full h-full relative">
           <Image
-            src={collection.coverImage}
+            src={bundleCoverImage}
             alt={collection.title}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
