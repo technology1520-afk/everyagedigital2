@@ -11,7 +11,7 @@ export function HalloweenAmbientOverlay() {
       {/* Top-Left Spider Web Accent */}
       <svg
         viewBox="0 0 100 100"
-        className="fixed top-0 left-0 w-32 h-32 sm:w-44 sm:h-44 text-orange-500/20 dark:text-orange-500/30 pointer-events-none drop-shadow-[0_0_8px_rgba(249,115,22,0.3)] transition-opacity duration-700"
+        className="fixed top-0 left-0 w-36 h-36 sm:w-48 sm:h-48 text-orange-400 opacity-25 pointer-events-none drop-shadow-[0_0_8px_rgba(249,115,22,0.4)] transition-opacity duration-700"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.2"
@@ -32,7 +32,7 @@ export function HalloweenAmbientOverlay() {
       {/* Top-Right Spider Web Accent */}
       <svg
         viewBox="0 0 100 100"
-        className="fixed top-0 right-0 w-32 h-32 sm:w-44 sm:h-44 text-orange-500/20 dark:text-orange-500/30 pointer-events-none -scale-x-100 drop-shadow-[0_0_8px_rgba(249,115,22,0.3)] transition-opacity duration-700"
+        className="fixed top-0 right-0 w-36 h-36 sm:w-48 sm:h-48 text-orange-400 opacity-25 pointer-events-none -scale-x-100 drop-shadow-[0_0_8px_rgba(249,115,22,0.4)] transition-opacity duration-700"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.2"

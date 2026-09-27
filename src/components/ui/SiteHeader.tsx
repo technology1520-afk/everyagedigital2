@@ -81,14 +81,17 @@ export function SiteHeader() {
 
       <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3 relative">
         {/* Logo & Brand Identity */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           <Link href="/" className="hover:opacity-90 transition-opacity touch-target">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3">
               <div className="logo-emblem h-10 w-10 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0 border border-transparent transition-all">
                 <Image alt="EveryAge Digital" className="h-full w-full object-contain" height={36} priority src="/logo.png" width={36}/>
               </div>
-              <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight">
+              <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight flex items-center">
                 EveryAge <span className="text-xs uppercase tracking-widest text-blue-500 font-semibold ml-1">Digital</span>
+              </span>
+              <span className="hidden [html[data-seasonal='halloween']_&]:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/20 text-orange-300 border border-orange-400/40 shadow-xs animate-pulse">
+                🎃 Spooky Season Edition
               </span>
             </div>
           </Link>

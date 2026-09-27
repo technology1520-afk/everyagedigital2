@@ -401,7 +401,154 @@ textarea:focus-visible {
   min-height: 100vh;
 }
 
-/* Primary Buttons: Flip to vibrant pumpkin orange with warm ember shadow */
+/* 1. Contrast Lock: Prevent Day Mode from rendering black text against dark background */
+[data-seasonal="halloween"] h1,
+[data-seasonal="halloween"] h2,
+[data-seasonal="halloween"] h3,
+[data-seasonal="halloween"] h4,
+[data-seasonal="halloween"] h5,
+[data-seasonal="halloween"] h6,
+[data-seasonal="halloween"] .font-serif,
+[data-seasonal="halloween"] .page-title,
+[data-seasonal="halloween"] [class*="text-slate-900"],
+[data-seasonal="halloween"] [class*="text-slate-800"],
+[data-seasonal="halloween"] [class*="text-gray-900"] {
+  color: #fffbeb !important; /* text-amber-50 */
+  text-shadow: 0 2px 12px rgba(249, 115, 22, 0.35);
+}
+
+[data-seasonal="halloween"] h1,
+[data-seasonal="halloween"] h2 {
+  font-family: var(--font-serif), ui-serif, Georgia, Cambria, serif !important;
+}
+
+[data-seasonal="halloween"] p.subtitle,
+[data-seasonal="halloween"] .hero-subtitle,
+[data-seasonal="halloween"] [class*="text-slate-600"],
+[data-seasonal="halloween"] [class*="text-slate-700"],
+[data-seasonal="halloween"] [class*="text-slate-500"] {
+  color: rgba(254, 215, 170, 0.8) !important; /* text-orange-200/80 */
+  font-weight: 500;
+}
+
+/* High-contrast Search Input & Text Boxes in Day Mode */
+[data-seasonal="halloween"] input[type="text"],
+[data-seasonal="halloween"] input[type="search"] {
+  background-color: rgba(0, 0, 0, 0.55) !important; /* bg-black/50 */
+  border: 1px solid rgba(249, 115, 22, 0.4) !important; /* border-orange-500/40 */
+  color: #fff7ed !important; /* text-orange-50 */
+  border-radius: 0.75rem !important; /* rounded-xl */
+}
+
+[data-seasonal="halloween"] input[type="text"]::placeholder,
+[data-seasonal="halloween"] input[type="search"]::placeholder {
+  color: rgba(253, 186, 116, 0.45) !important; /* placeholder-orange-300/40 */
+}
+
+[data-seasonal="halloween"] input[type="text"]:focus,
+[data-seasonal="halloween"] input[type="search"]:focus {
+  border-color: #ea580c !important;
+  box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.5) !important; /* focus:ring-orange-500 */
+  outline: none !important;
+}
+
+/* 2. Spooky Dark Glass & Aged Spellbook Filter Sidebar */
+[data-seasonal="halloween"] aside {
+  background-color: rgba(2, 6, 23, 0.75) !important; /* bg-slate-950/70 */
+  border: 1px solid rgba(249, 115, 22, 0.3) !important; /* border-orange-500/30 */
+  backdrop-filter: blur(24px) !important;
+  border-radius: 1rem !important; /* rounded-2xl */
+  padding: 1.5rem !important; /* p-6 */
+  box-shadow: 0 20px 25px -5px rgba(67, 20, 7, 0.25), 0 8px 10px -6px rgba(67, 20, 7, 0.25) !important;
+}
+
+[data-seasonal="halloween"] aside h4 {
+  color: #fb923c !important; /* text-orange-400 */
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.75rem !important; /* text-xs */
+  text-transform: uppercase !important;
+  font-family: inherit !important;
+  text-shadow: none !important;
+}
+
+[data-seasonal="halloween"] aside button,
+[data-seasonal="halloween"] aside label {
+  color: rgba(254, 243, 199, 0.9) !important; /* text-orange-100/90 */
+  font-weight: 500 !important;
+}
+
+[data-seasonal="halloween"] aside button:hover {
+  color: #ffffff !important;
+  background-color: rgba(249, 115, 22, 0.15) !important;
+}
+
+[data-seasonal="halloween"] aside .text-slate-400,
+[data-seasonal="halloween"] aside span[class*="text-slate-400"] {
+  color: rgba(251, 146, 60, 0.6) !important; /* text-orange-400/60 */
+  font-family: var(--font-geist-mono), monospace !important;
+  font-size: 0.75rem !important; /* text-xs */
+}
+
+[data-seasonal="halloween"] aside .text-slate-500,
+[data-seasonal="halloween"] aside [class*="text-slate-500"] {
+  color: #fed7aa !important; /* text-orange-200 */
+}
+
+/* 3. Product & Collection Cards Readability */
+[data-seasonal="halloween"] .product-card,
+[data-seasonal="halloween"] article {
+  background-color: rgba(2, 6, 23, 0.8) !important; /* bg-slate-950/80 */
+  border: 1px solid rgba(249, 115, 22, 0.2) !important; /* border-orange-500/20 */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-seasonal="halloween"] .product-card:hover,
+[data-seasonal="halloween"] article:hover {
+  border-color: rgba(249, 115, 22, 0.6) !important; /* hover:border-orange-500/60 */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 0 15px rgba(249, 115, 22, 0.25) !important;
+}
+
+[data-seasonal="halloween"] article h3,
+[data-seasonal="halloween"] article h3 a,
+[data-seasonal="halloween"] .product-card h3,
+[data-seasonal="halloween"] .product-card h3 a {
+  color: #fffbeb !important; /* text-amber-50 */
+  font-weight: 600 !important;
+  font-size: 0.875rem !important; /* text-sm */
+  line-height: 1.35 !important;
+  text-shadow: none !important;
+  font-family: inherit !important;
+}
+
+[data-seasonal="halloween"] article p,
+[data-seasonal="halloween"] .product-card p {
+  color: rgba(254, 215, 170, 0.7) !important; /* text-orange-200/70 */
+  font-size: 0.75rem !important; /* text-xs */
+}
+
+[data-seasonal="halloween"] .card-best-for,
+[data-seasonal="halloween"] article div[class*="rounded-lg bg-white"] {
+  background-color: rgba(67, 20, 7, 0.4) !important; /* bg-orange-950/40 */
+  border: 1px solid rgba(249, 115, 22, 0.2) !important; /* border-orange-500/20 */
+  color: #fed7aa !important; /* text-orange-200 */
+  font-size: 11px !important;
+}
+
+[data-seasonal="halloween"] .card-best-for strong,
+[data-seasonal="halloween"] article div[class*="rounded-lg bg-white"] strong {
+  color: #ffedd5 !important;
+}
+
+[data-seasonal="halloween"] .card-price-val,
+[data-seasonal="halloween"] article span.text-lg.font-bold {
+  color: #fcd34d !important; /* text-amber-300 */
+  font-weight: 700 !important;
+  font-size: 1rem !important; /* text-base */
+}
+
+/* Primary Buttons: Flip to vibrant pumpkin orange / Jack-o'-lantern gradient */
+[data-seasonal="halloween"] .btn-view-deal,
 [data-seasonal="halloween"] .bg-blue-600,
 [data-seasonal="halloween"] button.bg-blue-600,
 [data-seasonal="halloween"] a.bg-blue-600,
@@ -412,12 +559,14 @@ textarea:focus-visible {
 [data-seasonal="halloween"] button.bg-slate-900,
 [data-seasonal="halloween"] a.bg-slate-900,
 [data-seasonal="halloween"] [class*="bg-blue-600"]:not(input) {
-  background-color: #ea580c !important;
+  background: linear-gradient(to right, #ea580c, #d97706) !important; /* from-orange-600 to-amber-600 */
   color: #ffffff !important;
-  box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.4), 0 8px 10px -6px rgba(234, 88, 12, 0.4) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.3), 0 2px 4px -2px rgba(234, 88, 12, 0.3) !important;
   border-color: rgba(251, 146, 60, 0.4) !important;
 }
 
+[data-seasonal="halloween"] .btn-view-deal:hover,
 [data-seasonal="halloween"] .bg-blue-600:hover,
 [data-seasonal="halloween"] button.bg-blue-600:hover,
 [data-seasonal="halloween"] a.bg-blue-600:hover,
@@ -427,7 +576,7 @@ textarea:focus-visible {
 [data-seasonal="halloween"] .hover\:bg-blue-700:hover,
 [data-seasonal="halloween"] .hover\:bg-purple-700:hover,
 [data-seasonal="halloween"] [class*="hover:bg-blue"]:hover {
-  background-color: #f97316 !important;
+  background: linear-gradient(to right, #f97316, #f59e0b) !important; /* from-orange-500 to-amber-500 */
 }
 
 /* Badges & Accent text: Flip from blue to pumpkin orange */
@@ -449,26 +598,9 @@ textarea:focus-visible {
   color: #fdba74 !important;
 }
 
-/* Product & Collection Cards: Spooky amber border and drop shadow */
-[data-seasonal="halloween"] .product-card,
-[data-seasonal="halloween"] article,
-[data-seasonal="halloween"] .bg-white\/80,
-[data-seasonal="halloween"] .bg-white\/70,
-[data-seasonal="halloween"] .bg-white\/75 {
-  border-color: rgba(249, 115, 22, 0.25) !important;
-  box-shadow: 0 10px 30px -10px rgba(67, 20, 7, 0.5), 0 0 15px -3px rgba(249, 115, 22, 0.1) !important;
-  background-color: rgba(26, 9, 39, 0.65) !important;
-}
-
-[data-seasonal="halloween"] .product-card:hover,
-[data-seasonal="halloween"] article:hover {
-  border-color: rgba(249, 115, 22, 0.55) !important;
-  box-shadow: 0 14px 35px -8px rgba(234, 88, 12, 0.45), 0 0 20px 2px rgba(249, 115, 22, 0.3) !important;
-}
-
 /* Header & navigation in Halloween theme */
 [data-seasonal="halloween"] header {
-  background-color: rgba(17, 5, 27, 0.88) !important;
+  background-color: rgba(17, 5, 27, 0.9) !important;
   border-bottom-color: rgba(249, 115, 22, 0.25) !important;
 }
 
@@ -489,8 +621,8 @@ textarea:focus-visible {
   }
 }
 
-/* Price Range Slider in Halloween mode */
+/* Price Range Slider in Halloween mode: Amber track */
 [data-seasonal="halloween"] input[type="range"] {
-  accent-color: #ea580c !important;
+  accent-color: #f97316 !important; /* accent-orange-500 */
 }
 
