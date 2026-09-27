@@ -50,8 +50,12 @@ export interface Product {
   editorialConfidence: 'High' | 'Verified' | 'Community Reviewed';
   editorialBadge?: 'Editor’s Choice' | 'Best Value' | 'Top Practical Pick' | 'Creator Favorite';
   isSponsored?: boolean;
+  price?: number;
+  price_min?: number;
   priceMin?: number;
+  price_max?: number;
   priceMax?: number;
+  current_price?: number;
   currency?: string;
   badges?: string[];
   editorialStance?: string;

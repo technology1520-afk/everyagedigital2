@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { FilterParams } from '../../types';
+import { FilterParams } from '../types';
 import { Filter, X } from 'lucide-react';
 
-interface FilterPanelProps {
+export interface FilterSidebarProps {
   filters: FilterParams;
   onChange: (newFilters: FilterParams) => void;
   availableCategories: string[];
@@ -15,7 +15,9 @@ interface FilterPanelProps {
   className?: string;
 }
 
-export function FilterPanel({
+export type FilterPanelProps = FilterSidebarProps;
+
+export function FilterSidebar({
   filters,
   onChange,
   availableCategories,
@@ -24,7 +26,7 @@ export function FilterPanel({
   typeCounts,
   merchantCounts,
   className = ''
-}: FilterPanelProps) {
+}: FilterSidebarProps) {
   const handleCategorySelect = (cat: string) => {
     onChange({
       ...filters,
@@ -205,4 +207,5 @@ export function FilterPanel({
   );
 }
 
-export const FilterSidebar = FilterPanel;
+export const FilterPanel = FilterSidebar;
+export default FilterSidebar;

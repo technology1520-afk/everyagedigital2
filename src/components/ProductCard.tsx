@@ -4,13 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Award } from 'lucide-react';
-import { EnrichedProduct } from '../../lib/search/catalogSearch';
-import { MerchantBadge } from './MerchantBadge';
-import { SponsoredBadge } from './SponsoredBadge';
-import { WishlistButton } from './WishlistButton';
-import { CompareButton } from './CompareButton';
+import { EnrichedProduct } from '../lib/search/catalogSearch';
+import { MerchantBadge } from './ui/MerchantBadge';
+import { SponsoredBadge } from './ui/SponsoredBadge';
+import { WishlistButton } from './ui/WishlistButton';
+import { CompareButton } from './ui/CompareButton';
 
-interface ProductCardProps {
+export interface ProductCardProps {
   item: EnrichedProduct;
   showCompare?: boolean;
   className?: string;
@@ -195,3 +195,5 @@ export function ProductCard({
     </article>
   );
 }
+
+export default ProductCard;
