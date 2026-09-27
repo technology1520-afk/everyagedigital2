@@ -85,18 +85,18 @@ export function ProductCard({
     >
       {/* Top Media & Actions */}
       <div
-        className={`relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-900/50 flex items-center justify-center p-2 ${
+        className={`relative w-full aspect-square rounded-xl overflow-hidden bg-white/5 border border-white/5 flex items-center justify-center p-3 ${
           isDigital ? 'thumb-digital' : ''
         }`}
       >
-        <Link href={`/product/${product.slug}`} className="relative w-full h-full block">
+        <Link href={`/product/${product.slug}`} className="relative w-full h-full block flex items-center justify-center">
           <Image
             src={product.imageUrl}
             alt={product.altText}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
             priority={isPriority}
-            className="object-contain group-hover:scale-105 transition-transform duration-300"
+            className="h-full w-full object-contain drop-shadow-md rounded-lg group-hover:scale-105 transition-transform duration-300"
           />
         </Link>
 
@@ -110,7 +110,7 @@ export function ProductCard({
           )}
           {badgeInfo && (
             <span
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/80 dark:bg-white/10 backdrop-blur-md border border-purple-200/50 dark:border-white/10 text-slate-800 dark:text-white shadow-xs"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/80 dark:bg-white/10 [html[data-seasonal=halloween]_&]:bg-slate-900/80 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/30 backdrop-blur-md border border-purple-200/50 dark:border-white/10 text-slate-800 dark:text-white shadow-xs"
             >
               <Award className="w-3 h-3 shrink-0 text-amber-400" />
               <span className="truncate max-w-[90px] sm:max-w-none">{badgeInfo.label}</span>
@@ -121,8 +121,16 @@ export function ProductCard({
 
         {/* Floating Quick Action Buttons (Row on phone, column on tablet+) */}
         <div className="absolute top-2 right-2 flex flex-row sm:flex-col gap-1.5 z-10">
-          <WishlistButton productId={product.id} />
-          {showCompare && <CompareButton productId={product.id} />}
+          <WishlistButton
+            productId={product.id}
+            className="h-8 w-8 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md border border-white/10 text-white/80 hover:text-white flex items-center justify-center transition-all"
+          />
+          {showCompare && (
+            <CompareButton
+              productId={product.id}
+              className="h-8 w-8 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md border border-white/10 text-white/80 hover:text-white flex items-center justify-center transition-all"
+            />
+          )}
         </div>
       </div>
 
@@ -164,18 +172,18 @@ export function ProductCard({
           <div className="card-price-row border-t border-purple-100 dark:border-white/10 [html[data-seasonal=halloween]_&]:border-orange-500/20 pt-3">
             <div>
               {freshness?.isStale ? (
-                <span className="price-stale block text-xs text-amber-600 dark:text-amber-400 italic">Check current price &uarr;</span>
+                <span className="price-stale block text-xs text-amber-600 dark:text-amber-400 [html[data-seasonal=halloween]_&]:text-amber-300 [html[data-seasonal=halloween]_&]:font-bold [html[data-seasonal=halloween]_&]:text-lg italic">Check current price &uarr;</span>
               ) : displayPrice !== null ? (
                 <div className="flex items-baseline gap-1.5">
-                  <span className="card-price-val text-lg font-bold text-white [html[data-seasonal=halloween]_&]:text-amber-300">${displayPrice.toFixed(2)}</span>
+                  <span className="card-price-val text-lg font-bold text-slate-900 dark:text-white [html[data-seasonal=halloween]_&]:text-amber-300 [html[data-seasonal=halloween]_&]:font-bold [html[data-seasonal=halloween]_&]:text-lg">${displayPrice.toFixed(2)}</span>
                   {offer?.originalPrice && offer.originalPrice > displayPrice && (
-                    <span className="line-through text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
+                    <span className="line-through text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 [html[data-seasonal=halloween]_&]:text-orange-200/50">
                       ${offer.originalPrice.toFixed(2)}
                     </span>
                   )}
                 </div>
               ) : (
-                <span className="text-sm font-medium text-slate-400 [html[data-seasonal=halloween]_&]:text-orange-200">Check Price</span>
+                <span className="text-sm font-medium text-slate-400 [html[data-seasonal=halloween]_&]:text-amber-300 [html[data-seasonal=halloween]_&]:font-bold [html[data-seasonal=halloween]_&]:text-lg">Check Price</span>
               )}
             </div>
 
@@ -185,14 +193,14 @@ export function ProductCard({
                   href={`/api/go/${product.id}`}
                   target="_blank"
                   rel="sponsored nofollow noopener"
-                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:hover:from-orange-500 [html[data-seasonal=halloween]_&]:hover:to-amber-500 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 [html[data-seasonal=halloween]_&]:shadow-orange-600/30 transition-all"
+                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:hover:from-orange-500 [html[data-seasonal=halloween]_&]:hover:to-amber-500 [html[data-seasonal=halloween]_&]:text-white [html[data-seasonal=halloween]_&]:font-semibold [html[data-seasonal=halloween]_&]:rounded-xl [html[data-seasonal=halloween]_&]:shadow-md [html[data-seasonal=halloween]_&]:shadow-orange-950/50 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 transition-all"
                 >
                   <span>View Deal &rarr;</span>
                 </a>
               ) : (
                 <Link
                   href={`/product/${product.slug}`}
-                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:hover:from-orange-500 [html[data-seasonal=halloween]_&]:hover:to-amber-500 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 [html[data-seasonal=halloween]_&]:shadow-orange-600/30 transition-all"
+                  className="btn-view-deal w-full sm:w-auto text-xs font-semibold cursor-pointer text-center justify-center py-2 sm:py-2.5 px-3 sm:px-4 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:hover:from-orange-500 [html[data-seasonal=halloween]_&]:hover:to-amber-500 [html[data-seasonal=halloween]_&]:text-white [html[data-seasonal=halloween]_&]:font-semibold [html[data-seasonal=halloween]_&]:rounded-xl [html[data-seasonal=halloween]_&]:shadow-md [html[data-seasonal=halloween]_&]:shadow-orange-950/50 text-white rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 transition-all"
                 >
                   <span>View Deal &rarr;</span>
                 </Link>

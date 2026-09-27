@@ -541,10 +541,11 @@ textarea:focus-visible {
 }
 
 [data-seasonal="halloween"] .card-price-val,
+[data-seasonal="halloween"] .product-price,
 [data-seasonal="halloween"] article span.text-lg.font-bold {
   color: #fcd34d !important; /* text-amber-300 */
   font-weight: 700 !important;
-  font-size: 1rem !important; /* text-base */
+  font-size: 1.125rem !important; /* text-lg */
 }
 
 /* Primary Buttons: Flip to vibrant pumpkin orange / Jack-o'-lantern gradient */
@@ -562,8 +563,40 @@ textarea:focus-visible {
   background: linear-gradient(to right, #ea580c, #d97706) !important; /* from-orange-600 to-amber-600 */
   color: #ffffff !important;
   font-weight: 600 !important;
-  box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.3), 0 2px 4px -2px rgba(234, 88, 12, 0.3) !important;
+  border-radius: 0.75rem !important; /* rounded-xl */
+  box-shadow: 0 4px 6px -1px rgba(67, 20, 7, 0.5), 0 2px 4px -2px rgba(67, 20, 7, 0.5) !important; /* shadow-orange-950/50 */
   border-color: rgba(251, 146, 60, 0.4) !important;
+}
+
+/* Storefront Filter/Sort Bar in Halloween Mode */
+[data-seasonal="halloween"] .catalog-controls-bar {
+  background-color: rgba(15, 23, 42, 0.6) !important; /* bg-slate-900/60 */
+  backdrop-filter: blur(24px) !important; /* backdrop-blur-xl */
+  border: 1px solid rgba(249, 115, 22, 0.2) !important; /* border-orange-500/20 */
+  color: #ffedd5 !important; /* text-orange-100 */
+  border-radius: 1rem !important; /* rounded-2xl */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-seasonal="halloween"] .filter-chip,
+[data-seasonal="halloween"] select.sort-select,
+[data-seasonal="halloween"] select#sort-select {
+  background-color: rgba(2, 6, 23, 0.8) !important; /* bg-slate-950/80 */
+  color: #fed7aa !important; /* text-orange-200 */
+  border: 1px solid rgba(249, 115, 22, 0.3) !important; /* border-orange-500/30 */
+  border-radius: 0.75rem !important; /* rounded-xl */
+}
+
+/* Frosted glass action buttons on cards */
+[data-seasonal="halloween"] article button.rounded-full:not([aria-pressed="true"]) {
+  background-color: rgba(0, 0, 0, 0.4) !important; /* bg-black/40 */
+  border-color: rgba(255, 255, 255, 0.1) !important; /* border-white/10 */
+  color: rgba(255, 255, 255, 0.8) !important; /* text-white/80 */
+  backdrop-filter: blur(12px) !important;
+}
+[data-seasonal="halloween"] article button.rounded-full:not([aria-pressed="true"]):hover {
+  background-color: rgba(0, 0, 0, 0.7) !important; /* bg-black/70 */
+  color: #ffffff !important;
 }
 
 [data-seasonal="halloween"] .btn-view-deal:hover,

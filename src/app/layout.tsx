@@ -73,7 +73,7 @@ export default async function RootLayout({
       lang="en" 
       suppressHydrationWarning 
       data-seasonal={isHalloween ? 'halloween' : undefined}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${isHalloween ? 'dark' : ''} h-full antialiased`}
     >
       <body 
         suppressHydrationWarning 
@@ -91,7 +91,7 @@ export default async function RootLayout({
           <div className="h-[500px] w-[500px] bg-indigo-200/30 dark:bg-sky-500/10 blur-[150px] pointer-events-none fixed -bottom-40 left-1/4 z-0 rounded-full transition-colors duration-500" />
         </div>
 
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem forcedTheme={isHalloween ? 'dark' : undefined}>
           <div className="relative z-10 flex flex-col min-h-screen">
             {/* Skip to Content for WCAG 2.2 AA Accessibility */}
             <a
@@ -101,7 +101,7 @@ export default async function RootLayout({
               Skip to main content
             </a>
             <WishlistProvider>
-              <SiteHeader />
+              <SiteHeader isHalloween={isHalloween} />
               <main id="main-content" className="flex-1 pb-16 md:pb-0 w-full">
                 {children}
               </main>

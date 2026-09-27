@@ -50,13 +50,13 @@ export function CompareButton({
       aria-label={inCompare ? 'Remove from comparison' : 'Add to comparison (up to 4)'}
       aria-pressed={inCompare}
       title={inCompare ? 'Remove from compare' : 'Compare product'}
-      className={`w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-xs ${
+      className={`h-8 w-8 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-xs flex items-center justify-center ${
         inCompare
-          ? 'bg-purple-600/20 text-purple-800 border-purple-400 dark:bg-blue-600/30 dark:text-blue-300 dark:border-blue-500/50'
-          : 'bg-white/80 dark:bg-slate-950/60 text-slate-700 dark:text-slate-300 border-purple-200/60 dark:border-white/20 hover:bg-white dark:hover:bg-slate-900/80 hover:text-slate-900 dark:hover:text-white'
+          ? 'bg-purple-600/30 text-purple-200 border-purple-400/50 [html[data-seasonal=halloween]_&]:bg-orange-600/40 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/50'
+          : 'bg-black/40 hover:bg-black/70 border-white/10 text-white/80 hover:text-white'
       } ${className}`}
     >
-      <Scale className="w-4 h-4" />
+      <Scale className="w-4 h-4 text-current" />
     </button>
   );
 }

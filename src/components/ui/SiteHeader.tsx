@@ -23,15 +23,28 @@ import { useWishlist } from '../../context/WishlistContext';
 import { MobileSearchToggle } from './MobileSearchToggle';
 import { ThemeToggle } from './ThemeToggle';
 
-export function SiteHeader() {
+interface SiteHeaderProps {
+  isHalloween?: boolean;
+}
+
+export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderProps = {}) {
   const pathname = usePathname();
   const { savedProductIds, savedBookIds, compareProductIds } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isHalloween, setIsHalloween] = useState(propIsHalloween);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    const checkHalloween = () => {
+      const isH = typeof document !== 'undefined' && document.documentElement.getAttribute('data-seasonal') === 'halloween';
+      setIsHalloween(Boolean(propIsHalloween || isH));
+    };
+    checkHalloween();
+    const observer = new MutationObserver(checkHalloween);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-seasonal'] });
+    return () => observer.disconnect();
+  }, [propIsHalloween]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -130,9 +143,9 @@ export function SiteHeader() {
             <span className="text-slate-700 dark:text-slate-300 font-medium">Search</span>
           </Link>
 
-          {/* Light / Dark Theme Toggle */}
-          <div className="bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 focus-within:border-purple-400 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:focus-within:border-blue-400/50 backdrop-blur-md rounded-xl transition-all flex items-center justify-center min-h-[40px] min-w-[40px]">
-            <ThemeToggle />
+          {/* Light / Dark Theme Toggle or Halloween Pumpkin */}
+          <div className="bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 focus-within:border-purple-400 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:focus-within:border-blue-400/50 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:bg-slate-900/60 backdrop-blur-md rounded-xl transition-all flex items-center justify-center min-h-[40px] min-w-[40px]">
+            <ThemeToggle isHalloween={isHalloween} />
           </div>
 
           {/* Wishlist Icon */}

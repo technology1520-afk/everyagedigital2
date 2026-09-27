@@ -22,18 +22,18 @@ export function SortMenu({ currentSort, onChange, className = '' }: SortMenuProp
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <ArrowUpDown className="w-3.5 h-3.5 text-purple-600 dark:text-slate-400" />
-      <label htmlFor="sort-select" className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-        Sort:
+      <ArrowUpDown className="w-3.5 h-3.5 text-purple-600 dark:text-slate-400 [html[data-seasonal=halloween]_&]:text-orange-400" />
+      <label htmlFor="sort-select" className="text-xs text-slate-600 dark:text-slate-400 [html[data-seasonal=halloween]_&]:text-orange-200 font-medium">
+        Sort by:
       </label>
       <select
         id="sort-select"
         value={currentSort}
         onChange={e => onChange(e.target.value as SortOption)}
-        className="text-xs bg-white/70 dark:bg-slate-900/80 border border-purple-200/60 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-slate-200 font-medium focus:outline-hidden focus:border-purple-400 dark:focus:border-blue-400 cursor-pointer backdrop-blur-md"
+        className="sort-select text-xs bg-white/70 dark:bg-slate-900/80 border border-purple-200/60 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-slate-200 font-medium focus:outline-hidden focus:border-purple-400 dark:focus:border-blue-400 [html[data-seasonal=halloween]_&]:bg-slate-950/80 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:px-3 [html[data-seasonal=halloween]_&]:py-1.5 [html[data-seasonal=halloween]_&]:rounded-xl [html[data-seasonal=halloween]_&]:focus:border-orange-400 cursor-pointer backdrop-blur-md"
       >
         {options.map(opt => (
-          <option key={opt.value} value={opt.value} className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+          <option key={opt.value} value={opt.value} className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 [html[data-seasonal=halloween]_&]:bg-slate-950 [html[data-seasonal=halloween]_&]:text-orange-100">
             {opt.label}
           </option>
         ))}
