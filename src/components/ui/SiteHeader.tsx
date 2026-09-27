@@ -71,14 +71,6 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-white/70 dark:bg-slate-950/70 border-b border-purple-200/50 dark:border-white/10 shadow-sm dark:shadow-black/20 transition-all">
-      {/* Top micro announcement / transparency notice */}
-      <div className="bg-purple-100/50 dark:bg-slate-950/80 backdrop-blur-md text-slate-600 dark:text-slate-300 border-b border-purple-200/40 dark:border-white/10 py-1 px-4 text-center text-[11px] font-medium tracking-wide flex items-center justify-center gap-2">
-        <span className="truncate">Independent editorial commerce. Direct merchant links. Zero sponsored bias.</span>
-        <Link href="/methodology" className="underline text-purple-600 hover:text-purple-700 dark:text-blue-400 dark:hover:text-blue-300 text-[10px] shrink-0">
-          Methodology &rarr;
-        </Link>
-      </div>
-
       <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3 relative">
         {/* Logo & Brand Identity */}
         <div className="flex items-center gap-4 sm:gap-6">

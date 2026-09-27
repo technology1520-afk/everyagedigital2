@@ -626,3 +626,61 @@ textarea:focus-visible {
   accent-color: #f97316 !important; /* accent-orange-500 */
 }
 
+/* 4. Hero Dark Glass Styling (Halloween Day & Night Mode Lock) */
+[data-seasonal="halloween"] .hero-glow {
+  background-color: rgba(2, 6, 23, 0.75) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-seasonal="halloween"] .hero-glow h1 {
+  color: #fffbeb !important;
+  font-family: var(--font-serif), ui-serif, Georgia, Cambria, serif !important;
+  filter: drop-shadow(0 2px 10px rgba(249, 115, 22, 0.3)) !important;
+}
+
+[data-seasonal="halloween"] .hero-glow p {
+  color: rgba(255, 237, 213, 0.8) !important;
+  font-weight: 400 !important;
+}
+
+[data-seasonal="halloween"] .hero-search-wrapper {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(249, 115, 22, 0.4) !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-seasonal="halloween"] .hero-search-input {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid rgba(251, 146, 60, 0.3) !important;
+  color: #ffffff !important;
+  border-radius: 0.75rem !important;
+  padding-left: 2.5rem !important;
+  padding-right: 6rem !important;
+  padding-top: 0.625rem !important;
+  padding-bottom: 0.625rem !important;
+}
+
+[data-seasonal="halloween"] .hero-search-input::placeholder {
+  color: rgba(254, 215, 170, 0.4) !important;
+}
+
+[data-seasonal="halloween"] .hero-filter-chip {
+  background-color: rgba(67, 20, 7, 0.5) !important;
+  color: #fed7aa !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 9999px !important;
+}
+
+[data-seasonal="halloween"] .hero-filter-chip:hover {
+  background-color: rgba(124, 45, 18, 0.6) !important;
+  color: #ffedd5 !important;
+}
+

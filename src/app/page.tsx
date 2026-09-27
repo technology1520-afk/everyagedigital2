@@ -32,7 +32,10 @@ export default async function HomePage() {
   const featuredProducts = featuredSearch.items.slice(0, 4);
   const collections = (await getAllCollectionsAsync({ storefrontOnly: true })).slice(0, 3);
   const books = (await getAllBooksAsync()).slice(0, 3);
-  const categories = (await getAllCategoriesAsync()) || getAllCategories();
+  const rawCategories = (await getAllCategoriesAsync()) || getAllCategories();
+  const categories = rawCategories.filter(
+    cat => cat.name.toLowerCase() !== 'general' && cat.name.toLowerCase() !== 'uncategorized'
+  );
   const ownedProducts = getAllOwnedProducts();
 
   const searchExamples = [
@@ -48,20 +51,20 @@ export default async function HomePage() {
     <div className="w-full space-y-16 sm:space-y-24 pb-12">
       {/* 1. Hero Section */}
       <section className="pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        <div className="bg-white/75 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/80 dark:border-white/10 shadow-xl shadow-purple-900/5 rounded-3xl p-6 sm:p-8 lg:p-12 hero-glow">
+        <div className="bg-white/75 dark:bg-slate-900/60 [html[data-seasonal=halloween]_&]:bg-slate-950/75 [html[data-seasonal=halloween]_&]:dark:bg-slate-950/85 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:shadow-2xl [html[data-seasonal=halloween]_&]:shadow-black/60 backdrop-blur-2xl border border-white/80 dark:border-white/10 shadow-xl shadow-purple-900/5 rounded-3xl p-6 sm:p-8 lg:p-12 hero-glow">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Eyebrow, Headings, Intro & Action Links */}
             <div className="lg:col-span-7 space-y-5 text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 text-xs font-semibold border border-purple-200/80 dark:border-purple-800/40 shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 [html[data-seasonal=halloween]_&]:bg-orange-950/60 [html[data-seasonal=halloween]_&]:text-orange-300 [html[data-seasonal=halloween]_&]:border-orange-500/40 text-xs font-semibold border border-purple-200/80 dark:border-purple-800/40 shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 [html[data-seasonal=halloween]_&]:text-orange-400 shrink-0" />
                 <span>Independent Editorial Discovery & Affiliate Commerce</span>
               </div>
 
-              <h1 className="font-serif text-3xl sm:text-5xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-slate-900 dark:text-white">
+              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-slate-900 dark:text-white [html[data-seasonal=halloween]_&]:text-amber-50 [html[data-seasonal=halloween]_&]:drop-shadow-[0_2px_10px_rgba(249,115,22,0.3)]">
                 Find things worth buying, reading, and using.
               </h1>
 
-              <p className="text-sm sm:text-base leading-relaxed max-w-xl text-slate-700 dark:text-slate-300 font-medium">
+              <p className="text-sm sm:text-base leading-relaxed max-w-xl text-slate-700 dark:text-slate-300 font-medium [html[data-seasonal=halloween]_&]:text-orange-100/80 [html[data-seasonal=halloween]_&]:font-normal">
                 Curated products, useful books, digital resources, and everyday recommendations—with clear information before you click.
               </p>
 
@@ -69,16 +72,16 @@ export default async function HomePage() {
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
                   href="/shop"
-                  className="touch-target inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-semibold transition-all shadow-md min-h-[44px]"
+                  className="touch-target inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:text-white [html[data-seasonal=halloween]_&]:hover:from-orange-500 [html[data-seasonal=halloween]_&]:hover:to-amber-500 [html[data-seasonal=halloween]_&]:shadow-orange-600/30 text-xs sm:text-sm font-semibold transition-all shadow-md min-h-[44px]"
                 >
                   <span>Start browsing</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/assistant"
-                  className="touch-target inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-100/70 hover:bg-purple-200/70 text-purple-900 border border-purple-200/80 dark:bg-white/15 dark:hover:bg-white/25 dark:text-white dark:border-white/20 text-xs sm:text-sm font-medium transition-all min-h-[44px]"
+                  className="touch-target inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-100/70 hover:bg-purple-200/70 text-purple-900 border border-purple-200/80 dark:bg-white/15 dark:hover:bg-white/25 dark:text-white dark:border-white/20 [html[data-seasonal=halloween]_&]:bg-orange-950/50 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:hover:bg-orange-900/60 text-xs sm:text-sm font-medium transition-all min-h-[44px]"
                 >
-                  <Sparkles className="w-4 h-4 text-purple-600 dark:text-blue-300 shrink-0" />
+                  <Sparkles className="w-4 h-4 text-purple-600 dark:text-blue-300 [html[data-seasonal=halloween]_&]:text-orange-400 shrink-0" />
                   <span>Ask the shopping assistant</span>
                 </Link>
               </div>
@@ -86,21 +89,21 @@ export default async function HomePage() {
 
             {/* Right Column: Search Form Inside Hero */}
             <div className="lg:col-span-5 w-full">
-              <div className="bg-purple-50/60 dark:bg-white/5 border border-purple-200/70 dark:border-white/15 p-5 sm:p-6 rounded-2xl backdrop-blur-md shadow-sm dark:shadow-none">
-                <span className="text-xs font-mono uppercase tracking-wide text-purple-950 dark:text-slate-100 font-semibold block mb-2.5">
+              <div className="hero-search-wrapper bg-purple-50/60 dark:bg-white/5 [html[data-seasonal=halloween]_&]:bg-black/60 border border-purple-200/70 dark:border-white/15 [html[data-seasonal=halloween]_&]:border-orange-500/40 p-5 sm:p-6 [html[data-seasonal=halloween]_&]:p-5 rounded-2xl [html[data-seasonal=halloween]_&]:rounded-2xl backdrop-blur-md shadow-sm dark:shadow-none">
+                <span className="text-xs font-mono uppercase tracking-wide text-purple-950 dark:text-slate-100 [html[data-seasonal=halloween]_&]:text-orange-300 font-semibold block mb-2.5">
                   Instant Catalog Search
                 </span>
                 <form action="/search" method="GET" className="relative flex items-center">
-                  <Search className="w-4 h-4 text-purple-600 dark:text-blue-400 absolute left-3.5 pointer-events-none" />
+                  <Search className="w-4 h-4 text-purple-600 dark:text-blue-400 [html[data-seasonal=halloween]_&]:text-orange-400 absolute left-3.5 pointer-events-none" />
                   <input
                     type="text"
                     name="q"
                     placeholder="Search ergonomic mouse, habit books..."
-                    className="w-full pl-10 pr-24 py-3 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-950/60 border border-purple-200 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-hidden focus:border-purple-500 dark:focus:border-blue-400 focus:ring-1 focus:ring-purple-500/20 dark:focus:ring-blue-400/20 min-h-[44px] transition-colors"
+                    className="hero-search-input w-full pl-10 pr-24 py-3 [html[data-seasonal=halloween]_&]:px-4 [html[data-seasonal=halloween]_&]:py-2.5 [html[data-seasonal=halloween]_&]:pl-10 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-950/60 [html[data-seasonal=halloween]_&]:bg-slate-900/90 border border-purple-200 dark:border-white/20 [html[data-seasonal=halloween]_&]:border-orange-400/30 text-slate-900 dark:text-white [html[data-seasonal=halloween]_&]:text-white placeholder-slate-400 dark:placeholder-slate-400 [html[data-seasonal=halloween]_&]:placeholder-orange-200/40 focus:outline-hidden focus:border-purple-500 dark:focus:border-blue-400 [html[data-seasonal=halloween]_&]:focus:border-orange-500 focus:ring-1 focus:ring-purple-500/20 dark:focus:ring-blue-400/20 [html[data-seasonal=halloween]_&]:focus:ring-orange-500/20 min-h-[44px] transition-colors"
                   />
                   <button
                     type="submit"
-                    className="absolute right-1.5 px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white dark:bg-white dark:text-[#234F9E] dark:hover:bg-slate-100 text-xs font-semibold rounded-lg transition-colors cursor-pointer min-h-[36px]"
+                    className="absolute right-1.5 px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white dark:bg-white dark:text-[#234F9E] dark:hover:bg-slate-100 [html[data-seasonal=halloween]_&]:bg-gradient-to-r [html[data-seasonal=halloween]_&]:from-orange-600 [html[data-seasonal=halloween]_&]:to-amber-600 [html[data-seasonal=halloween]_&]:text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer min-h-[36px]"
                   >
                     Search
                   </button>
@@ -108,12 +111,12 @@ export default async function HomePage() {
 
                 {/* Quick search chips */}
                 <div className="flex flex-wrap items-center gap-1.5 mt-3.5 text-left">
-                  <span className="text-[11px] font-medium text-purple-800 dark:text-slate-300">Popular:</span>
+                  <span className="text-[11px] font-medium text-purple-800 dark:text-slate-300 [html[data-seasonal=halloween]_&]:text-orange-200/70">Popular:</span>
                   {searchExamples.map(term => (
                     <Link
                       key={term}
                       href={`/search?q=${encodeURIComponent(term)}`}
-                      className="text-[11px] font-medium text-purple-900 hover:text-purple-950 bg-white hover:bg-purple-100 dark:text-white dark:bg-white/15 dark:hover:bg-white/25 border border-purple-200/70 dark:border-white/15 rounded-full px-3 py-1 transition-all shadow-2xs dark:shadow-none"
+                      className="hero-filter-chip text-[11px] font-medium text-purple-900 hover:text-purple-950 bg-white hover:bg-purple-100 dark:text-white dark:bg-white/15 dark:hover:bg-white/25 border border-purple-200/70 dark:border-white/15 rounded-full px-3 py-1 transition-all shadow-2xs dark:shadow-none [html[data-seasonal=halloween]_&]:bg-orange-950/50 [html[data-seasonal=halloween]_&]:hover:bg-orange-900/60 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:text-xs [html[data-seasonal=halloween]_&]:px-3 [html[data-seasonal=halloween]_&]:py-1 [html[data-seasonal=halloween]_&]:rounded-full"
                     >
                       {term}
                     </Link>
@@ -126,24 +129,26 @@ export default async function HomePage() {
       </section>
 
       {/* 2. Popular Categories Bar */}
-      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        <div className="border-t border-b border-purple-200/50 dark:border-white/10 py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-          {categories.map(cat => (
-            <Link
-              key={cat.slug}
-              href={`/category/${cat.slug}`}
-              className="p-3.5 bg-white/80 dark:bg-white/[0.04] backdrop-blur-md rounded-2xl border border-purple-100 dark:border-white/10 hover:border-purple-300 dark:hover:border-blue-400/40 hover:bg-white dark:hover:bg-white/[0.08] transition-all flex flex-col justify-between group min-h-[64px] shadow-xs dark:shadow-black/20"
-            >
-              <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-blue-300 transition-colors">
-                {cat.name}
-              </span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 font-mono">
-                {cat.count} verified pick{cat.count > 1 ? 's' : ''} &rarr;
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {categories.length > 0 && (
+        <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
+          <div className="border-t border-b border-purple-200/50 dark:border-white/10 [html[data-seasonal=halloween]_&]:border-orange-500/20 py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            {categories.map(cat => (
+              <Link
+                key={cat.slug}
+                href={`/category/${cat.slug}`}
+                className="p-3.5 bg-white/80 dark:bg-white/[0.04] [html[data-seasonal=halloween]_&]:bg-slate-950/70 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:shadow-lg [html[data-seasonal=halloween]_&]:shadow-black/30 backdrop-blur-md rounded-2xl border border-purple-100 dark:border-white/10 hover:border-purple-300 dark:hover:border-blue-400/40 [html[data-seasonal=halloween]_&]:hover:border-orange-500/60 hover:bg-white dark:hover:bg-white/[0.08] [html[data-seasonal=halloween]_&]:hover:bg-orange-950/40 transition-all flex flex-col justify-between group min-h-[64px] shadow-xs dark:shadow-black/20"
+              >
+                <span className="text-xs font-bold text-slate-900 dark:text-white [html[data-seasonal=halloween]_&]:text-amber-50 group-hover:text-purple-600 dark:group-hover:text-blue-300 [html[data-seasonal=halloween]_&]:group-hover:text-orange-300 transition-colors">
+                  {cat.name}
+                </span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 [html[data-seasonal=halloween]_&]:text-orange-300/70 mt-2 font-mono">
+                  {cat.count} verified pick{cat.count > 1 ? 's' : ''} &rarr;
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 3. Featured Editorial Picks */}
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
