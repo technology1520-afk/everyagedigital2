@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { cookies } from "next/headers";
-import { unstable_cache } from "next/cache";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { WishlistProvider } from "../context/WishlistContext";
@@ -9,15 +7,35 @@ import { SiteHeader } from "../components/ui/SiteHeader";
 import { SiteFooter } from "../components/ui/SiteFooter";
 import { MobileTabBar } from "../components/ui/MobileTabBar";
 import { HalloweenAmbientOverlay } from "../components/ui/HalloweenAmbientOverlay";
+import { getSupabaseAdminClient } from "../lib/supabase/server";
+import { isSupabaseConfigured } from "../lib/supabase/config";
 import { catalogRepository } from "../lib/db/repository";
 
-const getCachedSeasonalTheme = unstable_cache(
-  async () => {
-    return catalogRepository.getSeasonalTheme();
-  },
-  ['seasonal-theme-setting'],
-  { tags: ['site-settings'], revalidate: 60 }
-);
+export const dynamic = 'force-dynamic'; // Prevent Vercel CDN from freezing stale theme state across browsers
+
+async function getLiveSeasonalTheme(): Promise<{ active: boolean; theme: string }> {
+  try {
+    if (isSupabaseConfigured()) {
+      const supabase = getSupabaseAdminClient();
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'seasonal_theme')
+        .maybeSingle();
+
+      if (!error && data?.value) {
+        const val = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+        return {
+          active: Boolean(val.active),
+          theme: String(val.theme || 'halloween')
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('[RootLayout] Supabase seasonal theme fetch warning:', err);
+  }
+  return catalogRepository.getSeasonalTheme();
+}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,25 +77,13 @@ export const metadata: Metadata = {
   }
 };
 
-export const dynamic = 'force-dynamic';
-
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const cookieSeasonalTheme = cookieStore.get('seasonal_theme')?.value;
-
-  // Read persistent cookie or fallback to Supabase record on the server
-  let seasonalTheme = false;
-  if (cookieSeasonalTheme !== undefined) {
-    seasonalTheme = cookieSeasonalTheme === 'halloween';
-  } else {
-    const dbTheme = await getCachedSeasonalTheme();
-    seasonalTheme = Boolean(dbTheme?.active && (dbTheme?.theme === 'halloween' || !dbTheme?.theme));
-  }
-  const isHalloween = seasonalTheme;
+  const seasonalTheme = await getLiveSeasonalTheme();
+  const isHalloween = Boolean(seasonalTheme.active && (seasonalTheme.theme === 'halloween' || !seasonalTheme.theme));
 
   return (
     <html 

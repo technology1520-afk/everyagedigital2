@@ -15,81 +15,58 @@ import {
   Loader2,
   Bot
 } from 'lucide-react';
-import { getSupabaseBrowserClient } from '../../../lib/supabase/client';
-import { setSeasonalThemeAction } from '../../actions/admin';
-
 export default function AdminSettingsPage() {
   const router = useRouter();
-  const [isHalloween, setIsHalloween] = useState<boolean>(() => {
-    if (typeof document !== 'undefined') {
-      const match = document.cookie.match(/(?:^|;\s*)seasonal_theme=([^;]+)/);
-      if (match) return match[1] === 'halloween';
-    }
-    return false;
-  });
+  const [isHalloween, setIsHalloween] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  // 1. On component mount (useEffect), fetch the current value from Supabase:
+  // On load: Fetch the live status directly from /api/theme
   useEffect(() => {
-    async function loadSettings() {
+    async function loadTheme() {
       try {
-        const supabase = getSupabaseBrowserClient();
-        const { data, error } = await supabase
-          .from('site_settings')
-          .select('value')
-          .eq('key', 'seasonal_theme')
-          .single();
-        if (data?.value) {
-          const val = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
-          setIsHalloween(Boolean(val.active));
+        const res = await fetch('/api/theme', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setIsHalloween(Boolean(data.active));
         }
       } catch (err) {
-        console.error('Failed to load settings from Supabase:', err);
+        console.error('Failed to fetch theme from /api/theme:', err);
       }
     }
-    loadSettings();
+    loadTheme();
   }, []);
 
-  // 2. In the toggle switch handler:
+  // On toggle: POST to /api/theme, update local state, and call router.refresh()
   const handleToggle = async () => {
     const nextState = !isHalloween;
     setIsHalloween(nextState);
     setFeedback(null);
 
-    // Set a persistent cookie so Server Components and refreshes know the state instantly
-    document.cookie = `seasonal_theme=${nextState ? 'halloween' : 'default'}; path=/; max-age=2592000; SameSite=Lax`;
-
     startTransition(async () => {
       try {
-        const supabase = getSupabaseBrowserClient();
-        // Await the database write:
-        const { error } = await supabase
-          .from('site_settings')
-          .upsert({
-            key: 'seasonal_theme',
-            value: { active: nextState, theme: 'halloween' },
-            updated_at: new Date().toISOString()
-          });
-        if (error) console.error('Failed to update theme in Supabase:', error);
-
-        // Synchronize with server actions for cache invalidation & in-memory repo fallback
-        try {
-          await setSeasonalThemeAction(nextState, 'halloween');
-        } catch (actionErr) {
-          console.warn('Server action fallback warning:', actionErr);
+        const res = await fetch('/api/theme', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ active: nextState, theme: 'halloween' })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setFeedback(
+            nextState
+              ? 'Spooky Halloween mode active! Live Supabase updated and storefront cache revalidated.'
+              : 'Halloween mode disabled. Standard glass theme active.'
+          );
+        } else {
+          setIsHalloween(!nextState);
+          setFeedback('Failed to update seasonal theme.');
         }
-
-        setFeedback(
-          nextState
-            ? 'Spooky Halloween mode active! Persistent cookie & Supabase synced.'
-            : 'Halloween mode disabled. Standard glass theme active.'
-        );
 
         // Trigger a server revalidation call
         router.refresh();
       } catch (err: unknown) {
         console.error('Failed to update theme:', err);
+        setIsHalloween(!nextState);
         setFeedback(err instanceof Error ? err.message : 'Error updating theme');
       }
     });

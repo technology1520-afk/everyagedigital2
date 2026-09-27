@@ -1761,6 +1761,7 @@ class CatalogRepository {
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
+        // 1. Primary: query site_settings table
         const { data, error } = await supabase
           .from('site_settings')
           .select('value')
@@ -1777,6 +1778,29 @@ class CatalogRepository {
             (global as any).__seasonalTheme = this.seasonalTheme;
           }
           return this.seasonalTheme;
+        }
+
+        // 2. Fallback: if site_settings table is pending migration (PGRST205), check persistent collections setting row
+        if (error && (error.code === 'PGRST205' || error.message?.includes('schema cache'))) {
+          const { data: fallbackRow } = await supabase
+            .from('collections')
+            .select('description')
+            .eq('id', 'site_setting_seasonal_theme')
+            .maybeSingle();
+
+          if (fallbackRow && fallbackRow.description) {
+            try {
+              const val = JSON.parse(fallbackRow.description);
+              this.seasonalTheme = {
+                active: Boolean(val.active),
+                theme: String(val.theme || 'halloween')
+              };
+              if (typeof global !== 'undefined') {
+                (global as any).__seasonalTheme = this.seasonalTheme;
+              }
+              return this.seasonalTheme;
+            } catch {}
+          }
         }
       } catch (err) {
         if (process.env.NODE_ENV !== 'production') {
@@ -1799,6 +1823,7 @@ class CatalogRepository {
     if (this.getBackendMode().mode === 'supabase') {
       try {
         const supabase = getSupabaseAdminClient();
+        // 1. Primary: update site_settings table
         const { error } = await supabase
           .from('site_settings')
           .upsert({
@@ -1807,8 +1832,17 @@ class CatalogRepository {
             updated_at: new Date().toISOString()
           });
 
-        if (error && process.env.NODE_ENV !== 'production') {
-          console.warn('[CatalogRepository] setSeasonalTheme Supabase error:', error.message);
+        // 2. Fallback: if site_settings table pending migration (PGRST205), sync to persistent collections row
+        if (error && (error.code === 'PGRST205' || error.message?.includes('schema cache'))) {
+          await supabase
+            .from('collections')
+            .upsert({
+              id: 'site_setting_seasonal_theme',
+              slug: '__site_setting_seasonal_theme',
+              title: 'site_setting_seasonal_theme',
+              description: JSON.stringify({ active, theme }),
+              status: 'draft'
+            });
         }
       } catch (err) {
         if (process.env.NODE_ENV !== 'production') {

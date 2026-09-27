@@ -287,15 +287,7 @@ export async function setSeasonalThemeAction(active: boolean, theme: string = 'h
   await assertAdmin();
   const result = await catalogRepository.setSeasonalTheme(active, theme);
   try {
-    const cookieStore = await cookies();
-    cookieStore.set('seasonal_theme', active ? 'halloween' : 'default', {
-      path: '/',
-      maxAge: 2592000,
-      sameSite: 'lax',
-      httpOnly: false
-    });
-  } catch {}
-  try {
+    revalidateTag('site_settings', { expire: 0 });
     revalidateTag('site-settings', { expire: 0 });
   } catch {}
   revalidatePath('/', 'layout');

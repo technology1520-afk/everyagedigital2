@@ -19,6 +19,8 @@ import {
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { sanitizeErrorMessage } from './auth';
 import { Product } from '../../types';
+import { getSupabaseAdminClient } from '../supabase/server';
+import { isSupabaseConfigured } from '../supabase/config';
 
 export type McpToolResponse<T = unknown> = 
   | { ok: true; data: T }
@@ -446,8 +448,33 @@ export async function handleDeleteBundle(args: unknown): Promise<McpToolResponse
 /**
  * 14. get_seasonal_theme
  * Returns: { active: boolean, current_theme: string }
+ * Queries live Supabase site_settings directly as single source of truth.
  */
 export async function handleGetSeasonalTheme(_args?: unknown): Promise<McpToolResponse> {
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = getSupabaseAdminClient();
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'seasonal_theme')
+        .maybeSingle();
+
+      if (!error && data?.value) {
+        const val = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+        return {
+          ok: true,
+          data: {
+            active: Boolean(val.active),
+            current_theme: String(val.theme || 'halloween')
+          }
+        };
+      }
+    } catch (err) {
+      console.warn('[handleGetSeasonalTheme] Supabase query error:', err);
+    }
+  }
+
   const current = await catalogRepository.getSeasonalTheme();
   return {
     ok: true,
@@ -461,7 +488,8 @@ export async function handleGetSeasonalTheme(_args?: unknown): Promise<McpToolRe
 /**
  * 15. set_seasonal_theme
  * Args: active (boolean), theme (string, e.g. "halloween")
- * Action: Updates Supabase site_settings and triggers storefront cache revalidation
+ * Action: Writes directly to Supabase site_settings production database,
+ *         synchronizes repository, and triggers storefront cache revalidation
  * Returns: "Storefront theme updated to ${active ? theme : 'default'}."
  */
 export async function handleSetSeasonalTheme(args: unknown): Promise<McpToolResponse> {
@@ -471,13 +499,42 @@ export async function handleSetSeasonalTheme(args: unknown): Promise<McpToolResp
   }
 
   const { active, theme = 'halloween' } = parsed.data;
+
+  // 1. Direct write to live Supabase production database
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = getSupabaseAdminClient();
+      const { error } = await supabase
+        .from('site_settings')
+        .upsert({
+          key: 'seasonal_theme',
+          value: { active, theme },
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.warn('[handleSetSeasonalTheme] Supabase write error:', error.message);
+      }
+    } catch (err) {
+      console.warn('[handleSetSeasonalTheme] Supabase write exception:', err);
+    }
+  }
+
+  // 2. Synchronize repository singleton
   await catalogRepository.setSeasonalTheme(active, theme);
 
+  // 3. Immediately revalidate Next.js / Vercel cache
   try {
+    revalidateTag('site_settings', { expire: 0 });
     revalidateTag('site-settings', { expire: 0 });
-    revalidatePath('/', 'layout');
   } catch {
     // ignore outside of request context (e.g. testing)
+  }
+  try {
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/settings');
+  } catch {
+    // ignore outside of request context
   }
 
   const message = `Storefront theme updated to ${active ? theme : 'default'}.`;
