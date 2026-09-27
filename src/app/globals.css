@@ -536,7 +536,9 @@ textarea:focus-visible {
 }
 
 [data-seasonal="halloween"] .card-best-for strong,
-[data-seasonal="halloween"] article div[class*="rounded-lg bg-white"] strong {
+[data-seasonal="halloween"] .card-best-for span,
+[data-seasonal="halloween"] article div[class*="rounded-lg bg-white"] strong,
+[data-seasonal="halloween"] article div[class*="rounded-lg bg-white"] span {
   color: #ffedd5 !important;
 }
 

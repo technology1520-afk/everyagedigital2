@@ -160,9 +160,11 @@ export function ProductCard({
           )}
 
           {/* Best for highlight */}
-          {product.bestFor && (
-            <div className="card-best-for text-[11px] p-2 rounded-lg bg-white/[0.04] border border-white/5 text-slate-300 [html[data-seasonal=halloween]_&]:bg-orange-950/40 [html[data-seasonal=halloween]_&]:border-orange-500/20 [html[data-seasonal=halloween]_&]:text-orange-200 line-clamp-1">
-              <strong className="text-white [html[data-seasonal=halloween]_&]:text-orange-100 font-medium">Best for:</strong> {product.bestFor}
+          {(product.bestFor || productAny.best_for) && (
+            <div className="w-full min-h-[42px] rounded-lg bg-white/[0.04] dark:bg-white/[0.03] border border-white/5 [html[data-seasonal=halloween]_&]:bg-orange-950/40 [html[data-seasonal=halloween]_&]:border-orange-500/20 px-2.5 py-1.5 my-2 flex items-center">
+              <p className="text-[11px] leading-snug text-slate-300 dark:text-slate-300 [html[data-seasonal=halloween]_&]:text-orange-200 font-medium line-clamp-2">
+                <span className="font-semibold text-white [html[data-seasonal=halloween]_&]:text-orange-100">Best for:</span> {product.bestFor || productAny.best_for}
+              </p>
             </div>
           )}
         </div>
