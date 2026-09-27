@@ -42,6 +42,13 @@ export function enrichProduct(product: Product, customOffer?: MerchantOffer): En
   let freshness: FreshnessResult | undefined = undefined;
 
   if (offer) {
+    if (!product.affiliate_url && offer.affiliateUrl) {
+      product.affiliate_url = offer.affiliateUrl;
+      product.affiliateUrl = offer.affiliateUrl;
+    }
+    if (!product.merchant && offer.merchantName) {
+      product.merchant = offer.merchantName;
+    }
     const adapter = getAffiliateAdapter(offer.providerName || offer.merchantName);
     freshness = adapter.checkFreshness(offer.lastCheckedAt, offer.staleAfterDays);
   }

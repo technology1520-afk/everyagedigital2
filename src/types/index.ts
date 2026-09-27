@@ -64,6 +64,9 @@ export interface Product {
   tested_in_house?: boolean;
   lastPriceCheckedAt?: string;
   last_price_checked_at?: string;
+  affiliate_url?: string;
+  affiliateUrl?: string;
+  merchant?: string;
   createdAt: string;
   updatedAt: string;
 }

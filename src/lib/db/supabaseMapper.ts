@@ -116,6 +116,15 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     : (row.category_id || 'General');
   const subcategory = isBook ? 'Curated Books' : 'General';
 
+  const rawUrl = (row as any).affiliate_url || row.affiliate_links?.[0]?.url || (row as any).outbound_url;
+  const safeAffiliateUrl = sanitizeAffiliateUrl(rawUrl);
+  const rawMerchant = (row.merchant_id as string) || (row as any).merchant || '';
+  const merchantLower = rawMerchant.toLowerCase();
+  const isAmazonUrl = safeAffiliateUrl.toLowerCase().includes('amazon') || safeAffiliateUrl.toLowerCase().includes('amzn.to');
+  const merchant = (merchantLower.includes('amazon') || isAmazonUrl) 
+    ? 'Amazon' 
+    : (merchantLower.includes('gumroad') ? 'Gumroad' : (rawMerchant || 'Amazon'));
+
   return {
     id: row.id,
     slug: row.slug || `product-${row.id}`,
@@ -163,6 +172,9 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     currency: row.currency || 'USD',
     lastPriceCheckedAt: row.last_price_checked_at || undefined,
     last_price_checked_at: row.last_price_checked_at || undefined,
+    affiliate_url: safeAffiliateUrl,
+    affiliateUrl: safeAffiliateUrl,
+    merchant,
     createdAt: row.created_at || new Date().toISOString(),
     updatedAt: row.updated_at || new Date().toISOString()
   };
@@ -173,12 +185,16 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
  * Guarantees numeric prices with 0 fallback to prevent NaN warnings.
  */
 export function mapSupabaseRowToOffer(row: SupabaseProductRow): MerchantOffer {
-  let merchantName: MerchantName = 'Direct Brand';
-  const rawMerchant = (row.merchant_id as string) || '';
+  const rawUrl = (row as any).affiliate_url || row.affiliate_links?.[0]?.url || (row as any).outbound_url;
+  const safeUrl = sanitizeAffiliateUrl(rawUrl);
+  const rawMerchant = (row.merchant_id as string) || (row as any).merchant || '';
   const merchantLower = rawMerchant.toLowerCase();
-  if (merchantLower.includes('amazon')) {
+  const isAmazonUrl = safeUrl.toLowerCase().includes('amazon') || safeUrl.toLowerCase().includes('amzn.to');
+
+  let merchantName: MerchantName = 'Amazon';
+  if (merchantLower.includes('amazon') || isAmazonUrl) {
     merchantName = 'Amazon';
-  } else if (merchantLower.includes('gumroad')) {
+  } else if (merchantLower.includes('gumroad') || safeUrl.includes('gumroad')) {
     merchantName = 'Gumroad';
   } else if (merchantLower.includes('lemon')) {
     merchantName = 'Lemon Squeezy';
@@ -192,12 +208,11 @@ export function mapSupabaseRowToOffer(row: SupabaseProductRow): MerchantOffer {
     merchantName = 'ShareASale';
   } else if (merchantLower.includes('cj')) {
     merchantName = 'CJ';
-  } else {
+  } else if (rawMerchant) {
     merchantName = 'Direct Brand';
+  } else {
+    merchantName = 'Amazon';
   }
-
-  const rawUrl = row.affiliate_url || row.affiliate_links?.[0]?.url;
-  const safeUrl = sanitizeAffiliateUrl(rawUrl);
   const price = sanitizePriceBound(row.price_min, 0) ?? 0;
   const originalPrice = sanitizePriceBound(row.price_max, null) ?? undefined;
   const nowIso = new Date().toISOString();
