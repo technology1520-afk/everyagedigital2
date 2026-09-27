@@ -43,17 +43,25 @@ interface ProductPageProps {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
+  const canonicalUrl = `https://www.everyagedigital.store/product/${slug}`;
   const enriched = (await getProductBySlugAsync(slug)) || getProductBySlug(slug);
-  if (!enriched) return {};
+
+  if (!enriched) {
+    return {
+      title: 'Product Not Found',
+      alternates: {
+        canonical: canonicalUrl,
+      },
+    };
+  }
 
   const product = enriched.product as any;
-  const canonicalUrl = `https://www.everyagedigital.store/product/${slug}`;
   const title = product.title || product.name;
   const description = product.editorial_description || product.description;
   const imageUrl = product.image_url || product.imageUrl;
 
   return {
-    title: `${title} | EveryAge Digital`,
+    title, // Next.js template will automatically produce `${title} | EveryAge Digital`
     description,
     alternates: {
       canonical: canonicalUrl,

@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 interface CollectionPageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string }> | { slug: string };
 }
 
 export async function generateStaticParams() {
@@ -28,11 +28,20 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: CollectionPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const collection = await getCollectionBySlugAsync(slug, { storefrontOnly: true });
-  if (!collection) return { title: 'Collection Not Found' };
-
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
   const canonicalUrl = `https://www.everyagedigital.store/collections/${slug}`;
+  const collection = await getCollectionBySlugAsync(slug, { storefrontOnly: true });
+
+  if (!collection) {
+    return {
+      title: 'Collection Not Found',
+      alternates: {
+        canonical: canonicalUrl,
+      },
+    };
+  }
+
   const rawCover = collection.cover_image || collection.coverImage;
   const isDesk = typeof rawCover === 'string' && (rawCover.includes('photo-1518455027359-f3f8164ba6bd') || rawCover.includes('/desk.jpg'));
   const isPlaceholder = !rawCover || rawCover.includes('placeholder') || isDesk;
@@ -41,15 +50,17 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
     ? rawCover
     : collection.products?.[0]?.image_url || '/placeholder-bundle.png';
 
+  const description = collection.description || (collection.subtitle ? `${collection.subtitle} ${collection.introduction?.slice(0, 150) || ''}...` : undefined);
+
   return {
-    title: `${collection.title} — Curated Bundle & Kit`,
-    description: `${collection.subtitle} ${collection.introduction.slice(0, 150)}...`,
+    title: collection.title, // Next.js template will automatically produce `${collection.title} | EveryAge Digital`
+    description,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
       title: collection.title,
-      description: collection.subtitle,
+      description: collection.subtitle || collection.description,
       url: canonicalUrl,
       images: [{ url: bundleCoverImage }]
     }
@@ -57,7 +68,8 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
 }
 
 export default async function CollectionPage({ params }: CollectionPageProps) {
-  const { slug } = await params;
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
   const collection = await getCollectionBySlugAsync(slug, { storefrontOnly: true });
 
   if (!collection) {

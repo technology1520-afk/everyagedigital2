@@ -121,6 +121,7 @@ export interface Collection {
   title: string;
   subtitle: string;
   introduction: string;
+  description?: string;
   selectionCriteria: string[];
   productIds: string[];
   bookIds?: string[];

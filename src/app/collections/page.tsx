@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Curated Collections & Gear Bundles — EveryAge Digital',
+  title: 'Curated Collections & Gear Bundles',
   description: 'Hand-picked, thematic setups and verified starter kits. Built for distraction-free deep work, ergonomics, and daily productivity.',
   alternates: {
     canonical: 'https://www.everyagedigital.store/collections',
