@@ -1,7 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { 
   ADMIN_COOKIE_NAME, 
@@ -275,4 +275,23 @@ export async function cleanupCollectionOrphansAction() {
   revalidatePath('/collections');
   return res;
 }
+
+// 15. Get Seasonal Campaign Setting
+export async function getSeasonalThemeAction() {
+  await assertAdmin();
+  return catalogRepository.getSeasonalTheme();
+}
+
+// 16. Toggle & Update Seasonal Campaign Setting (with Next.js cache revalidation)
+export async function setSeasonalThemeAction(active: boolean, theme: string = 'halloween') {
+  await assertAdmin();
+  const result = await catalogRepository.setSeasonalTheme(active, theme);
+  try {
+    revalidateTag('site-settings', { expire: 0 });
+  } catch {}
+  revalidatePath('/', 'layout');
+  revalidatePath('/admin/settings');
+  return { success: true, theme: result };
+}
+
 

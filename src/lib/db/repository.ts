@@ -98,6 +98,7 @@ class CatalogRepository {
   private books: Book[] = [];
   private clicks: ClickRecord[] = [];
   private assistantLogs: AssistantLogRecord[] = [];
+  private seasonalTheme: { active: boolean; theme: string } = { active: false, theme: 'halloween' };
 
   constructor() {
     this.reset();
@@ -1754,9 +1755,73 @@ class CatalogRepository {
   public getTelemetry(days: number = 7) {
     return this.getClicksReport(days);
   }
+
+  // --- SEASONAL THEME & SITE SETTINGS ---
+  public async getSeasonalTheme(): Promise<{ active: boolean; theme: string }> {
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'seasonal_theme')
+          .maybeSingle();
+
+        if (!error && data && data.value) {
+          const val = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+          this.seasonalTheme = {
+            active: Boolean(val.active),
+            theme: String(val.theme || 'halloween')
+          };
+          if (typeof global !== 'undefined') {
+            (global as any).__seasonalTheme = this.seasonalTheme;
+          }
+          return this.seasonalTheme;
+        }
+      } catch (err) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('[CatalogRepository] getSeasonalTheme Supabase error, falling back to memory:', err);
+        }
+      }
+    }
+    if (typeof global !== 'undefined' && (global as any).__seasonalTheme) {
+      return (global as any).__seasonalTheme;
+    }
+    return this.seasonalTheme;
+  }
+
+  public async setSeasonalTheme(active: boolean, theme: string = 'halloween'): Promise<{ active: boolean; theme: string }> {
+    this.seasonalTheme = { active, theme };
+    if (typeof global !== 'undefined') {
+      (global as any).__seasonalTheme = { active, theme };
+    }
+
+    if (this.getBackendMode().mode === 'supabase') {
+      try {
+        const supabase = getSupabaseAdminClient();
+        const { error } = await supabase
+          .from('site_settings')
+          .upsert({
+            key: 'seasonal_theme',
+            value: { active, theme },
+            updated_at: new Date().toISOString()
+          });
+
+        if (error && process.env.NODE_ENV !== 'production') {
+          console.warn('[CatalogRepository] setSeasonalTheme Supabase error:', error.message);
+        }
+      } catch (err) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('[CatalogRepository] setSeasonalTheme exception:', err);
+        }
+      }
+    }
+
+    return this.seasonalTheme;
+  }
 }
 
 // Global Singleton to preserve repository mutations across Hot Reloads & Server Actions
-const globalForRepo = global as unknown as { catalogRepository: CatalogRepository };
+const globalForRepo = global as unknown as { catalogRepository: CatalogRepository; __seasonalTheme?: { active: boolean; theme: string } };
 export const catalogRepository = globalForRepo.catalogRepository || new CatalogRepository();
-if (process.env.NODE_ENV !== 'production') globalForRepo.catalogRepository = catalogRepository;
+globalForRepo.catalogRepository = catalogRepository;

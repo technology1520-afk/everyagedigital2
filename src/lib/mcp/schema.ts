@@ -115,6 +115,17 @@ export const DeleteBundleInputSchema = z.object({
 });
 export type DeleteBundleInput = z.infer<typeof DeleteBundleInputSchema>;
 
+// 14. get_seasonal_theme
+export const GetSeasonalThemeInputSchema = z.object({}).optional().default({});
+export type GetSeasonalThemeInput = z.infer<typeof GetSeasonalThemeInputSchema>;
+
+// 15. set_seasonal_theme
+export const SetSeasonalThemeInputSchema = z.object({
+  active: z.boolean(),
+  theme: z.string().default('halloween').optional()
+});
+export type SetSeasonalThemeInput = z.infer<typeof SetSeasonalThemeInputSchema>;
+
 
 export interface McpToolDefinition {
   name: string;
@@ -353,6 +364,26 @@ export const MCP_TOOLS: McpToolDefinition[] = [
         bundle_slug: { type: 'string', description: 'Slug of the bundle to delete' }
       },
       required: ['bundle_slug']
+    }
+  },
+  {
+    name: 'get_seasonal_theme',
+    description: 'Get the current storefront seasonal theme status and configuration.',
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
+  },
+  {
+    name: 'set_seasonal_theme',
+    description: 'Set the storefront seasonal campaign theme (e.g. spooky Halloween mode) and trigger storefront cache revalidation.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        active: { type: 'boolean', description: 'Whether the seasonal theme is active' },
+        theme: { type: 'string', description: 'Theme identifier (default: "halloween")', default: 'halloween' }
+      },
+      required: ['active']
     }
   }
 ];

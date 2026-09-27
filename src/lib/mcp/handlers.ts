@@ -12,8 +12,11 @@ import {
   CreateBundleInputSchema,
   UpdateBundleInputSchema,
   ManageBundleProductsInputSchema,
-  DeleteBundleInputSchema
+  DeleteBundleInputSchema,
+  GetSeasonalThemeInputSchema,
+  SetSeasonalThemeInputSchema
 } from './schema';
+import { revalidateTag, revalidatePath } from 'next/cache';
 import { sanitizeErrorMessage } from './auth';
 import { Product } from '../../types';
 
@@ -441,6 +444,54 @@ export async function handleDeleteBundle(args: unknown): Promise<McpToolResponse
 }
 
 /**
+ * 14. get_seasonal_theme
+ * Returns: { active: boolean, current_theme: string }
+ */
+export async function handleGetSeasonalTheme(_args?: unknown): Promise<McpToolResponse> {
+  const current = await catalogRepository.getSeasonalTheme();
+  return {
+    ok: true,
+    data: {
+      active: current.active,
+      current_theme: current.theme
+    }
+  };
+}
+
+/**
+ * 15. set_seasonal_theme
+ * Args: active (boolean), theme (string, e.g. "halloween")
+ * Action: Updates Supabase site_settings and triggers storefront cache revalidation
+ * Returns: "Storefront theme updated to ${active ? theme : 'default'}."
+ */
+export async function handleSetSeasonalTheme(args: unknown): Promise<McpToolResponse> {
+  const parsed = SetSeasonalThemeInputSchema.safeParse(args || {});
+  if (!parsed.success) {
+    return { ok: false, error: sanitizeErrorMessage(`validation: ${parsed.error.issues.map(i => i.message).join(', ')}`) };
+  }
+
+  const { active, theme = 'halloween' } = parsed.data;
+  await catalogRepository.setSeasonalTheme(active, theme);
+
+  try {
+    revalidateTag('site-settings', { expire: 0 });
+    revalidatePath('/', 'layout');
+  } catch {
+    // ignore outside of request context (e.g. testing)
+  }
+
+  const message = `Storefront theme updated to ${active ? theme : 'default'}.`;
+  return {
+    ok: true,
+    data: {
+      message,
+      active,
+      theme: active ? theme : 'default'
+    }
+  };
+}
+
+/**
  * Dispatcher mapping tool name to handler
  */
 export async function executeMcpTool(name: string, args: unknown): Promise<McpToolResponse> {
@@ -471,6 +522,10 @@ export async function executeMcpTool(name: string, args: unknown): Promise<McpTo
       return handleManageBundleProducts(args);
     case 'delete_bundle':
       return handleDeleteBundle(args);
+    case 'get_seasonal_theme':
+      return handleGetSeasonalTheme(args);
+    case 'set_seasonal_theme':
+      return handleSetSeasonalTheme(args);
     default:
       return { ok: false, error: sanitizeErrorMessage(`Unknown MCP tool: "${name}"`) };
   }

@@ -178,8 +178,12 @@ export function FilterPanel({
       {/* Max Price Filter */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h4 className="text-[11px] font-mono uppercase tracking-wider text-purple-700 dark:text-blue-400 font-bold">MAX BUDGET</h4>
-          <span className="text-xs font-semibold text-slate-900 dark:text-white">
+          <div className="flex items-center gap-1.5">
+            <h4 className="text-[11px] font-mono uppercase tracking-wider text-purple-700 dark:text-blue-400 font-bold">MAX BUDGET</h4>
+            <span className="hidden [html[data-seasonal='halloween']_&]:inline text-xs" title="Spooky Budget Filter">🎃</span>
+          </div>
+          <span className="text-xs font-semibold text-slate-900 dark:text-white flex items-center gap-1">
+            <span className="hidden [html[data-seasonal='halloween']_&]:inline text-xs">💀</span>
             {filters.maxPrice ? `$${filters.maxPrice}` : 'Any'}
           </span>
         </div>

@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { unstable_cache } from "next/cache";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { WishlistProvider } from "../context/WishlistContext";
 import { SiteHeader } from "../components/ui/SiteHeader";
 import { SiteFooter } from "../components/ui/SiteFooter";
 import { MobileTabBar } from "../components/ui/MobileTabBar";
+import { HalloweenAmbientOverlay } from "../components/ui/HalloweenAmbientOverlay";
+import { catalogRepository } from "../lib/db/repository";
+
+const getCachedSeasonalTheme = unstable_cache(
+  async () => {
+    return catalogRepository.getSeasonalTheme();
+  },
+  ['seasonal-theme-setting'],
+  { tags: ['site-settings'], revalidate: 60 }
+);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,14 +58,29 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export const dynamic = 'force-dynamic';
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const seasonalTheme = await getCachedSeasonalTheme();
+  const isHalloween = seasonalTheme.active && (seasonalTheme.theme === 'halloween' || !seasonalTheme.theme);
+
   return (
-    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body suppressHydrationWarning className="min-h-screen bg-[#f4f0fa] text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 relative overflow-x-hidden flex flex-col antialiased selection:bg-purple-500/30 selection:text-purple-900 dark:selection:bg-blue-500/30 dark:selection:text-white">
+    <html 
+      lang="en" 
+      suppressHydrationWarning 
+      data-seasonal={isHalloween ? 'halloween' : undefined}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body 
+        suppressHydrationWarning 
+        data-seasonal={isHalloween ? 'halloween' : undefined}
+        className="min-h-screen bg-[#f4f0fa] text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 relative overflow-x-hidden flex flex-col antialiased selection:bg-purple-500/30 selection:text-purple-900 dark:selection:bg-blue-500/30 dark:selection:text-white"
+      >
+        {isHalloween && <HalloweenAmbientOverlay />}
         {/* Persistent ambient blur glow spheres in fixed positions (lavender day / indigo dark) */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
           {/* Top-left orb */}

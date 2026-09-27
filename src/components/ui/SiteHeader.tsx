@@ -84,7 +84,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-6">
           <Link href="/" className="hover:opacity-90 transition-opacity touch-target">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0">
+              <div className="logo-emblem h-10 w-10 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0 border border-transparent transition-all">
                 <Image alt="EveryAge Digital" className="h-full w-full object-contain" height={36} priority src="/logo.png" width={36}/>
               </div>
               <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight">

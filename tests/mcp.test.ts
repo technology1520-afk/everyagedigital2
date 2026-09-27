@@ -29,9 +29,9 @@ describe('Master MCP Server Specification & Verification', () => {
     resetMcpRateLimits();
   });
 
-  it('tools/list returns exactly 13 tools with valid JSON schemas', async () => {
+  it('tools/list returns exactly 15 tools with valid JSON schemas', async () => {
     // Direct MCP definition check
-    expect(MCP_TOOLS.length).toBe(13);
+    expect(MCP_TOOLS.length).toBe(15);
     const expectedNames = [
       'list_products',
       'add_product',
@@ -45,7 +45,9 @@ describe('Master MCP Server Specification & Verification', () => {
       'create_bundle',
       'update_bundle',
       'manage_bundle_products',
-      'delete_bundle'
+      'delete_bundle',
+      'get_seasonal_theme',
+      'set_seasonal_theme'
     ];
     const toolNames = MCP_TOOLS.map(t => t.name);
     expect(toolNames).toEqual(expectedNames);
@@ -63,7 +65,7 @@ describe('Master MCP Server Specification & Verification', () => {
 
     const json = await res.json();
     expect(json.ok).toBe(true);
-    expect(json.data.tools.length).toBe(13);
+    expect(json.data.tools.length).toBe(15);
   });
 
   it('missing/invalid bearer token → 401', async () => {
@@ -614,6 +616,64 @@ describe('Master MCP Server Specification & Verification', () => {
     });
     const deleteRes = await POST(deleteReq);
     expect(deleteRes.status).toBe(200);
+  });
+
+  it('supports seasonal theme MCP tools (get_seasonal_theme and set_seasonal_theme)', async () => {
+    // 1. Get current seasonal theme (initially false)
+    const getReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'get_seasonal_theme',
+        arguments: {}
+      }
+    });
+    const getRes = await POST(getReq);
+    expect(getRes.status).toBe(200);
+    const getJson = await getRes.json();
+    expect(getJson.ok).toBe(true);
+    expect(getJson.data).toHaveProperty('active');
+    expect(getJson.data).toHaveProperty('current_theme');
+
+    // 2. Set seasonal theme to active halloween
+    const setReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'set_seasonal_theme',
+        arguments: {
+          active: true,
+          theme: 'halloween'
+        }
+      }
+    });
+    const setRes = await POST(setReq);
+    expect(setRes.status).toBe(200);
+    const setJson = await setRes.json();
+    expect(setJson.ok).toBe(true);
+    expect(setJson.data.active).toBe(true);
+    expect(setJson.data.theme).toBe('halloween');
+    expect(setJson.data.message).toContain('Storefront theme updated to halloween.');
+
+    // Verify repository reflection
+    const repoTheme = await catalogRepository.getSeasonalTheme();
+    expect(repoTheme.active).toBe(true);
+    expect(repoTheme.theme).toBe('halloween');
+
+    // 3. Revert seasonal theme to inactive
+    const revertReq = createMcpRequest({
+      method: 'tools/call',
+      params: {
+        name: 'set_seasonal_theme',
+        arguments: {
+          active: false
+        }
+      }
+    });
+    const revertRes = await POST(revertReq);
+    expect(revertRes.status).toBe(200);
+    const revertJson = await revertRes.json();
+    expect(revertJson.ok).toBe(true);
+    expect(revertJson.data.active).toBe(false);
+    expect(revertJson.data.message).toContain('Storefront theme updated to default.');
   });
 
   it('sanitizeErrorMessage strips tokens and credentials from errors', () => {

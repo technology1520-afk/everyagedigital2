@@ -375,3 +375,122 @@ textarea:focus-visible {
     box-shadow: none !important;
   }
 }
+
+/* ==========================================================================
+   SEASONAL THEME: SPOOKY HALLOWEEN (SCOPED OVERRIDES)
+   ========================================================================== */
+
+[data-seasonal="halloween"] {
+  --background: #0d0414;
+  --surface: rgba(26, 9, 39, 0.75);
+  --surface-muted: rgba(38, 12, 58, 0.55);
+  --text: #FFF7ED;
+  --text-secondary: #FED7AA;
+  --border: rgba(249, 115, 22, 0.25);
+  --accent: #EA580C;
+  --accent-hover: #F97316;
+  --accent-soft: rgba(234, 88, 12, 0.2);
+  --amber: #F97316;
+  --purple: #9333EA;
+}
+
+/* Dark smoky purple-black canvas with ember glow */
+[data-seasonal="halloween"] body {
+  background: radial-gradient(ellipse at top, #2a0845 0%, #11051b 50%, #08020d 100%) !important;
+  color: #FFF7ED !important;
+  min-height: 100vh;
+}
+
+/* Primary Buttons: Flip to vibrant pumpkin orange with warm ember shadow */
+[data-seasonal="halloween"] .bg-blue-600,
+[data-seasonal="halloween"] button.bg-blue-600,
+[data-seasonal="halloween"] a.bg-blue-600,
+[data-seasonal="halloween"] .bg-purple-600,
+[data-seasonal="halloween"] button.bg-purple-600,
+[data-seasonal="halloween"] a.bg-purple-600,
+[data-seasonal="halloween"] .bg-slate-900,
+[data-seasonal="halloween"] button.bg-slate-900,
+[data-seasonal="halloween"] a.bg-slate-900,
+[data-seasonal="halloween"] [class*="bg-blue-600"]:not(input) {
+  background-color: #ea580c !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.4), 0 8px 10px -6px rgba(234, 88, 12, 0.4) !important;
+  border-color: rgba(251, 146, 60, 0.4) !important;
+}
+
+[data-seasonal="halloween"] .bg-blue-600:hover,
+[data-seasonal="halloween"] button.bg-blue-600:hover,
+[data-seasonal="halloween"] a.bg-blue-600:hover,
+[data-seasonal="halloween"] .bg-purple-600:hover,
+[data-seasonal="halloween"] button.bg-purple-600:hover,
+[data-seasonal="halloween"] a.bg-purple-600:hover,
+[data-seasonal="halloween"] .hover\:bg-blue-700:hover,
+[data-seasonal="halloween"] .hover\:bg-purple-700:hover,
+[data-seasonal="halloween"] [class*="hover:bg-blue"]:hover {
+  background-color: #f97316 !important;
+}
+
+/* Badges & Accent text: Flip from blue to pumpkin orange */
+[data-seasonal="halloween"] .text-blue-600,
+[data-seasonal="halloween"] .text-blue-500,
+[data-seasonal="halloween"] .text-blue-400,
+[data-seasonal="halloween"] .text-purple-600,
+[data-seasonal="halloween"] .text-purple-700 {
+  color: #fb923c !important;
+}
+
+[data-seasonal="halloween"] .bg-blue-500\/10,
+[data-seasonal="halloween"] .bg-blue-600\/10,
+[data-seasonal="halloween"] .bg-purple-100,
+[data-seasonal="halloween"] .bg-purple-500\/10,
+[data-seasonal="halloween"] .bg-purple-600\/10 {
+  background-color: rgba(234, 88, 12, 0.15) !important;
+  border-color: rgba(249, 115, 22, 0.35) !important;
+  color: #fdba74 !important;
+}
+
+/* Product & Collection Cards: Spooky amber border and drop shadow */
+[data-seasonal="halloween"] .product-card,
+[data-seasonal="halloween"] article,
+[data-seasonal="halloween"] .bg-white\/80,
+[data-seasonal="halloween"] .bg-white\/70,
+[data-seasonal="halloween"] .bg-white\/75 {
+  border-color: rgba(249, 115, 22, 0.25) !important;
+  box-shadow: 0 10px 30px -10px rgba(67, 20, 7, 0.5), 0 0 15px -3px rgba(249, 115, 22, 0.1) !important;
+  background-color: rgba(26, 9, 39, 0.65) !important;
+}
+
+[data-seasonal="halloween"] .product-card:hover,
+[data-seasonal="halloween"] article:hover {
+  border-color: rgba(249, 115, 22, 0.55) !important;
+  box-shadow: 0 14px 35px -8px rgba(234, 88, 12, 0.45), 0 0 20px 2px rgba(249, 115, 22, 0.3) !important;
+}
+
+/* Header & navigation in Halloween theme */
+[data-seasonal="halloween"] header {
+  background-color: rgba(17, 5, 27, 0.88) !important;
+  border-bottom-color: rgba(249, 115, 22, 0.25) !important;
+}
+
+/* Logo Accent: Neon slime green & ember glow on emblem */
+[data-seasonal="halloween"] .logo-emblem,
+[data-seasonal="halloween"] .site-logo-container {
+  filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.85)) drop-shadow(0 0 18px rgba(249, 115, 22, 0.65)) !important;
+  border-color: rgba(34, 197, 94, 0.5) !important;
+  animation: halloween-glow-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes halloween-glow-pulse {
+  0% {
+    filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.75)) drop-shadow(0 0 14px rgba(249, 115, 22, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 14px rgba(34, 197, 94, 1)) drop-shadow(0 0 24px rgba(249, 115, 22, 0.85));
+  }
+}
+
+/* Price Range Slider in Halloween mode */
+[data-seasonal="halloween"] input[type="range"] {
+  accent-color: #ea580c !important;
+}
+

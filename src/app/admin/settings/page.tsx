@@ -7,22 +7,30 @@ import {
   CreditCard
 } from 'lucide-react';
 
+import { catalogRepository } from '../../../lib/db/repository';
+import { SeasonalThemeControl } from '../../../components/admin/SeasonalThemeControl';
+
 export const dynamic = 'force-dynamic';
 
-export default function AdminSettingsPage() {
+export default async function AdminSettingsPage() {
+  const seasonalTheme = await catalogRepository.getSeasonalTheme();
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">
-          System & Affiliate Network Configuration
+          System &amp; Campaign Configuration
         </h1>
         <p className="text-xs text-neutral-500 mt-1">
-          Configure affiliate program tracking IDs, price freshness timers, and payment credentials.
+          Configure seasonal campaigns, affiliate tracking IDs, price freshness timers, and payment credentials.
         </p>
       </div>
 
       <div className="space-y-6">
+        {/* Seasonal Campaign Control Card */}
+        <SeasonalThemeControl initialTheme={seasonalTheme} />
+
         {/* Card 1: Affiliate Network IDs & Tags */}
         <div className="bg-white rounded-xl border border-neutral-200/80 shadow-xs p-6 space-y-4">
           <div className="flex items-center gap-2 pb-2 border-b border-neutral-100">
