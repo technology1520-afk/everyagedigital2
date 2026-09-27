@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -10,39 +11,88 @@ import {
   Loader2,
   Bot
 } from 'lucide-react';
+import { getSupabaseBrowserClient } from '../../lib/supabase/client';
 import { setSeasonalThemeAction } from '../../app/actions/admin';
 
 interface SeasonalThemeControlProps {
-  initialTheme: {
+  initialTheme?: {
     active: boolean;
     theme: string;
   };
 }
 
 export function SeasonalThemeControl({ initialTheme }: SeasonalThemeControlProps) {
-  const [isActive, setIsActive] = useState(initialTheme.active);
+  const router = useRouter();
+  const [isHalloween, setIsHalloween] = useState<boolean>(() => {
+    if (typeof document !== 'undefined') {
+      const match = document.cookie.match(/(?:^|;\s*)seasonal_theme=([^;]+)/);
+      if (match) return match[1] === 'halloween';
+    }
+    return Boolean(initialTheme?.active);
+  });
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  const handleToggle = (checked: boolean) => {
-    setIsActive(checked);
+  // 1. On component mount (useEffect), fetch the current value from Supabase:
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'seasonal_theme')
+          .single();
+        if (data?.value) {
+          const val = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+          setIsHalloween(Boolean(val.active));
+        }
+      } catch (err) {
+        console.error('Failed to load settings from Supabase:', err);
+      }
+    }
+    loadSettings();
+  }, []);
+
+  // 2. In the toggle switch handler:
+  const handleToggle = async () => {
+    const nextState = !isHalloween;
+    setIsHalloween(nextState);
     setFeedback(null);
+
+    // Set a persistent cookie so Server Components and refreshes know the state instantly
+    document.cookie = `seasonal_theme=${nextState ? 'halloween' : 'default'}; path=/; max-age=2592000; SameSite=Lax`;
 
     startTransition(async () => {
       try {
-        const res = await setSeasonalThemeAction(checked, 'halloween');
-        if (res.success) {
-          setFeedback(
-            checked
-              ? 'Spooky Halloween mode active! Storefront revalidated with orange ember theme.'
-              : 'Halloween mode disabled. Storefront reverted to standard glass theme.'
-          );
-        } else {
-          setIsActive(!checked);
-          setFeedback('Failed to update seasonal theme.');
+        const supabase = getSupabaseBrowserClient();
+        // Await the database write:
+        const { error } = await supabase
+          .from('site_settings')
+          .upsert({
+            key: 'seasonal_theme',
+            value: { active: nextState, theme: 'halloween' },
+            updated_at: new Date().toISOString()
+          });
+        if (error) console.error('Failed to update theme in Supabase:', error);
+
+        // Synchronize with server actions for cache invalidation & in-memory repo fallback
+        try {
+          await setSeasonalThemeAction(nextState, 'halloween');
+        } catch (actionErr) {
+          console.warn('Server action fallback warning:', actionErr);
         }
+
+        setFeedback(
+          nextState
+            ? 'Spooky Halloween mode active! Persistent cookie & Supabase synced.'
+            : 'Halloween mode disabled. Standard glass theme active.'
+        );
+
+        // Trigger a server revalidation call
+        router.refresh();
       } catch (err: unknown) {
-        setIsActive(!checked);
+        console.error('Failed to update theme:', err);
         setFeedback(err instanceof Error ? err.message : 'Error updating theme');
       }
     });
@@ -84,7 +134,7 @@ export function SeasonalThemeControl({ initialTheme }: SeasonalThemeControlProps
             <span className="text-sm font-bold text-neutral-900">
               Spooky Halloween Mode (Storefront)
             </span>
-            {isActive ? (
+            {isHalloween ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/15 text-orange-700 border border-orange-300">
                 <Flame className="w-3 h-3 text-orange-600 animate-pulse" />
                 Active (Orange Ember Theme)
@@ -107,9 +157,9 @@ export function SeasonalThemeControl({ initialTheme }: SeasonalThemeControlProps
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
-              checked={isActive}
+              checked={isHalloween}
               disabled={isPending}
-              onChange={(e) => handleToggle(e.target.checked)}
+              onChange={handleToggle}
               className="sr-only peer"
             />
             <div className="w-11 h-6 bg-neutral-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
@@ -136,7 +186,7 @@ export function SeasonalThemeControl({ initialTheme }: SeasonalThemeControlProps
           </code>{' '}
           and{' '}
           <code className="px-1.5 py-0.5 rounded bg-neutral-100 text-purple-700 font-mono text-[10px]">
-            set_seasonal_theme({'{ active: true, theme: &quot;halloween&quot; }'})
+            set_seasonal_theme({'{ active: true, theme: "halloween" }'})
           </code>
           .
         </div>

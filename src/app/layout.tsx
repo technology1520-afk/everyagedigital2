@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
 import { unstable_cache } from "next/cache";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
@@ -65,8 +66,18 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const seasonalTheme = await getCachedSeasonalTheme();
-  const isHalloween = seasonalTheme.active && (seasonalTheme.theme === 'halloween' || !seasonalTheme.theme);
+  const cookieStore = await cookies();
+  const cookieSeasonalTheme = cookieStore.get('seasonal_theme')?.value;
+
+  // Read persistent cookie or fallback to Supabase record on the server
+  let seasonalTheme = false;
+  if (cookieSeasonalTheme !== undefined) {
+    seasonalTheme = cookieSeasonalTheme === 'halloween';
+  } else {
+    const dbTheme = await getCachedSeasonalTheme();
+    seasonalTheme = Boolean(dbTheme?.active && (dbTheme?.theme === 'halloween' || !dbTheme?.theme));
+  }
+  const isHalloween = seasonalTheme;
 
   return (
     <html 
