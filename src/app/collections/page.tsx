@@ -12,9 +12,13 @@ export const revalidate = 0;
 export const metadata: Metadata = {
   title: 'Curated Collections & Gear Bundles — EveryAge Digital',
   description: 'Hand-picked, thematic setups and verified starter kits. Built for distraction-free deep work, ergonomics, and daily productivity.',
+  alternates: {
+    canonical: 'https://www.everyagedigital.store/collections',
+  },
   openGraph: {
     title: 'Curated Collections & Gear Bundles — EveryAge Digital',
-    description: 'Thematic gear kits and tool bundles with transparent selection criteria.'
+    description: 'Thematic gear kits and tool bundles with transparent selection criteria.',
+    url: 'https://www.everyagedigital.store/collections',
   }
 };
 

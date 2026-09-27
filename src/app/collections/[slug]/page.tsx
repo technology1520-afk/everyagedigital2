@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
   const collection = await getCollectionBySlugAsync(slug, { storefrontOnly: true });
   if (!collection) return { title: 'Collection Not Found' };
 
+  const canonicalUrl = `https://www.everyagedigital.store/collections/${slug}`;
   const rawCover = collection.cover_image || collection.coverImage;
   const isDesk = typeof rawCover === 'string' && (rawCover.includes('photo-1518455027359-f3f8164ba6bd') || rawCover.includes('/desk.jpg'));
   const isPlaceholder = !rawCover || rawCover.includes('placeholder') || isDesk;
@@ -43,9 +44,13 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
   return {
     title: `${collection.title} — Curated Bundle & Kit`,
     description: `${collection.subtitle} ${collection.introduction.slice(0, 150)}...`,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: collection.title,
       description: collection.subtitle,
+      url: canonicalUrl,
       images: [{ url: bundleCoverImage }]
     }
   };

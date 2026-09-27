@@ -9,7 +9,15 @@ export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Shop All Curated Products & Digital Resources',
-  description: 'Browse vetted everyday essentials, home office gear, books, and digital systems with clear editorial information and price checks.'
+  description: 'Browse vetted everyday essentials, home office gear, books, and digital systems with clear editorial information and price checks.',
+  alternates: {
+    canonical: 'https://www.everyagedigital.store/shop',
+  },
+  openGraph: {
+    title: 'Shop All Curated Products & Digital Resources',
+    description: 'Browse vetted everyday essentials, home office gear, books, and digital systems with clear editorial information and price checks.',
+    url: 'https://www.everyagedigital.store/shop',
+  },
 };
 
 interface PageProps {

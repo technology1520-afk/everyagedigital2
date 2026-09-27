@@ -37,22 +37,33 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 interface ProductPageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string }> | { slug: string };
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
   const enriched = (await getProductBySlugAsync(slug)) || getProductBySlug(slug);
-  if (!enriched) return { title: 'Product Not Found' };
+  if (!enriched) return {};
+
+  const product = enriched.product as any;
+  const canonicalUrl = `https://www.everyagedigital.store/product/${slug}`;
+  const title = product.title || product.name;
+  const description = product.editorial_description || product.description;
+  const imageUrl = product.image_url || product.imageUrl;
 
   return {
-    title: `${enriched.product.name} — Review & Alternatives`,
-    description: `${enriched.product.description} Vetted by EveryAge Digital with clear trade-offs, pricing checks, and merchant options.`,
+    title: `${title} | EveryAge Digital`,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: enriched.product.name,
-      description: enriched.product.description,
-      images: [{ url: enriched.product.imageUrl }]
-    }
+      title,
+      description,
+      url: canonicalUrl,
+      images: imageUrl ? [{ url: imageUrl }] : [],
+    },
   };
 }
 
