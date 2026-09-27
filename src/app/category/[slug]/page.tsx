@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getAllCategories, getAllCategoriesAsync } from '../../../lib/search/catalogSearch';
 import { catalogRepository } from '../../../lib/db/repository';
 import { ShopMarketplace } from '../../../components/shop/ShopMarketplace';
+import { CatalogSkeleton } from '../../../components/ui/CatalogSkeleton';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -34,10 +35,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   const initialProducts = await catalogRepository.getAllProducts({ status: 'active' });
+  const initialOffers = catalogRepository.getOffers();
 
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-neutral-400">Loading category...</div>}>
-      <ShopMarketplace initialProducts={initialProducts} initialCategory={category.name} />
+    <Suspense fallback={<CatalogSkeleton cardCount={8} showHeader={false} />}>
+      <ShopMarketplace initialProducts={initialProducts} initialOffers={initialOffers} initialCategory={category.name} />
     </Suspense>
   );
 }

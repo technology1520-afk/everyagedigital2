@@ -37,8 +37,8 @@ export function getOfferForProduct(productId: string): MerchantOffer | undefined
   return catalogRepository.getOfferForProduct(productId);
 }
 
-export function enrichProduct(product: Product): EnrichedProduct {
-  const offer = getOfferForProduct(product.id);
+export function enrichProduct(product: Product, customOffer?: MerchantOffer): EnrichedProduct {
+  const offer = customOffer ?? getOfferForProduct(product.id);
   let freshness: FreshnessResult | undefined = undefined;
 
   if (offer) {
@@ -49,9 +49,21 @@ export function enrichProduct(product: Product): EnrichedProduct {
   return { product, offer, freshness };
 }
 
-export function searchCatalog(params: FilterParams = {}, sourceProducts?: Product[]): SearchResult {
+export function searchCatalog(
+  params: FilterParams = {}, 
+  sourceProducts?: Product[],
+  sourceOffers?: MerchantOffer[]
+): SearchResult {
   const allActive = sourceProducts ?? catalogRepository.getProducts({ status: 'active' });
   let filtered = [...allActive];
+
+  const getOffer = (productId: string): MerchantOffer | undefined => {
+    if (sourceOffers && sourceOffers.length > 0) {
+      const match = sourceOffers.find(o => o.productId === productId && o.active);
+      if (match) return match;
+    }
+    return getOfferForProduct(productId);
+  };
 
   // 1. Text Query Search
   if (params.query && params.query.trim()) {
@@ -86,7 +98,7 @@ export function searchCatalog(params: FilterParams = {}, sourceProducts?: Produc
   // 5. Merchant Filter
   if (params.merchant && params.merchant !== 'all') {
     filtered = filtered.filter(p => {
-      const offer = getOfferForProduct(p.id);
+      const offer = getOffer(p.id);
       return offer && offer.merchantName.toLowerCase() === params.merchant!.toLowerCase();
     });
   }
@@ -102,7 +114,7 @@ export function searchCatalog(params: FilterParams = {}, sourceProducts?: Produc
   }
 
   // Enrich products with offers & freshness
-  let enriched = filtered.map(enrichProduct);
+  let enriched = filtered.map(p => enrichProduct(p, getOffer(p.id)));
 
   // 8. Price Range Filter
   if (params.minPrice !== undefined) {
@@ -140,10 +152,12 @@ export function searchCatalog(params: FilterParams = {}, sourceProducts?: Produc
       break;
   }
 
-  const allCategories = Array.from(new Set(allActive.map(p => p.category)));
-  const productOffers = allActive.map(p => getOfferForProduct(p.id)).filter(Boolean) as MerchantOffer[];
-  const allOffers = productOffers.length > 0 ? productOffers : catalogRepository.getOffers();
-  const allMerchants = Array.from(new Set(allOffers.map(o => o.merchantName)));
+  const allCategories = Array.from(new Set(allActive.map(p => p.category))).sort();
+  const productOffers = allActive.map(p => getOffer(p.id)).filter(Boolean) as MerchantOffer[];
+  const allOffers = (sourceOffers && sourceOffers.length > 0)
+    ? sourceOffers
+    : (productOffers.length > 0 ? productOffers : catalogRepository.getOffers());
+  const allMerchants = Array.from(new Set(allOffers.map(o => o.merchantName))).sort();
   const allPrices = allOffers.map(o => o.price);
   const minPrice = allPrices.length ? Math.min(...allPrices) : 0;
   const maxPrice = allPrices.length ? Math.max(...allPrices) : 500;
@@ -164,7 +178,7 @@ export function searchCatalog(params: FilterParams = {}, sourceProducts?: Produc
 
   const merchantCounts: Record<string, number> = {};
   for (const p of allActive) {
-    const offer = getOfferForProduct(p.id);
+    const offer = getOffer(p.id);
     if (offer) {
       merchantCounts[offer.merchantName] = (merchantCounts[offer.merchantName] || 0) + 1;
     }
@@ -272,7 +286,7 @@ export async function getAllMerchantsAsync(): Promise<{ name: string; count: num
 
 export function getDeals(): EnrichedProduct[] {
   return catalogRepository.getProducts({ status: 'active' })
-    .map(enrichProduct)
+    .map(p => enrichProduct(p))
     .filter(item => {
       if (!item.offer) return false;
       const hasDiscount = item.offer.originalPrice && item.offer.originalPrice > item.offer.price;
@@ -284,7 +298,7 @@ export function getDeals(): EnrichedProduct[] {
 export async function getDealsAsync(): Promise<EnrichedProduct[]> {
   const products = await catalogRepository.getAllProducts({ status: 'active' });
   return products
-    .map(enrichProduct)
+    .map(p => enrichProduct(p))
     .filter(item => {
       if (!item.offer) return false;
       const hasDiscount = item.offer.originalPrice && item.offer.originalPrice > item.offer.price;

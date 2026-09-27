@@ -3,6 +3,8 @@ import { Metadata } from 'next';
 import { ShopMarketplace } from '../../components/shop/ShopMarketplace';
 import { catalogRepository } from '../../lib/db/repository';
 
+import { CatalogSkeleton } from '../../components/ui/CatalogSkeleton';
+
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -20,10 +22,11 @@ export default async function SearchPage({ searchParams }: PageProps) {
   const initialQuery = typeof resolvedParams.q === 'string' ? resolvedParams.q : undefined;
 
   const initialProducts = await catalogRepository.getAllProducts({ status: 'active' });
+  const initialOffers = catalogRepository.getOffers();
 
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-neutral-400">Loading search...</div>}>
-      <ShopMarketplace initialProducts={initialProducts} initialQuery={initialQuery} />
+    <Suspense fallback={<CatalogSkeleton cardCount={8} showHeader={false} />}>
+      <ShopMarketplace initialProducts={initialProducts} initialOffers={initialOffers} initialQuery={initialQuery} />
     </Suspense>
   );
 }

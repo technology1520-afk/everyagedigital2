@@ -77,36 +77,34 @@ export default async function ProductPage({ params }: ProductPageProps) {
   // Find related collection if any
   const relatedCollection = getAllCollections().find(c => c.productIds.includes(product.id));
 
-  // JSON-LD structured data (Product schema for editorial review)
+  // JSON-LD structured data (Product schema for Google rich snippets)
+  const productTitle = (product as any).title || product.name;
+  const productImage = (product as any).image_url || product.imageUrl;
+  const productPrice = offer?.price ?? product.price ?? product.priceMin ?? 0;
+  const affiliateUrl = offer?.affiliateUrl || (product as any).affiliate_url || `https://www.everyagedigital.store/product/${product.slug}`;
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.name,
-    image: product.imageUrl,
+    name: productTitle,
+    image: productImage,
     description: product.description,
-    brand: {
-      '@type': 'Brand',
-      name: product.brand
-    },
-    offers: offer ? {
+    offers: {
       '@type': 'Offer',
-      price: offer.price,
-      priceCurrency: offer.currency,
-      availability: offer.availability === 'in_stock' ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability',
-      seller: {
-        '@type': 'Organization',
-        name: offer.merchantName
-      }
-    } : undefined
+      price: productPrice,
+      priceCurrency: offer?.currency || 'USD',
+      availability: 'https://schema.org/InStock',
+      url: affiliateUrl,
+    },
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32 md:pb-12 space-y-10 sm:space-y-12">
-      {/* Schema Script */}
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32 md:pb-12 space-y-10 sm:space-y-12">
 
       <Breadcrumbs
         items={[
@@ -335,5 +333,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
         freshness={freshness}
       />
     </div>
+    </>
   );
 }

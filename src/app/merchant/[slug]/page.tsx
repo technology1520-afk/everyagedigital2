@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getAllMerchants, getAllMerchantsAsync } from '../../../lib/search/catalogSearch';
 import { catalogRepository } from '../../../lib/db/repository';
 import { ShopMarketplace } from '../../../components/shop/ShopMarketplace';
+import { CatalogSkeleton } from '../../../components/ui/CatalogSkeleton';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -34,10 +35,11 @@ export default async function MerchantPage({ params }: MerchantPageProps) {
   }
 
   const initialProducts = await catalogRepository.getAllProducts({ status: 'active' });
+  const initialOffers = catalogRepository.getOffers();
 
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-neutral-400">Loading merchant offers...</div>}>
-      <ShopMarketplace initialProducts={initialProducts} initialMerchant={merchant.name} />
+    <Suspense fallback={<CatalogSkeleton cardCount={8} showHeader={false} />}>
+      <ShopMarketplace initialProducts={initialProducts} initialOffers={initialOffers} initialMerchant={merchant.name} />
     </Suspense>
   );
 }

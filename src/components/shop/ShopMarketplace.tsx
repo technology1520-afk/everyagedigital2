@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { FilterParams, Product } from '../../types';
+import { FilterParams, Product, MerchantOffer } from '../../types';
 import { searchCatalog } from '../../lib/search/catalogSearch';
+import { catalogRepository } from '../../lib/db/repository';
 import { ProductGrid } from '../ui/ProductGrid';
 import { FilterPanel } from '../ui/FilterPanel';
 import { FilterBottomSheet } from '../ui/FilterBottomSheet';
@@ -12,6 +13,7 @@ import { Search, Filter, X, Check } from 'lucide-react';
 
 interface ShopMarketplaceProps {
   initialProducts?: Product[];
+  initialOffers?: MerchantOffer[];
   initialCategory?: string;
   initialMerchant?: string;
   initialQuery?: string;
@@ -20,11 +22,17 @@ interface ShopMarketplaceProps {
 
 export function ShopMarketplace({
   initialProducts,
+  initialOffers,
   initialCategory,
   initialMerchant,
   initialQuery,
   className = ''
 }: ShopMarketplaceProps) {
+  // Synchronize client in-memory repository store with server-fetched offers if supported
+  if (initialOffers && initialOffers.length > 0 && typeof (catalogRepository as any)?.seedOffers === 'function') {
+    catalogRepository.seedOffers(initialOffers);
+  }
+
   const [filters, setFilters] = useState<FilterParams>({
     category: initialCategory,
     merchant: initialMerchant,
@@ -35,8 +43,8 @@ export function ShopMarketplace({
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
 
   const searchResult = useMemo(() => {
-    return searchCatalog(filters, initialProducts);
-  }, [filters, initialProducts]);
+    return searchCatalog(filters, initialProducts, initialOffers);
+  }, [filters, initialProducts, initialOffers]);
 
   // Active filter count for badge
   const activeFilters = useMemo(() => {

@@ -48,33 +48,55 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://everyagedigital.com'),
-  title: "EveryAge Digital | Curated Commerce",
-  description: "A curated affiliate commerce storefront and digital-product store helping you discover useful everyday products, books, and knowledge resources.",
+  metadataBase: new URL('https://www.everyagedigital.store'),
+  title: {
+    default: 'EveryAge Digital | Curated Tools, Hardware & Systems',
+    template: '%s | EveryAge Digital',
+  },
+  description: 'Vetted everyday essentials, ergonomic tools, books, and digital systems for remote professionals and builders.',
+  keywords: ['ergonomic desk setup', 'Logitech MX Master 3S', 'productivity gear', 'remote work tools'],
+  authors: [{ name: 'EveryAge Digital' }],
+  creator: 'EveryAge Digital',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'EveryAge Digital | Curated Storefront',
+    description: 'Tested hardware, workspace ergonomics, and digital toolkits.',
+    url: 'https://www.everyagedigital.store',
+    siteName: 'EveryAge Digital',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'EveryAge Digital Catalog',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",
   },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://everyagedigital.com",
-    siteName: "EveryAge Digital",
-    title: "EveryAge Digital — Curated Products, Books & Digital Resources",
-    description: "Curated products, useful books, digital resources, and everyday essentials recommended with editorial clarity.",
-    images: [{
-      url: '/logo.png',
-      width: 1024,
-      height: 1024,
-      alt: 'EveryAge Digital'
-    }]
-  },
   twitter: {
     card: "summary_large_image",
-    title: "EveryAge Digital",
-    description: "Curated affiliate commerce storefront and digital store.",
-    images: ['/logo.png']
-  }
+    title: 'EveryAge Digital | Curated Tools, Hardware & Systems',
+    description: 'Tested hardware, workspace ergonomics, and digital toolkits.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default async function RootLayout({

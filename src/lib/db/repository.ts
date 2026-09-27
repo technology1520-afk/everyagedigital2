@@ -814,8 +814,55 @@ class CatalogRepository {
     return res.product;
   }
 
+  public seedOffers(offers: MerchantOffer[]): void {
+    if (!Array.isArray(offers)) return;
+    for (const o of offers) {
+      const idx = this.offers.findIndex(existing => existing.id === o.id || existing.productId === o.productId);
+      if (idx >= 0) {
+        this.offers[idx] = o;
+      } else {
+        this.offers.push(o);
+      }
+    }
+  }
+
+  public ensureOfferForProduct(product: Product): MerchantOffer {
+    const existing = this.offers.find(o => o.productId === product.id);
+    if (existing) return existing;
+    const merchantName: MerchantName = product.sourceProvider?.toLowerCase().includes('gumroad')
+      ? 'Gumroad'
+      : (product.brand?.toLowerCase().includes('gumroad') ? 'Gumroad' : 'Amazon');
+    const offer: MerchantOffer = {
+      id: `offer-${product.id}`,
+      productId: product.id,
+      merchantName,
+      providerName: merchantName === 'Amazon' ? 'Amazon Associates' : 'Gumroad',
+      affiliateProgram: merchantName === 'Amazon' ? 'Amazon Associates Program' : 'Gumroad Creator',
+      originalUrl: product.officialUrl || `https://www.amazon.com/dp/${product.id}`,
+      affiliateUrl: product.officialUrl || `https://www.amazon.com/dp/${product.id}?tag=everyagedigital-20`,
+      currency: product.currency || 'USD',
+      price: product.priceMin ?? product.price ?? 49.99,
+      priceType: 'fixed',
+      availability: 'in_stock',
+      region: ['US', 'Global'],
+      lastCheckedAt: new Date().toISOString(),
+      staleAfterDays: 7,
+      active: true
+    };
+    this.offers.push(offer);
+    return offer;
+  }
+
   public getOfferForProduct(productId: string): MerchantOffer | undefined {
-    return this.offers.find(o => o.productId === productId && o.active);
+    const existing = this.offers.find(o => o.productId === productId && o.active);
+    if (existing) return existing;
+    const seed = INITIAL_OFFERS.find(o => o.productId === productId && o.active);
+    if (seed) return seed;
+    const prod = this.products.find(p => p.id === productId);
+    if (prod) {
+      return this.ensureOfferForProduct(prod);
+    }
+    return undefined;
   }
 
   public getOffers(): MerchantOffer[] {
@@ -1858,4 +1905,7 @@ class CatalogRepository {
 // Global Singleton to preserve repository mutations across Hot Reloads & Server Actions
 const globalForRepo = global as unknown as { catalogRepository: CatalogRepository; __seasonalTheme?: { active: boolean; theme: string } };
 export const catalogRepository = globalForRepo.catalogRepository || new CatalogRepository();
+if (globalForRepo.catalogRepository && typeof (globalForRepo.catalogRepository as any).seedOffers !== 'function') {
+  Object.setPrototypeOf(globalForRepo.catalogRepository, CatalogRepository.prototype);
+}
 globalForRepo.catalogRepository = catalogRepository;
