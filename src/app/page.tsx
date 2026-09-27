@@ -45,9 +45,9 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-12">
+    <div className="w-full space-y-16 sm:space-y-24 pb-12">
       {/* 1. Hero Section */}
-      <section className="pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="bg-white/75 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/80 dark:border-white/10 shadow-xl shadow-purple-900/5 rounded-3xl p-6 sm:p-8 lg:p-12 hero-glow">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Eyebrow, Headings, Intro & Action Links */}
@@ -126,7 +126,7 @@ export default async function HomePage() {
       </section>
 
       {/* 2. Popular Categories Bar */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="border-t border-b border-purple-200/50 dark:border-white/10 py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {categories.map(cat => (
             <Link
@@ -146,7 +146,7 @@ export default async function HomePage() {
       </section>
 
       {/* 3. Featured Editorial Picks */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
             <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
@@ -185,7 +185,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Curated Collections */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
             <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
@@ -224,7 +224,7 @@ export default async function HomePage() {
       </section>
 
       {/* 5. AI Shopping Receptionist Callout Banner */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 text-slate-900 dark:text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-lg shadow-purple-950/5 dark:shadow-2xl">
           <div className="max-w-xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-blue-500/10 border border-purple-200 dark:border-blue-500/20 text-purple-700 dark:text-blue-300 text-xs font-semibold backdrop-blur-md">
@@ -270,7 +270,7 @@ export default async function HomePage() {
       </section>
 
       {/* 6. Books & Knowledge Resources */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
             <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
@@ -309,7 +309,7 @@ export default async function HomePage() {
       </section>
 
       {/* 7. Our Own Digital Products */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="bg-purple-100/40 dark:bg-indigo-950/30 border border-purple-200/60 dark:border-indigo-500/20 backdrop-blur-xl rounded-3xl p-8 sm:p-10 shadow-lg shadow-purple-950/5 dark:shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
@@ -391,7 +391,7 @@ export default async function HomePage() {
       </section>
 
       {/* 8. Methodology & Trust Pillars */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="border border-purple-200/60 dark:border-white/10 bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl p-8 sm:p-12 shadow-sm dark:shadow-xl">
           <div className="max-w-2xl">
             <span className="text-xs font-mono uppercase tracking-widest text-purple-600 dark:text-blue-400 font-semibold">
@@ -435,7 +435,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9. Newsletter Subscription */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <EmailSignup />
       </section>
     </div>

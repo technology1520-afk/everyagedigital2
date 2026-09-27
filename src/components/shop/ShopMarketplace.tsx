@@ -15,13 +15,15 @@ interface ShopMarketplaceProps {
   initialCategory?: string;
   initialMerchant?: string;
   initialQuery?: string;
+  className?: string;
 }
 
 export function ShopMarketplace({
   initialProducts,
   initialCategory,
   initialMerchant,
-  initialQuery
+  initialQuery,
+  className = ''
 }: ShopMarketplaceProps) {
   const [filters, setFilters] = useState<FilterParams>({
     category: initialCategory,
@@ -90,7 +92,7 @@ export function ShopMarketplace({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className={`w-full max-w-7xl 2xl:max-w-[1600px] mx-auto py-6 space-y-6 ${className || 'px-4 sm:px-6 lg:px-8'}`}>
       <Breadcrumbs items={[{ label: 'Shop Marketplace' }]} />
 
       {/* Title Header & Search Bar */}
@@ -168,9 +170,9 @@ export function ShopMarketplace({
       </div>
 
       {/* Main Layout: Desktop Sidebar Filters + Products Column */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+      <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
         {/* Desktop Left Sidebar (hidden on mobile and tablet) */}
-        <div className="hidden lg:block lg:col-span-1">
+        <div className="hidden lg:block w-full lg:w-72 xl:w-80 shrink-0 sticky top-24">
           <FilterPanel
             filters={filters}
             onChange={setFilters}
@@ -183,7 +185,7 @@ export function ShopMarketplace({
         </div>
 
         {/* Products Column */}
-        <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+        <div className="flex-1 w-full min-w-0 space-y-4 sm:space-y-6">
           {/* Controls Bar: Mobile Filter Button + Item count + Sorting */}
           <div className="rounded-2xl bg-white/65 dark:bg-white/[0.03] backdrop-blur-md border border-purple-200/60 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 shadow-sm dark:shadow-none">
             <div className="flex items-center gap-3">
@@ -243,7 +245,7 @@ export function ShopMarketplace({
           {/* Product Grid */}
           <ProductGrid
             items={searchResult.items}
-            columns={3}
+            columns={4}
             emptyMessage="No products match your filter criteria."
           />
         </div>

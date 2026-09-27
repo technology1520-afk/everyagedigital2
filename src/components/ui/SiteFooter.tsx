@@ -64,7 +64,7 @@ export function SiteFooter() {
 
   return (
     <footer className="border-t border-purple-200/50 dark:border-white/10 bg-white/70 dark:bg-slate-950/80 backdrop-blur-xl text-slate-600 dark:text-slate-400 py-12 px-4 sm:px-6 lg:px-8 mt-16">
-      <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
+      <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-8 sm:space-y-10">
         {/* Brand Banner with Logo */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-purple-200/40 dark:border-white/10">
           <Link href="/" className="flex items-center gap-3.5 group hover:opacity-90 transition-opacity">

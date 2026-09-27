@@ -6,12 +6,14 @@ interface ProductGridProps {
   items: EnrichedProduct[];
   emptyMessage?: string;
   columns?: 2 | 3 | 4;
+  className?: string;
 }
 
 export function ProductGrid({
   items,
   emptyMessage = 'No products match your current selection.',
-  columns = 3
+  columns,
+  className = ''
 }: ProductGridProps) {
   if (items.length === 0) {
     return (
@@ -24,20 +26,17 @@ export function ProductGrid({
     );
   }
 
-  // Mobile: 2 cols (gap 12px / gap-3)
-  // Tablet: 3 cols (gap 16px / gap-4)
-  // Desktop: 3-4 cols (gap 20px / gap-5)
-  const colClasses = {
-    2: 'grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-2 lg:gap-5',
-    3: 'grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3 lg:gap-5',
-    4: 'grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5'
-  };
+  const gridClass = columns === 2
+    ? 'grid grid-cols-1 sm:grid-cols-2 gap-6 w-full'
+    : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full';
 
   return (
-    <div className={colClasses[columns]}>
+    <div className={`${gridClass} ${className}`.trim()}>
       {items.map((item, idx) => (
         <ProductCard key={item.product.id} item={item} priority={idx < 2} />
       ))}
     </div>
   );
 }
+
+export default ProductGrid;

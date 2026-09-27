@@ -1,1 +1,1 @@
-export { SiteHeader as default, SiteHeader } from './ui/SiteHeader';
+export { SiteHeader as default, SiteHeader, SiteHeader as Header, SiteHeader as Navbar } from './ui/SiteHeader';

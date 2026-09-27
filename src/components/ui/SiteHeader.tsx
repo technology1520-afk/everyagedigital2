@@ -79,7 +79,7 @@ export function SiteHeader() {
         </Link>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 relative">
+      <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3 relative">
         {/* Logo & Brand Identity */}
         <div className="flex items-center gap-6">
           <Link href="/" className="hover:opacity-90 transition-opacity touch-target">

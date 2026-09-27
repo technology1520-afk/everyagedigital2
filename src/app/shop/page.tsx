@@ -25,13 +25,16 @@ export default async function ShopPage({ searchParams }: PageProps) {
   const initialProducts = await catalogRepository.getAllProducts({ status: 'active' });
 
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-neutral-400">Loading marketplace...</div>}>
-      <ShopMarketplace
-        initialProducts={initialProducts}
-        initialCategory={initialCategory}
-        initialMerchant={initialMerchant}
-        initialQuery={initialQuery}
-      />
-    </Suspense>
+    <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      <Suspense fallback={<div className="p-12 text-center text-xs text-neutral-400">Loading marketplace...</div>}>
+        <ShopMarketplace
+          initialProducts={initialProducts}
+          initialCategory={initialCategory}
+          initialMerchant={initialMerchant}
+          initialQuery={initialQuery}
+          className="px-0"
+        />
+      </Suspense>
+    </div>
   );
 }
