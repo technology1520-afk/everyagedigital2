@@ -20,13 +20,13 @@ export function MobileSearchToggle() {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle mobile search"
         aria-expanded={isOpen}
-        className="md:hidden p-2 text-slate-700 hover:text-slate-900 bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 dark:text-slate-300 dark:hover:text-white dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 backdrop-blur-md rounded-xl transition-all min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer"
+        className="md:hidden p-2 text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white glass glass-hover rounded-lg transition-all min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
       >
         {isOpen ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
       </button>
 
       {isOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 backdrop-blur-2xl bg-white/95 dark:bg-slate-950/90 border-b border-purple-200/60 dark:border-white/10 p-3 shadow-2xl z-30 animate-in slide-in-from-top duration-200">
+        <div className="md:hidden absolute top-full left-0 right-0 glass-strong p-3 shadow-2xl z-30 animate-in slide-in-from-top duration-200">
           <form action="/search" method="GET" className="relative flex items-center">
             <Search className="w-4 h-4 text-slate-500 dark:text-slate-400 absolute left-3 pointer-events-none" />
             <input

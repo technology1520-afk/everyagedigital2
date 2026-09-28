@@ -45,7 +45,7 @@ export default function WishlistPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/compare"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-blue-500/25 transition-all"
             >
               <Scale className="w-3.5 h-3.5" />
               <span>Compare Products</span>
@@ -53,7 +53,7 @@ export default function WishlistPage() {
             <button
               type="button"
               onClick={clearSaved}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 border border-purple-200/60 dark:border-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-medium transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 glass glass-hover text-slate-700 dark:text-slate-200 rounded-xl text-xs font-medium transition-all cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear List</span>
@@ -63,8 +63,8 @@ export default function WishlistPage() {
       </div>
 
       {totalSaved === 0 ? (
-        <div className="py-20 text-center rounded-3xl bg-white/80 dark:bg-white/[0.02] backdrop-blur-xl border border-dashed border-purple-200 dark:border-white/10 p-8 sm:p-12 space-y-4">
-          <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-blue-500/10 border border-purple-200 dark:border-blue-500/20 text-purple-600 dark:text-blue-400 flex items-center justify-center mx-auto shadow-xs">
+        <div className="py-20 text-center rounded-3xl glass p-8 sm:p-12 space-y-4">
+          <div className="w-12 h-12 rounded-full glass-pill text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto shadow-xs">
             <Bookmark className="w-6 h-6" />
           </div>
           <h3 className="text-base font-bold text-slate-900 dark:text-white">Your saved list is empty</h3>
@@ -73,7 +73,7 @@ export default function WishlistPage() {
           </p>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 transition-all"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all"
           >
             <span>Browse Products</span>
             <ArrowRight className="w-3.5 h-3.5" />

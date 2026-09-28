@@ -33,7 +33,7 @@ export function BookCard({ book, className = '', priority = false }: BookCardPro
 
   return (
     <article
-      className={`product-card group flex flex-col h-full bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden p-4 sm:p-5 transition-all ${className}`}
+      className={`group flex flex-col h-full glass glass-hover rounded-2xl overflow-hidden p-4 sm:p-5 ${className}`}
     >
       {/* Top Section: Cover Left + Info Right */}
       <div className="flex items-start gap-3.5 sm:gap-4">
@@ -149,7 +149,7 @@ export function BookCard({ book, className = '', priority = false }: BookCardPro
           </a>
           <Link
             href={`/books/${book.slug}`}
-            className="touch-target py-2.5 px-4 rounded-xl text-xs font-semibold text-[var(--text)] hover:bg-[var(--surface-muted)] border border-[var(--border)] transition-colors text-center min-h-[44px]"
+            className="touch-target py-2.5 px-4 rounded-xl text-xs font-semibold text-[var(--text)] glass glass-hover transition-all text-center min-h-[44px]"
           >
             Summary
           </Link>

@@ -125,13 +125,13 @@ export function ShopMarketplace({
             value={filters.query || ''}
             onChange={e => setFilters({ ...filters, query: e.target.value })}
             placeholder="Search items, brands, use cases..."
-            className="w-full pl-9 pr-3 py-2.5 text-xs bg-white/65 dark:bg-slate-900/50 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-400 dark:focus:border-blue-400/50 shadow-lg shadow-purple-950/5 min-h-[44px] transition-all"
+            className="w-full pl-9 pr-3 py-2.5 text-xs glass text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-neutral-500 dark:focus:border-white/40 shadow-sm min-h-[44px] rounded-xl transition-all"
           />
         </div>
       </div>
 
       {/* Tablet Horizontal Scrollable Chips Bar (md:flex lg:hidden) */}
-      <div className="hidden md:flex lg:hidden flex-col gap-2 pt-1 pb-2 border-b border-purple-200/50 dark:border-white/10">
+      <div className="hidden md:flex lg:hidden flex-col gap-2 pt-1 pb-2 border-b border-neutral-200/40 dark:border-white/10">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
           <span className="text-[11px] font-semibold uppercase text-slate-500 dark:text-slate-400 shrink-0 mr-1">
             Categories:
@@ -139,10 +139,10 @@ export function ShopMarketplace({
           <button
             type="button"
             onClick={() => setFilters({ ...filters, category: undefined })}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[36px] backdrop-blur-md ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all min-h-[36px] ${
               !filters.category
-                ? 'bg-purple-600 text-white dark:bg-blue-600/30 dark:text-blue-200 border border-purple-600 dark:border-blue-500/40 font-semibold'
-                : 'bg-white/70 text-slate-700 hover:text-slate-900 hover:bg-purple-100/50 border border-purple-200/60 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10 dark:border-white/10'
+                ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                : 'glass glass-hover text-slate-700 dark:text-slate-300'
             }`}
           >
             All Categories
@@ -159,10 +159,10 @@ export function ShopMarketplace({
                     category: isSelected ? undefined : cat
                   })
                 }
-                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[36px] backdrop-blur-md ${
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all min-h-[36px] ${
                   isSelected
-                    ? 'bg-purple-600 text-white dark:bg-blue-600/30 dark:text-blue-200 border border-purple-600 dark:border-blue-500/40 font-semibold'
-                    : 'bg-white/70 text-slate-700 hover:text-slate-900 hover:bg-purple-100/50 border border-purple-200/60 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10 dark:border-white/10'
+                    ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                    : 'glass glass-hover text-slate-700 dark:text-slate-300'
                 }`}
               >
                 <span>{cat}</span>
@@ -195,13 +195,13 @@ export function ShopMarketplace({
         {/* Products Column */}
         <div className="flex-1 w-full min-w-0 space-y-4 sm:space-y-6">
           {/* Controls Bar: Mobile Filter Button + Item count + Sorting */}
-          <div className="rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 flex flex-wrap items-center justify-between gap-3 p-3 sm:px-5 sm:py-2.5 shadow-xs">
+          <div className="rounded-xl glass flex flex-wrap items-center justify-between gap-3 p-3 sm:px-5 sm:py-2.5 shadow-sm">
             <div className="flex items-center gap-3">
               {/* Phone Filter Trigger Button */}
               <button
                 type="button"
                 onClick={() => setBottomSheetOpen(true)}
-                className="touch-target md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200 text-xs font-mono uppercase tracking-wider text-neutral-800 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:border-neutral-700 dark:text-neutral-200 cursor-pointer transition-colors"
+                className="touch-target md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass glass-hover text-xs font-mono uppercase tracking-wider text-neutral-800 dark:text-neutral-200 cursor-pointer transition-all"
               >
                 <Filter className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
                 <span>Filters</span>
@@ -238,7 +238,7 @@ export function ShopMarketplace({
                   key={chip.label}
                   type="button"
                   onClick={chip.onRemove}
-                  className="touch-target inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-neutral-100 hover:bg-neutral-200/80 text-neutral-800 border border-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-700 transition-colors cursor-pointer"
+                  className="touch-target inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono glass glass-hover text-neutral-800 dark:text-neutral-200 transition-all cursor-pointer"
                 >
                   <span>{chip.label}</span>
                   <X className="w-3 h-3 opacity-70" />

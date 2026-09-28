@@ -183,7 +183,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           {/* Price & Primary Purchase Card - Stacked Glass Panel */}
-          <div className="rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-purple-100 dark:border-white/10 p-5 sm:p-6 space-y-4 shadow-sm dark:shadow-xl dark:shadow-black/20">
+          <div className="rounded-3xl glass-strong p-5 sm:p-6 space-y-4 shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
               <PriceStatus offer={offer} freshness={freshness} size="lg" />
               <FreshnessLabel freshness={freshness} />
@@ -258,8 +258,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </h3>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-800 dark:text-slate-200">
                 {product.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 bg-white/80 dark:bg-white/[0.03] backdrop-blur-md p-2.5 rounded-xl border border-purple-100 dark:border-white/10">
-                    <Check className="w-3.5 h-3.5 text-purple-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2 glass p-2.5 rounded-xl">
+                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                     <span>{f}</span>
                   </li>
                 ))}
@@ -272,7 +272,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </h3>
               <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                 {product.limitations.map((limit, i) => (
-                  <li key={i} className="flex items-start gap-2 bg-white/80 dark:bg-white/[0.03] backdrop-blur-md p-2.5 rounded-xl border border-purple-100 dark:border-white/10">
+                  <li key={i} className="flex items-start gap-2 glass p-2.5 rounded-xl">
                     <Info className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
                     <span>{limit}</span>
                   </li>
@@ -282,7 +282,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           {/* Editorial Notes */}
-          <div className="bg-white/80 dark:bg-white/[0.03] backdrop-blur-md border border-purple-100 dark:border-white/10 rounded-2xl p-4 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+          <div className="glass rounded-2xl p-4 text-xs text-slate-700 dark:text-slate-300 space-y-1">
             <span className="font-semibold text-slate-900 dark:text-white block">Editorial Assessment Note:</span>
             <p className="leading-relaxed text-slate-600 dark:text-slate-300">{product.editorialNotes}</p>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 pt-1 flex items-center gap-2">
@@ -299,11 +299,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       {/* Related Curated Collection (if part of one) */}
       {relatedCollection && (
-        <div className="bg-purple-100/40 dark:bg-indigo-950/30 border border-purple-200/60 dark:border-indigo-500/20 backdrop-blur-xl rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm dark:shadow-xl">
+        <div className="glass-strong rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
           <div className="flex items-center gap-3">
-            <Layers className="w-8 h-8 text-purple-600 dark:text-blue-400 shrink-0" />
+            <Layers className="w-8 h-8 text-blue-600 dark:text-blue-400 shrink-0" />
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-wider text-purple-700 dark:text-blue-300 font-semibold">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-semibold">
                 Part of a Curated Setup
               </span>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -316,7 +316,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
           <Link
             href={`/collections/${relatedCollection.slug}`}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 border border-purple-200/60 dark:border-white/15 rounded-xl text-xs font-semibold text-slate-800 dark:text-white transition-all shrink-0"
+            className="inline-flex items-center gap-1.5 px-4 py-2 glass glass-hover rounded-xl text-xs font-semibold text-slate-800 dark:text-white transition-all shrink-0"
           >
             <span>View Full Setup</span>
             <ArrowRight className="w-3.5 h-3.5" />

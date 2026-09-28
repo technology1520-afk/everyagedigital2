@@ -15,9 +15,9 @@ export function EmailSignup() {
   };
 
   return (
-    <div className="rounded-2xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 p-8 sm:p-10 shadow-xs transition-colors">
+    <div className="rounded-2xl glass-strong p-8 sm:p-10">
       <div className="max-w-2xl">
-        <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
+        <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold glass-pill px-2.5 py-1 rounded-full mb-2">
           Curated Knowledge • EveryAge Dispatch
         </span>
         <h3 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-900 dark:text-white mt-1">
@@ -42,7 +42,7 @@ export function EmailSignup() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="Enter your email address..."
-                className="w-full pl-10 pr-3 py-2.5 text-xs font-mono bg-white dark:bg-[#0d1117] border border-neutral-300 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-hidden focus:border-neutral-500 dark:focus:border-neutral-400 transition-colors min-h-[40px]"
+                className="w-full pl-10 pr-3 py-2.5 text-xs font-mono glass rounded-lg text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-hidden focus:border-neutral-500 dark:focus:border-white/40 transition-colors min-h-[40px]"
               />
             </div>
             <button

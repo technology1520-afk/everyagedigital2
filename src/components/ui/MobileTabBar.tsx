@@ -24,7 +24,7 @@ export function MobileTabBar() {
   return (
     <nav
       aria-label="Mobile Navigation Bar"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#faf9f6]/95 dark:bg-[#0d1117]/95 border-t border-neutral-200 dark:border-neutral-800 px-2 py-1 flex items-center justify-around shadow-sm pb-safe transition-colors"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-strong px-2 py-1 flex items-center justify-around pb-safe transition-colors"
     >
       {tabs.map(tab => {
         const isActive =

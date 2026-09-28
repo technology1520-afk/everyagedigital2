@@ -82,9 +82,9 @@ export function ShoppingAssistant() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start max-w-6xl mx-auto">
       {/* Chat Panel: 100% on phone, 60% on tablet/desktop (col-span-7) */}
-      <div className="md:col-span-7 flex flex-col h-[calc(100dvh-13rem)] min-h-[520px] md:h-[750px] bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 rounded-xl overflow-hidden shadow-xs">
+      <div className="md:col-span-7 flex flex-col h-[calc(100dvh-13rem)] min-h-[520px] md:h-[750px] glass-strong rounded-xl overflow-hidden shadow-xl">
         {/* Assistant Header */}
-        <div className="bg-neutral-100/90 dark:bg-neutral-900/90 border-b border-neutral-200/80 dark:border-neutral-800 p-3 sm:p-4 flex items-center justify-between shrink-0">
+        <div className="border-b border-neutral-200/40 dark:border-white/10 p-3 sm:p-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950 flex items-center justify-center shrink-0">
               <SlidersHorizontal className="w-4 h-4" />
@@ -92,7 +92,7 @@ export function ShoppingAssistant() {
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <h2 className="text-xs sm:text-sm font-serif font-medium text-neutral-900 dark:text-white">EveryAge Concierge</h2>
-                <span className="text-[10px] font-mono uppercase tracking-wider bg-neutral-200/70 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200 px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700">
+                <span className="text-[10px] font-mono uppercase tracking-wider glass-pill text-neutral-800 dark:text-neutral-200 px-2 py-0.5 rounded-full font-semibold">
                   Deterministic
                 </span>
               </div>
@@ -168,10 +168,10 @@ export function ShoppingAssistant() {
                         <div
                           key={rec.product.id}
                           onClick={() => setSelectedPreviewId(rec.product.id)}
-                          className={`min-w-[240px] max-w-[260px] sm:min-w-0 sm:max-w-none snap-start bg-[#faf9f6] dark:bg-[#0d1117] border rounded-xl p-3.5 shadow-xs flex flex-col justify-between cursor-pointer transition-all duration-150 ${
+                          className={`min-w-[240px] max-w-[260px] sm:min-w-0 sm:max-w-none snap-start glass glass-hover rounded-xl p-3.5 flex flex-col justify-between cursor-pointer transition-all duration-150 ${
                             selectedPreviewId === rec.product.id
-                              ? 'border-neutral-900 dark:border-white ring-1 ring-neutral-900 dark:ring-white'
-                              : 'border-neutral-200/80 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700'
+                              ? 'ring-2 ring-blue-500 border-blue-500'
+                              : ''
                           }`}
                         >
                           <div>
@@ -257,7 +257,7 @@ export function ShoppingAssistant() {
         </div>
 
         {/* Input Form - Pinned at bottom with safe-area padding */}
-        <div className="p-3 sm:p-4 border-t border-neutral-200/80 dark:border-neutral-800 bg-[#faf9f6] dark:bg-[#0d1117] pb-safe shrink-0">
+        <div className="p-3 sm:p-4 border-t border-neutral-200/40 dark:border-white/10 pb-safe shrink-0">
           <form
             onSubmit={e => {
               e.preventDefault();
@@ -293,8 +293,8 @@ export function ShoppingAssistant() {
       </div>
 
       {/* Product Preview Panel: Hidden on phone, 40% on Tablet/Desktop (col-span-5) */}
-      <div className="hidden md:flex md:col-span-5 flex-col h-[750px] bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 rounded-xl overflow-hidden shadow-xs">
-        <div className="p-4 bg-neutral-100/90 dark:bg-neutral-900/90 border-b border-neutral-200/80 dark:border-neutral-800 flex items-center justify-between">
+      <div className="hidden md:flex md:col-span-5 flex-col h-[750px] glass-strong rounded-xl overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-neutral-200/40 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
             <span className="text-xs font-mono uppercase tracking-wider text-neutral-800 dark:text-neutral-200 font-semibold">
@@ -318,7 +318,7 @@ export function ShoppingAssistant() {
                 className="h-full w-full object-contain"
               />
               {previewItem.product.editorialBadge && (
-                <span className="absolute top-2 left-2 font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/95 dark:bg-neutral-900/95 text-neutral-900 dark:text-neutral-100 font-semibold shadow-xs">
+                <span className="absolute top-2 left-2 font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full glass-pill text-neutral-900 dark:text-neutral-100 font-semibold shadow-xs">
                   {previewItem.product.editorialBadge}
                 </span>
               )}

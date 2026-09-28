@@ -83,7 +83,7 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#faf9f6]/95 dark:bg-[#0d1117]/95 border-b border-neutral-200/80 dark:border-neutral-800 shadow-xs transition-colors backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full glass-strong transition-colors">
       <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3 relative">
         {/* Logo & Brand Identity */}
         <div className="flex items-center gap-4 sm:gap-6">
@@ -151,14 +151,14 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
           <Link
             href="/search"
             aria-label="Search catalog"
-            className="hidden md:flex p-2 px-3 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors items-center gap-1.5 text-xs font-mono min-h-[36px]"
+            className="hidden md:flex p-2 px-3 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white glass glass-hover rounded-lg transition-colors items-center gap-1.5 text-xs font-mono min-h-[36px]"
           >
             <Search className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500" />
             <span className="font-mono text-xs uppercase tracking-wider">Search</span>
           </Link>
 
           {/* Light / Dark Theme Toggle or Halloween Pumpkin */}
-          <div className="bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors flex items-center justify-center min-h-[36px] min-w-[36px]">
+          <div className="glass glass-hover rounded-lg transition-colors flex items-center justify-center min-h-[36px] min-w-[36px]">
             <ThemeToggle isHalloween={isHalloween} />
           </div>
 
@@ -166,7 +166,7 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
           <Link
             href="/wishlist"
             aria-label={mounted && totalSaved > 0 ? `Saved items (${totalSaved})` : 'Saved items'}
-            className="touch-target relative p-2 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="touch-target relative p-2 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white glass glass-hover rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
             <Bookmark className="w-4 h-4" />
             {mounted && totalSaved > 0 && (
@@ -180,7 +180,7 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
           <Link
             href="/compare"
             aria-label={mounted && totalCompare > 0 ? `Compare products (${totalCompare})` : 'Compare products'}
-            className="touch-target relative p-2 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="touch-target relative p-2 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white glass glass-hover rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
             <Scale className="w-4 h-4" />
             {mounted && totalCompare > 0 && (
@@ -196,7 +196,7 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle secondary navigation"
             aria-expanded={mobileMenuOpen}
-            className="md:hidden p-2 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg cursor-pointer transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="md:hidden p-2 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white glass glass-hover rounded-lg cursor-pointer transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -207,11 +207,11 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
       {mobileMenuOpen && (
         <>
           <div
-            className="md:hidden fixed inset-0 top-[64px] bg-black/60 z-30 transition-opacity"
+            className="md:hidden fixed inset-0 top-[64px] bg-black/60 backdrop-blur-xs z-30 transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
-          <div className="md:hidden absolute top-full left-0 right-0 bg-[#faf9f6] dark:bg-[#0d1117] border-b border-neutral-200 dark:border-neutral-800 p-5 space-y-4 shadow-xl z-40 max-h-[calc(100vh-80px)] overflow-y-auto animate-in slide-in-from-top-2 duration-200 text-neutral-900 dark:text-neutral-100">
+          <div className="md:hidden absolute top-full left-0 right-0 glass-strong p-5 space-y-4 shadow-2xl z-40 max-h-[calc(100vh-80px)] overflow-y-auto animate-in slide-in-from-top-2 duration-200 text-neutral-900 dark:text-neutral-100">
             {/* Primary Destinations in drawer */}
             <div className="space-y-1.5">
               <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500 font-semibold px-3 block mb-1">

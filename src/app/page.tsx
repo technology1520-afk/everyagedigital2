@@ -50,11 +50,11 @@ export default async function HomePage() {
     <div className="w-full space-y-16 sm:space-y-24 pb-16">
       {/* 1. Hero Section */}
       <section className="pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        <div className="bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 lg:p-12 shadow-xs transition-colors">
+        <div className="glass-strong rounded-2xl p-6 sm:p-8 lg:p-12 shadow-xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Eyebrow, Headings, Intro & Action Links */}
             <div className="lg:col-span-7 space-y-5 text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neutral-200/60 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider border border-neutral-300 dark:border-neutral-700">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider">
                 <SlidersHorizontal className="w-3 h-3 text-neutral-500 dark:text-neutral-400 shrink-0" />
                 <span>Issue No. 04 • Independent Editorial Index</span>
               </div>
@@ -78,7 +78,7 @@ export default async function HomePage() {
                 </Link>
                 <Link
                   href="/assistant"
-                  className="touch-target inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-neutral-100 hover:bg-neutral-200/80 text-neutral-800 border border-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-700 text-xs font-mono uppercase tracking-wider transition-colors min-h-[40px]"
+                  className="touch-target inline-flex items-center gap-2 px-5 py-2.5 rounded-lg glass glass-hover text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider transition-all min-h-[40px]"
                 >
                   <SlidersHorizontal className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400 shrink-0" />
                   <span>Consult Concierge</span>
@@ -88,7 +88,7 @@ export default async function HomePage() {
 
             {/* Right Column: Search Form Inside Hero */}
             <div className="lg:col-span-5 w-full">
-              <div className="bg-neutral-100/80 dark:bg-neutral-900/90 border border-neutral-200 dark:border-neutral-800 p-5 sm:p-6 rounded-xl">
+              <div className="glass p-5 sm:p-6 rounded-xl">
                 <span className="text-xs font-mono uppercase tracking-wider text-neutral-700 dark:text-neutral-300 font-semibold block mb-2.5">
                   Direct Specimen Query
                 </span>
@@ -99,7 +99,7 @@ export default async function HomePage() {
                       type="text"
                       name="q"
                       placeholder="Search mechanical keyboard, habit books..."
-                      className="w-full pl-10 pr-4 py-2.5 rounded-lg text-xs font-mono bg-white dark:bg-[#0d1117] border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-hidden focus:border-neutral-500 dark:focus:border-neutral-400 min-h-[42px] transition-colors"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-lg text-xs font-mono glass text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-hidden focus:border-neutral-500 dark:focus:border-white/40 min-h-[42px] transition-colors"
                     />
                   </div>
                   <button
@@ -117,7 +117,7 @@ export default async function HomePage() {
                     <Link
                       key={term}
                       href={`/search?q=${encodeURIComponent(term)}`}
-                      className="text-[11px] font-mono text-neutral-600 hover:text-neutral-950 bg-white hover:bg-neutral-50 dark:text-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 rounded px-2 py-0.5 transition-colors"
+                      className="text-[11px] font-mono text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white glass glass-hover rounded px-2.5 py-1 transition-all"
                     >
                       {term}
                     </Link>
@@ -137,7 +137,7 @@ export default async function HomePage() {
               <Link
                 key={cat.slug}
                 href={`/category/${cat.slug}`}
-                className="p-3.5 bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 rounded-lg transition-colors flex flex-col justify-between group min-h-[64px]"
+                className="p-3.5 glass glass-hover rounded-xl flex flex-col justify-between group min-h-[64px]"
               >
                 <span className="font-serif text-sm font-medium text-neutral-900 dark:text-neutral-100 group-hover:underline decoration-neutral-400 transition-colors">
                   {cat.name}
@@ -237,9 +237,9 @@ export default async function HomePage() {
 
       {/* 5. Editorial Concierge Callout Banner */}
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        <div className="bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 text-neutral-900 dark:text-white rounded-2xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xs transition-colors">
+        <div className="glass-strong text-neutral-900 dark:text-white rounded-2xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
           <div className="max-w-xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neutral-200/60 dark:bg-neutral-800/80 border border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider">
               <SlidersHorizontal className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
               <span>Deterministic Concierge</span>
             </div>
@@ -260,7 +260,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="bg-neutral-100 dark:bg-neutral-900/90 border border-neutral-200 dark:border-neutral-800 rounded-xl p-5 w-full md:w-80 text-xs font-mono space-y-3 text-neutral-700 dark:text-neutral-300">
+          <div className="glass rounded-xl p-5 w-full md:w-80 text-xs font-mono space-y-3 text-neutral-700 dark:text-neutral-300">
             <div className="flex items-center gap-2.5">
               <ShieldCheck className="w-4 h-4 text-neutral-700 dark:text-neutral-300 shrink-0" />
               <span>Retrieval-grounded catalog index</span>
@@ -315,7 +315,7 @@ export default async function HomePage() {
 
       {/* 7. Direct Publisher Products */}
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        <div className="bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-8 sm:p-10 shadow-xs">
+        <div className="glass-strong rounded-2xl p-8 sm:p-10 shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
               <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
@@ -341,11 +341,11 @@ export default async function HomePage() {
             {ownedProducts.map(prod => (
               <div
                 key={prod.id}
-                className="rounded-xl bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 p-6 flex flex-col justify-between transition-colors shadow-xs"
+                className="rounded-xl glass glass-hover p-6 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono text-neutral-500 dark:text-neutral-400 mb-2">
-                    <span className="badge-digital font-semibold px-2 py-0.5 rounded text-[10px]">
+                    <span className="badge-digital font-semibold px-2 py-0.5 rounded-full text-[10px] glass-pill">
                       Direct Digital Download
                     </span>
                     <span className="text-[10px] uppercase tracking-wider">{prod.fileFormat}</span>
@@ -359,7 +359,7 @@ export default async function HomePage() {
                     {prod.tagline}
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-neutral-200 dark:border-neutral-800 space-y-1.5">
+                  <div className="mt-4 pt-3 border-t border-neutral-200/40 dark:border-white/10 space-y-1.5">
                     <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                       Deliverables:
                     </span>
@@ -374,7 +374,7 @@ export default async function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-neutral-200/40 dark:border-white/10 flex items-center justify-between">
                   <div>
                     <span className="font-mono text-xl font-bold text-neutral-900 dark:text-white">
                       ${prod.price.toFixed(2)}
@@ -397,7 +397,7 @@ export default async function HomePage() {
 
       {/* 8. Methodology & Trust Pillars */}
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        <div className="border border-neutral-200/80 dark:border-neutral-800 bg-[#faf9f6] dark:bg-[#0d1117] rounded-2xl p-8 sm:p-12 shadow-xs">
+        <div className="glass-strong rounded-2xl p-8 sm:p-12 shadow-xl">
           <div className="max-w-2xl">
             <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
               Editorial Independence
@@ -410,7 +410,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-8 border-t border-neutral-200/80 dark:border-neutral-800">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-8 border-t border-neutral-200/40 dark:border-white/10">
             <div>
               <h3 className="font-mono text-xs uppercase tracking-wider text-neutral-900 dark:text-white font-bold mb-1.5">
                 1. Rigorous Selection

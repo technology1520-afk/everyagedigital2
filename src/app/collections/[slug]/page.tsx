@@ -141,7 +141,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       />
 
       {/* Collection Hero */}
-      <div className="rounded-3xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-purple-200/50 dark:border-white/10 overflow-hidden shadow-2xl">
+      <div className="rounded-3xl glass-strong overflow-hidden shadow-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-12">
           {/* Text Summary */}
           <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between">
@@ -149,7 +149,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
               {/* Metadata Bar with ShareButton on the right */}
               <div className="flex items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <span className="px-2.5 py-1 rounded-full text-xs font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 font-semibold">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 glass-pill font-semibold">
                     Curated Bundle
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono">
@@ -210,7 +210,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 
       {/* Interactive Bundle Product List + Sticky Checkout Bar or Clean Fallback */}
       {bundleItems.length === 0 ? (
-        <div className="rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 p-8 sm:p-12 text-center space-y-4 shadow-xl">
+        <div className="rounded-3xl glass-strong p-8 sm:p-12 text-center space-y-4 shadow-xl">
           <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
             <Layers className="w-6 h-6" />
           </div>

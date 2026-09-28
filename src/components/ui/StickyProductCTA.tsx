@@ -31,7 +31,7 @@ export function StickyProductCTA({
 
   return (
     <div
-      className="md:hidden fixed bottom-14 left-0 right-0 z-30 bg-slate-950/80 backdrop-blur-xl border-t border-white/10 p-3 px-4 shadow-[0_-4px_24px_rgba(0,0,0,0.5)] transition-all"
+      className="md:hidden fixed bottom-14 left-0 right-0 z-30 glass-strong border-t border-b-0 border-x-0 p-3 px-4 shadow-[0_-4px_24px_rgba(0,0,0,0.5)] transition-all"
       aria-label="Sticky Purchase Bar"
     >
       {/* Affiliate micro-text above button */}
@@ -73,7 +73,7 @@ export function StickyProductCTA({
           ) : (
             <Link
               href={`/product/${productSlug}`}
-              className="touch-target inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/15 text-xs font-semibold min-h-[44px]"
+              className="touch-target inline-flex items-center justify-center px-4 py-2 rounded-xl glass glass-hover text-white text-xs font-semibold min-h-[44px]"
             >
               Learn More
             </Link>

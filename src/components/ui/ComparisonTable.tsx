@@ -20,14 +20,14 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
 
   if (items.length === 0) {
     return (
-      <div className="py-20 text-center rounded-3xl bg-white/80 dark:bg-white/[0.02] backdrop-blur-xl border border-dashed border-purple-200 dark:border-white/10 p-8 sm:p-12 space-y-4">
+      <div className="py-20 text-center rounded-3xl glass p-8 sm:p-12 space-y-4">
         <h3 className="text-base font-semibold text-slate-900 dark:text-white">No products in comparison</h3>
         <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 max-w-sm mx-auto">
           Browse the catalog and click the &ldquo;Compare&rdquo; scale button on up to 4 products to compare specs, merchants, and trade-offs side by side.
         </p>
         <Link
           href="/shop"
-          className="mt-5 inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 bg-purple-600 hover:bg-purple-500 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-purple-600/20 dark:shadow-blue-500/25 transition-all"
+          className="mt-5 inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all"
         >
           Explore Products
         </Link>
@@ -44,7 +44,7 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
         </div>
       )}
 
-      <div className={`overflow-x-auto rounded-3xl bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 shadow-sm dark:shadow-xl scrollbar-thin ${className}`}>
+      <div className={`overflow-x-auto rounded-3xl glass-strong shadow-xl scrollbar-thin ${className}`}>
         <table className="w-full text-left border-collapse min-w-[580px] sm:min-w-[700px]">
           <thead>
             <tr className="border-b border-purple-200/50 dark:border-white/10 bg-purple-50/50 dark:bg-slate-950/60">

@@ -62,11 +62,11 @@ export function FilterPanel({
   );
 
   return (
-    <aside className={`rounded-3xl bg-white/65 dark:bg-slate-900/50 [html[data-seasonal=halloween]_&]:bg-slate-950/70 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:backdrop-blur-xl [html[data-seasonal=halloween]_&]:rounded-2xl [html[data-seasonal=halloween]_&]:p-6 [html[data-seasonal=halloween]_&]:shadow-xl [html[data-seasonal=halloween]_&]:shadow-orange-950/20 backdrop-blur-xl border border-purple-200/60 dark:border-white/10 text-slate-800 dark:text-slate-100 shadow-lg shadow-purple-950/5 p-6 space-y-6 ${className}`}>
+    <aside className={`rounded-2xl glass text-slate-800 dark:text-slate-100 shadow-xl p-6 space-y-6 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-purple-200/50 dark:border-white/10 [html[data-seasonal=halloween]_&]:border-orange-500/20">
+      <div className="flex items-center justify-between pb-3 border-b border-neutral-200/40 dark:border-white/10 [html[data-seasonal=halloween]_&]:border-orange-500/20">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white [html[data-seasonal=halloween]_&]:text-orange-400">
-          <Filter className="w-3.5 h-3.5 text-purple-600 dark:text-blue-400 [html[data-seasonal=halloween]_&]:text-orange-400" />
+          <Filter className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 [html[data-seasonal=halloween]_&]:text-orange-400" />
           <span>Filters</span>
         </div>
         {hasActiveFilters && (

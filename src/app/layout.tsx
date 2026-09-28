@@ -7,6 +7,7 @@ import { SiteHeader } from "../components/ui/SiteHeader";
 import { SiteFooter } from "../components/ui/SiteFooter";
 import { MobileTabBar } from "../components/ui/MobileTabBar";
 import { HalloweenAmbientOverlay } from "../components/ui/HalloweenAmbientOverlay";
+import { GlassBackdrop } from "../components/ui/GlassBackdrop";
 import { getSupabaseAdminClient } from "../lib/supabase/server";
 import { isSupabaseConfigured } from "../lib/supabase/config";
 import { catalogRepository } from "../lib/db/repository";
@@ -125,6 +126,7 @@ export default async function RootLayout({
         data-seasonal={isHalloween ? 'halloween' : undefined}
         className="min-h-screen bg-[#f7f6f2] text-neutral-900 dark:bg-[#090d13] dark:text-neutral-100 transition-colors duration-300 relative overflow-x-hidden flex flex-col antialiased selection:bg-neutral-300 dark:selection:bg-neutral-800"
       >
+        <GlassBackdrop />
         {isHalloween && <HalloweenAmbientOverlay />}
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem forcedTheme={isHalloween ? 'dark' : undefined}>

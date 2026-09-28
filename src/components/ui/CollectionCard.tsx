@@ -25,7 +25,7 @@ export function CollectionCard({ collection, className = '', priority = false }:
 
   return (
     <article
-      className={`group flex flex-col h-full rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 p-4 sm:p-5 shadow-xs transition-colors overflow-hidden ${className}`}
+      className={`group flex flex-col h-full rounded-xl glass glass-hover p-4 sm:p-5 overflow-hidden ${className}`}
     >
       {/* Dedicated Image Studio Display Frame */}
       <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-neutral-900 border border-neutral-200 dark:border-neutral-800 mb-3">
@@ -39,8 +39,8 @@ export function CollectionCard({ collection, className = '', priority = false }:
             className="h-full w-full object-cover group-hover:scale-102 transition-transform duration-300"
           />
         </Link>
-        <div className="absolute top-2 left-2 text-[9px] font-mono uppercase tracking-wider font-semibold px-2 py-0.5 rounded border border-white/20 bg-black/60 backdrop-blur-xs text-white flex items-center gap-1.5 z-10 shadow-xs">
-          <Layers className="w-3 h-3 text-neutral-300" />
+        <div className="absolute top-2 left-2 text-[9px] font-mono uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full glass-pill text-white flex items-center gap-1.5 z-10 shadow-xs">
+          <Layers className="w-3 h-3 text-neutral-200" />
           <span>{totalItems} {totalItems === 1 ? 'Specimen' : 'Specimens'}</span>
         </div>
       </div>

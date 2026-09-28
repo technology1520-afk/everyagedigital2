@@ -35,9 +35,9 @@ export default async function CollectionsIndexPage() {
       />
 
       {/* Page Header */}
-      <div className="bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+      <div className="glass-strong rounded-2xl p-6 sm:p-8 shadow-xl">
         <div className="max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neutral-200/60 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider border border-neutral-300 dark:border-neutral-700">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider">
             <Boxes className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
             <span>Curated Sets &amp; Bundles</span>
           </div>
@@ -60,7 +60,7 @@ export default async function CollectionsIndexPage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 p-12 text-center my-8 space-y-4 shadow-xs">
+        <div className="rounded-xl glass p-12 text-center my-8 space-y-4 shadow-sm">
           <div className="w-12 h-12 rounded-xl bg-neutral-200/60 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 flex items-center justify-center mx-auto">
             <Boxes className="w-6 h-6" />
           </div>

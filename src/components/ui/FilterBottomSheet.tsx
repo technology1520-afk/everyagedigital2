@@ -69,15 +69,15 @@ export function FilterBottomSheet({
         role="dialog"
         aria-modal="true"
         aria-label="Filter Options"
-        className="relative backdrop-blur-2xl bg-white/95 dark:bg-slate-950/95 text-slate-900 dark:text-slate-100 rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl z-10 animate-in slide-in-from-bottom duration-250 border-t border-purple-200/60 dark:border-white/10"
+        className="relative glass-strong text-slate-900 dark:text-slate-100 rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl z-10 animate-in slide-in-from-bottom duration-250 border-t border-white/20"
       >
         {/* Drag Handle & Top Bar */}
-        <div className="pt-3 pb-3 px-5 border-b border-purple-200/50 dark:border-white/10 flex flex-col items-center">
+        <div className="pt-3 pb-3 px-5 border-b border-neutral-200/40 dark:border-white/10 flex flex-col items-center">
           <div className="w-12 h-1.5 bg-slate-300 dark:bg-white/20 rounded-full mb-3" />
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm text-slate-900 dark:text-white">Catalog Filters</span>
-              <span className="text-xs bg-purple-100 text-purple-900 border border-purple-300 dark:bg-blue-600/30 dark:text-blue-300 dark:border-blue-500/30 px-2 py-0.5 rounded-full font-semibold">
+              <span className="text-xs glass-pill text-neutral-800 dark:text-neutral-200 px-2.5 py-0.5 rounded-full font-semibold">
                 {totalResults} items
               </span>
             </div>
@@ -107,7 +107,7 @@ export function FilterBottomSheet({
         </div>
 
         {/* Bottom Sticky Action Bar */}
-        <div className="p-4 border-t border-purple-200/50 dark:border-white/10 bg-white/90 dark:bg-slate-950/80 backdrop-blur-md flex items-center gap-3 pb-safe">
+        <div className="p-4 border-t border-neutral-200/40 dark:border-white/10 glass-strong flex items-center gap-3 pb-safe">
           <button
             type="button"
             onClick={() => {

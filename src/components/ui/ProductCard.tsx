@@ -201,7 +201,7 @@ export function ProductCard({
   if (isLead) {
     return (
       <article
-        className={`col-span-1 md:col-span-2 lg:col-span-2 rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 shadow-sm p-5 sm:p-7 transition-colors group relative overflow-hidden flex flex-col justify-between ${className}`}
+        className={`col-span-1 md:col-span-2 lg:col-span-2 rounded-xl glass-strong glass-hover p-5 sm:p-7 group relative overflow-hidden flex flex-col justify-between ${className}`}
       >
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
           {/* Left: Studio Display Photo Box */}
@@ -220,11 +220,11 @@ export function ProductCard({
 
               {/* Floating badges */}
               <div className="absolute top-2 left-2 flex flex-col gap-1 items-start z-10 pointer-events-none">
-                <span className="font-mono text-[10px] uppercase tracking-wider bg-neutral-900 text-neutral-100 dark:bg-neutral-950 dark:text-neutral-50 font-bold px-2.5 py-1 rounded shadow-xs">
+                <span className="font-mono text-[10px] uppercase tracking-wider glass-pill text-neutral-900 dark:text-neutral-100 font-bold px-2.5 py-1 rounded shadow-xs">
                   Issue Spotlight
                 </span>
                 {badgeInfo && (
-                  <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/95 dark:bg-neutral-900/95 text-neutral-900 dark:text-neutral-100 font-semibold shadow-xs">
+                  <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded glass-pill text-neutral-800 dark:text-neutral-200 font-semibold shadow-xs">
                     {badgeInfo.label}
                   </span>
                 )}
@@ -360,7 +360,7 @@ export function ProductCard({
   // ==========================================
   return (
     <article
-      className={`rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 shadow-sm p-4 sm:p-5 flex flex-col justify-between transition-colors overflow-hidden group relative ${className}`}
+      className={`rounded-xl glass glass-hover p-4 sm:p-5 flex flex-col justify-between overflow-hidden group relative ${className}`}
     >
       <div>
         {/* Dedicated Studio Display Box */}
@@ -379,12 +379,12 @@ export function ProductCard({
           {/* Floating Badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-1 items-start z-10 pointer-events-none">
             {isHalloweenItem && (
-              <span className="font-mono text-[9px] uppercase tracking-wider bg-orange-600 text-white px-2 py-0.5 rounded font-bold shadow-xs">
+              <span className="font-mono text-[9px] uppercase tracking-wider bg-orange-600/90 text-white px-2 py-0.5 rounded font-bold shadow-xs">
                 🎃 Spooky Pick
               </span>
             )}
             {badgeInfo && (
-              <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/95 dark:bg-neutral-900/95 text-neutral-900 dark:text-neutral-100 font-semibold shadow-xs">
+              <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded glass-pill text-neutral-800 dark:text-neutral-200 font-semibold shadow-xs">
                 {badgeInfo.label}
               </span>
             )}

@@ -35,7 +35,7 @@ export function DemoCheckoutModal({ product, isOpen, onClose }: DemoCheckoutModa
       aria-labelledby="modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
     >
-      <div className="bg-slate-900/90 backdrop-blur-2xl rounded-2xl max-w-md w-full p-6 shadow-2xl border border-white/10 relative overflow-hidden animate-in fade-in duration-200">
+      <div className="glass-strong rounded-2xl max-w-md w-full p-6 shadow-2xl relative overflow-hidden animate-in fade-in duration-200">
         <button
           type="button"
           onClick={onClose}
@@ -85,11 +85,11 @@ export function DemoCheckoutModal({ product, isOpen, onClose }: DemoCheckoutModa
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full px-3 py-2 text-sm bg-slate-950/60 border border-white/15 rounded-xl text-white placeholder:text-slate-500 focus:outline-hidden focus:border-blue-500"
+                  className="w-full px-3 py-2 text-sm glass rounded-xl text-white placeholder:text-slate-500 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
-              <div className="p-3 bg-white/[0.04] rounded-xl text-[11px] text-slate-400 space-y-1 border border-white/10">
+              <div className="p-3 glass rounded-xl text-[11px] text-slate-400 space-y-1">
                 <div className="flex items-center gap-1.5 text-slate-200 font-medium">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>30-Day Money-Back Guarantee</span>
@@ -124,7 +124,7 @@ export function DemoCheckoutModal({ product, isOpen, onClose }: DemoCheckoutModa
               </p>
             </div>
 
-            <div className="p-4 bg-white/[0.04] border border-white/10 rounded-xl text-left text-xs space-y-2">
+            <div className="p-4 glass rounded-xl text-left text-xs space-y-2">
               <span className="font-semibold text-slate-200 block">Simulated Deliverables:</span>
               <ul className="space-y-1.5 text-slate-300 text-[11px]">
                 {product.includedItems.map((item, idx) => (
@@ -139,7 +139,7 @@ export function DemoCheckoutModal({ product, isOpen, onClose }: DemoCheckoutModa
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-2.5 px-4 bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
+              className="w-full py-2.5 px-4 glass glass-hover text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
             >
               Done
             </button>

@@ -29,6 +29,20 @@
   --warning: #d97706;
   --danger: #b91c1c;
   --font-serif: var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, serif;
+
+  /* Glassmorphism Tokens (Light Mode) */
+  --glass-bg: rgba(0, 0, 0, 0.035);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+
+  --glass-strong-bg: rgba(255, 255, 255, 0.85);
+  --glass-strong-border: rgba(0, 0, 0, 0.10);
+  --glass-strong-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --glass-strong-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+
+  --glass-pill-bg: rgba(0, 0, 0, 0.05);
+  --glass-pill-border: rgba(0, 0, 0, 0.10);
 }
 
 .dark {
@@ -53,6 +67,20 @@
   --soft: #8b949e;
   --warning: #fbbf24;
   --danger: #f87171;
+
+  /* Glassmorphism Tokens (Dark Mode) */
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+
+  --glass-strong-bg: rgba(255, 255, 255, 0.10);
+  --glass-strong-border: rgba(255, 255, 255, 0.18);
+  --glass-strong-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --glass-strong-shadow: 0 12px 40px rgba(0, 0, 0, 0.40);
+
+  --glass-pill-bg: rgba(255, 255, 255, 0.15);
+  --glass-pill-border: rgba(255, 255, 255, 0.20);
 }
 
 @theme {
@@ -78,6 +106,81 @@
   --color-brand-featured: var(--featured);
   --font-serif: var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, serif;
   --font-editorial: var(--font-serif);
+}
+
+/* ==========================================================================
+   GLASSMORPHISM DESIGN SYSTEM (Frosted Glass Surface System)
+   ========================================================================== */
+
+/* Standard Glass Panel (Cards, Drawers, Floating Shelves) */
+.glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), var(--glass-shadow);
+}
+
+/* Elevated Glass Surface (Sticky Navbars, Modals, Spotlight Hero, Drawers) */
+.glass-strong {
+  background-color: var(--glass-strong-bg);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid var(--glass-strong-border);
+  box-shadow: var(--glass-strong-highlight), var(--glass-strong-shadow);
+}
+
+/* Smooth Interactive Micro-Lift for Cards & Clickable Elements */
+.glass-hover {
+  transition: background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-hover:hover {
+  background-color: rgba(0, 0, 0, 0.055);
+  border-color: rgba(0, 0, 0, 0.14);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 12px 36px rgba(0, 0, 0, 0.07);
+}
+
+.dark .glass-hover:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 14px 44px rgba(0, 0, 0, 0.50);
+}
+
+/* Glass Pill (Badges, Tool Chips, Action Indicators) */
+.glass-pill {
+  background-color: var(--glass-pill-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-pill-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.20);
+}
+
+/* Legacy Browser Fallback (Firefox / Older Safari without backdrop-filter) */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass {
+    background-color: #faf9f6;
+  }
+  .dark .glass {
+    background-color: rgba(13, 17, 23, 0.95);
+  }
+  .glass-strong {
+    background-color: #ffffff;
+  }
+  .dark .glass-strong {
+    background-color: rgba(13, 17, 23, 0.98);
+  }
+  .glass-pill {
+    background-color: #f0ede6;
+  }
+  .dark .glass-pill {
+    background-color: #21262d;
+  }
 }
 
 /* Global Reset & Base */
