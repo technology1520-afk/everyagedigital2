@@ -68,13 +68,13 @@ export function ComparisonTable({ items, className = '' }: ComparisonTableProps)
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="aspect-4/3 w-full bg-slate-100 dark:bg-slate-950/40 rounded-xl overflow-hidden mb-3 relative border border-purple-100 dark:border-white/10">
+                    <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-white dark:bg-white border border-neutral-200 dark:border-neutral-800 mb-3">
                       <Image
                         src={product.imageUrl}
                         alt={product.altText}
                         fill
                         sizes="(max-width: 639px) 180px, 240px"
-                        className="object-cover"
+                        className="h-full w-full object-contain"
                       />
                     </div>
 

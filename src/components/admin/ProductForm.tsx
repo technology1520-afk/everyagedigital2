@@ -495,12 +495,12 @@ export function ProductForm({ initialData, categories, isEditing = false }: Prod
             </div>
 
             {/* Image Preview Box */}
-            <div className="relative aspect-video w-full bg-slate-950/60 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center">
+            <div className="relative aspect-square w-full bg-white dark:bg-white rounded-xl overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
               {imageUrl ? (
                 <img
                   src={imageUrl}
                   alt={title || 'Product Preview'}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               ) : (
                 <div className="text-slate-500 flex flex-col items-center gap-1 text-xs">

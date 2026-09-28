@@ -128,6 +128,31 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     ? 'Amazon' 
     : (merchantLower.includes('gumroad') ? 'Gumroad' : (rawMerchant || 'Amazon'));
 
+  const isHalloween = 
+    row.category_id?.toLowerCase().includes('halloween') ||
+    row.title?.toLowerCase().includes('halloween') ||
+    row.slug?.toLowerCase().includes('halloween') ||
+    row.title?.toLowerCase().includes('spider') ||
+    row.title?.toLowerCase().includes('skeleton');
+
+  const defaultBestFor = isBook
+    ? 'Readers seeking rigorous foundational mental models.'
+    : isHalloween
+      ? 'Impactful seasonal decorating and high-atmosphere festive staging.'
+      : 'Long-term desktop setups requiring tactile durability.';
+
+  const defaultNotFor = isBook
+    ? 'Passive skimming or shallow quick-fix summaries.'
+    : isHalloween
+      ? 'Permanent year-round outdoor installations.'
+      : 'Minimalist travel kits prioritizing pocketability over endurance.';
+
+  const defaultUseCases = isBook
+    ? ['Deep focus', 'Commercial strategy', 'Daily habit architecture']
+    : isHalloween
+      ? ['Yard & porch transformations', 'Thematic parties', 'Spooky holiday staging']
+      : ['Focused desktop ergonomics', 'High-throughput productivity'];
+
   return {
     id: row.id,
     slug: row.slug || `product-${row.id}`,
@@ -137,9 +162,9 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     productType,
     category,
     subcategory,
-    useCases: isBook ? ['Deep focus', 'Commercial strategy', 'Daily habit architecture'] : ['Focused desktop ergonomics', 'High-throughput productivity'],
-    bestFor: row.best_for?.trim() || (isBook ? 'Readers seeking rigorous foundational mental models.' : 'Long-term desktop setups requiring tactile durability.'),
-    notFor: row.not_for?.trim() || (isBook ? 'Passive skimming or shallow quick-fix summaries.' : 'Minimalist travel kits prioritizing pocketability over endurance.'),
+    useCases: defaultUseCases,
+    bestFor: row.best_for?.trim() || defaultBestFor,
+    notFor: row.not_for?.trim() || defaultNotFor,
     features: features.length > 0 ? features : ['Editorial vetted', 'Verified merchant warranty'],
     benefits: ['High durability', 'Direct merchant fulfillment'],
     limitations: limitations.length > 0 ? limitations : (isBook ? ['Requires dedicated reading and application time'] : ['Demands dedicated desktop footprint over ultra-compact travel gear']),

@@ -7,7 +7,7 @@ import { useWishlist } from '../../context/WishlistContext';
 interface CompareButtonProps {
   productId: string;
   className?: string;
-  variant?: 'icon' | 'labeled';
+  variant?: 'icon' | 'labeled' | 'overlay';
 }
 
 export function CompareButton({
@@ -39,6 +39,25 @@ export function CompareButton({
       >
         {inCompare ? <Check className="w-3.5 h-3.5" /> : <Scale className="w-3.5 h-3.5 text-neutral-500" />}
         {inCompare ? 'Added to Compare' : 'Compare'}
+      </button>
+    );
+  }
+
+  if (variant === 'overlay') {
+    return (
+      <button
+        type="button"
+        onClick={handleToggle}
+        aria-label={inCompare ? 'Remove from comparison' : 'Add to comparison (up to 4)'}
+        aria-pressed={inCompare}
+        title={inCompare ? 'Remove from compare' : 'Compare product'}
+        className={`h-7 w-7 rounded-full border transition-all cursor-pointer shadow-xs flex items-center justify-center backdrop-blur-xs ${
+          inCompare
+            ? 'bg-white text-neutral-950 border-white'
+            : 'bg-black/60 hover:bg-black/80 text-white border-white/20'
+        } ${className}`}
+      >
+        {inCompare ? <Check className="w-3.5 h-3.5" /> : <Scale className="w-3.5 h-3.5" />}
       </button>
     );
   }

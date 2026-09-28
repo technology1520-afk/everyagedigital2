@@ -309,16 +309,16 @@ export function ShoppingAssistant() {
         {previewItem ? (
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
             {/* Dedicated Studio Display Box */}
-            <div className="relative aspect-4/3 w-full rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center p-4">
+            <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-white dark:bg-white border border-neutral-200 dark:border-neutral-800">
               <Image
                 src={previewItem.product.imageUrl}
                 alt={previewItem.product.altText}
                 fill
                 sizes="(max-width: 1023px) 40vw, 30vw"
-                className="object-contain mix-blend-multiply dark:mix-blend-normal"
+                className="h-full w-full object-contain"
               />
               {previewItem.product.editorialBadge && (
-                <span className="absolute top-2.5 left-2.5 font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/90 dark:bg-neutral-800/90 text-neutral-800 dark:text-neutral-200 font-semibold">
+                <span className="absolute top-2 left-2 font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/95 dark:bg-neutral-900/95 text-neutral-900 dark:text-neutral-100 font-semibold shadow-xs">
                   {previewItem.product.editorialBadge}
                 </span>
               )}

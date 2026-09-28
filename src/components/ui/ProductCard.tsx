@@ -104,6 +104,12 @@ export function ProductCard({
       return product.features.slice(0, 2).join('; ');
     }
     const cat = (product.category || '').toLowerCase();
+    const title = (product.name || '').toLowerCase();
+    const isSpooky = cat.includes('halloween') || title.includes('halloween') || title.includes('spider') || title.includes('skeleton');
+
+    if (isSpooky) {
+      return 'High-impact seasonal staging engineered for immediate holiday atmosphere.';
+    }
     if (cat.includes('ergonomic') || cat.includes('mouse') || cat.includes('keyboard')) {
       return 'Low-latency connectivity with tactile physical contouring.';
     }
@@ -131,6 +137,12 @@ export function ProductCard({
       return product.limitations[0];
     }
     const cat = (product.category || '').toLowerCase();
+    const title = (product.name || '').toLowerCase();
+    const isSpooky = cat.includes('halloween') || title.includes('halloween') || title.includes('spider') || title.includes('skeleton');
+
+    if (isSpooky) {
+      return 'Requires exterior mounting anchors and dedicated post-season storage.';
+    }
     if (cat.includes('mouse') || cat.includes('ergonomic')) {
       return 'Substantial physical profile may feel cumbersome for smaller hands.';
     }
@@ -194,8 +206,8 @@ export function ProductCard({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
           {/* Left: Studio Display Photo Box */}
           <div className="md:col-span-5 flex flex-col justify-between">
-            <div className="relative w-full aspect-[4/3] md:aspect-square rounded-lg bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center p-6 overflow-hidden">
-              <Link href={`/product/${product.slug}`} className="relative w-full h-full flex items-center justify-center">
+            <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-white dark:bg-white border border-neutral-200 dark:border-neutral-800">
+              <Link href={`/product/${product.slug}`} className="relative block w-full h-full">
                 <Image
                   src={displayImage}
                   alt={product.altText || product.name || 'Product Image'}
@@ -207,12 +219,12 @@ export function ProductCard({
               </Link>
 
               {/* Floating badges */}
-              <div className="absolute top-3 left-3 flex flex-col gap-1 items-start z-10 pointer-events-none">
-                <span className="font-mono text-[10px] uppercase tracking-wider bg-neutral-900 text-neutral-100 dark:bg-neutral-100 dark:text-neutral-950 font-bold px-2.5 py-1 rounded shadow-xs">
+              <div className="absolute top-2 left-2 flex flex-col gap-1 items-start z-10 pointer-events-none">
+                <span className="font-mono text-[10px] uppercase tracking-wider bg-neutral-900 text-neutral-100 dark:bg-neutral-950 dark:text-neutral-50 font-bold px-2.5 py-1 rounded shadow-xs">
                   Issue Spotlight
                 </span>
                 {badgeInfo && (
-                  <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/90 dark:bg-neutral-800/90 text-neutral-800 dark:text-neutral-200 font-semibold shadow-xs">
+                  <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/95 dark:bg-neutral-900/95 text-neutral-900 dark:text-neutral-100 font-semibold shadow-xs">
                     {badgeInfo.label}
                   </span>
                 )}
@@ -220,9 +232,9 @@ export function ProductCard({
               </div>
 
               {/* Quick Actions */}
-              <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10">
-                <WishlistButton productId={product.id} />
-                {showCompare && <CompareButton productId={product.id} />}
+              <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+                <WishlistButton productId={product.id} variant="overlay" />
+                {showCompare && <CompareButton productId={product.id} variant="overlay" />}
               </div>
             </div>
 
@@ -352,8 +364,8 @@ export function ProductCard({
     >
       <div>
         {/* Dedicated Studio Display Box */}
-        <div className="relative w-full aspect-[4/3] rounded-lg bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center p-4 overflow-hidden mb-3">
-          <Link href={`/product/${product.slug}`} className="relative w-full h-full flex items-center justify-center">
+        <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-white dark:bg-white border border-neutral-200 dark:border-neutral-800 mb-3">
+          <Link href={`/product/${product.slug}`} className="relative block w-full h-full">
             <Image
               src={displayImage}
               alt={product.altText || product.name || 'Product Image'}
@@ -367,12 +379,12 @@ export function ProductCard({
           {/* Floating Badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-1 items-start z-10 pointer-events-none">
             {isHalloweenItem && (
-              <span className="font-mono text-[9px] uppercase tracking-wider bg-orange-500/20 border border-orange-400/40 text-orange-300 px-2 py-0.5 rounded font-semibold">
+              <span className="font-mono text-[9px] uppercase tracking-wider bg-orange-600 text-white px-2 py-0.5 rounded font-bold shadow-xs">
                 🎃 Spooky Pick
               </span>
             )}
             {badgeInfo && (
-              <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/90 dark:bg-neutral-800/90 text-neutral-800 dark:text-neutral-200 font-semibold shadow-xs">
+              <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/95 dark:bg-neutral-900/95 text-neutral-900 dark:text-neutral-100 font-semibold shadow-xs">
                 {badgeInfo.label}
               </span>
             )}
@@ -380,9 +392,9 @@ export function ProductCard({
           </div>
 
           {/* Action buttons */}
-          <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
-            <WishlistButton productId={product.id} />
-            {showCompare && <CompareButton productId={product.id} />}
+          <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+            <WishlistButton productId={product.id} variant="overlay" />
+            {showCompare && <CompareButton productId={product.id} variant="overlay" />}
           </div>
         </div>
 

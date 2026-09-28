@@ -28,19 +28,19 @@ export function CollectionCard({ collection, className = '', priority = false }:
       className={`group flex flex-col h-full rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 p-4 sm:p-5 shadow-xs transition-colors overflow-hidden ${className}`}
     >
       {/* Dedicated Image Studio Display Frame */}
-      <div className="relative w-full aspect-[16/10] bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden flex items-center justify-center p-3 mb-3">
-        <Link href={`/collections/${collection.slug}`} className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-md">
+      <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-neutral-900 border border-neutral-200 dark:border-neutral-800 mb-3">
+        <Link href={`/collections/${collection.slug}`} className="relative block w-full h-full">
           <Image
             src={bundleCoverImage}
             alt={collection.title}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={priority}
-            className="h-full w-full object-contain group-hover:scale-102 transition-transform duration-300"
+            className="h-full w-full object-cover group-hover:scale-102 transition-transform duration-300"
           />
         </Link>
-        <div className="absolute top-2.5 left-2.5 text-[9px] font-mono uppercase tracking-wider font-semibold px-2 py-0.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white/90 dark:bg-neutral-800/90 text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5 z-10 shadow-xs">
-          <Layers className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
+        <div className="absolute top-2 left-2 text-[9px] font-mono uppercase tracking-wider font-semibold px-2 py-0.5 rounded border border-white/20 bg-black/60 backdrop-blur-xs text-white flex items-center gap-1.5 z-10 shadow-xs">
+          <Layers className="w-3 h-3 text-neutral-300" />
           <span>{totalItems} {totalItems === 1 ? 'Specimen' : 'Specimens'}</span>
         </div>
       </div>

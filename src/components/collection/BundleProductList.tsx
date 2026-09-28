@@ -177,11 +177,11 @@ export function BundleProductList({ items, collectionTitle }: BundleProductListP
                   </label>
 
                   {/* Thumbnail */}
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-white/10 shrink-0">
+                  <div className="relative aspect-square w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-white dark:bg-white border border-neutral-200 dark:border-neutral-800 shrink-0">
                     <img
-                      src={item.imageUrl || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg'}
+                      src={item.imageUrl || (item as any).image_url || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg'}
                       alt={item.name}
-                      className="w-full h-full object-contain p-1"
+                      className="w-full h-full object-contain"
                     />
                   </div>
 

@@ -8,7 +8,7 @@ interface WishlistButtonProps {
   productId?: string;
   bookId?: string;
   className?: string;
-  variant?: 'icon' | 'labeled';
+  variant?: 'icon' | 'labeled' | 'overlay';
 }
 
 export function WishlistButton({
@@ -43,6 +43,24 @@ export function WishlistButton({
       >
         <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-amber-600 text-amber-600 dark:fill-amber-400 dark:text-amber-400' : 'text-neutral-500'}`} />
         {isSaved ? 'Saved to List' : 'Save for Later'}
+      </button>
+    );
+  }
+
+  if (variant === 'overlay') {
+    return (
+      <button
+        type="button"
+        onClick={handleToggle}
+        aria-label={isSaved ? 'Remove from saved list' : 'Save for later'}
+        aria-pressed={isSaved}
+        className={`h-7 w-7 rounded-full border transition-all cursor-pointer shadow-xs flex items-center justify-center backdrop-blur-xs ${
+          isSaved
+            ? 'bg-amber-400 text-black border-amber-300'
+            : 'bg-black/60 hover:bg-black/80 text-white border-white/20'
+        } ${className}`}
+      >
+        <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-black text-black' : 'text-white'}`} />
       </button>
     );
   }

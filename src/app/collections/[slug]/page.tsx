@@ -195,7 +195,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           </div>
 
           {/* Cover Media: Bound to dynamic bundleCoverImage */}
-          <div className="lg:col-span-5 bg-slate-950/40 min-h-[300px] lg:min-h-full relative overflow-hidden">
+          <div className="lg:col-span-5 relative aspect-video lg:aspect-auto lg:h-full w-full overflow-hidden bg-neutral-900">
             <Image
               src={bundleCoverImage}
               alt={collection.title}

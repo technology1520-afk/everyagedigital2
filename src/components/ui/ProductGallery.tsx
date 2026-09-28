@@ -48,7 +48,7 @@ export function ProductGallery({
   return (
     <div className="space-y-3">
       {/* Mobile Swipeable Carousel & Desktop Main View */}
-      <div className="relative w-full rounded-2xl overflow-hidden bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 shadow-xs">
+      <div className="relative w-full rounded-2xl overflow-hidden bg-white dark:bg-white border border-neutral-200 dark:border-neutral-800 shadow-xs">
         {/* Swipeable Container */}
         <div
           ref={scrollRef}
@@ -59,7 +59,7 @@ export function ProductGallery({
           {galleryImages.map((src, idx) => (
             <div
               key={idx}
-              className="min-w-full snap-center relative aspect-square sm:aspect-4/3 md:aspect-square flex items-center justify-center p-6 bg-white dark:bg-neutral-900/80"
+              className="min-w-full snap-center relative aspect-square md:aspect-[4/3] flex items-center justify-center bg-white dark:bg-white"
             >
               <Image
                 src={src}
@@ -67,7 +67,7 @@ export function ProductGallery({
                 fill
                 priority={idx === 0}
                 sizes="(max-width: 767px) 100vw, (max-width: 1023px) 60vw, 40vw"
-                className="object-contain"
+                className="h-full w-full object-contain"
               />
             </div>
           ))}
@@ -75,7 +75,7 @@ export function ProductGallery({
 
         {/* Editorial Badge */}
         {editorialBadge && (
-          <div className="absolute top-3 left-3 z-10 bg-neutral-900/90 text-white dark:bg-white/90 dark:text-neutral-950 px-3 py-1 rounded-md text-xs font-mono uppercase tracking-wider font-semibold flex items-center gap-1.5 shadow-xs">
+          <div className="absolute top-2 left-2 z-10 bg-neutral-900/90 text-white dark:bg-neutral-950/90 dark:text-neutral-50 px-2.5 py-1 rounded font-mono text-xs uppercase tracking-wider font-semibold flex items-center gap-1.5 shadow-xs">
             <Award className="w-3.5 h-3.5" />
             <span>{editorialBadge}</span>
           </div>
@@ -90,7 +90,7 @@ export function ProductGallery({
                 onClick={() => scrollToImage(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
                 className={`h-2 rounded-full transition-all duration-200 ${
-                  activeIndex === idx ? 'w-5 bg-neutral-900 dark:bg-white shadow-xs' : 'w-2 bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400'
+                  activeIndex === idx ? 'w-5 bg-neutral-900 dark:bg-neutral-800 shadow-xs' : 'w-2 bg-neutral-300 dark:bg-neutral-400 hover:bg-neutral-500'
                 }`}
               />
             ))}
@@ -105,8 +105,8 @@ export function ProductGallery({
             <button
               key={idx}
               onClick={() => scrollToImage(idx)}
-              className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 bg-white dark:bg-neutral-900/80 p-1 ${
-                activeIndex === idx ? 'border-neutral-900 dark:border-white ring-2 ring-neutral-400/30' : 'border-neutral-200 dark:border-neutral-800 opacity-60 hover:opacity-100'
+              className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 bg-white dark:bg-white ${
+                activeIndex === idx ? 'border-neutral-900 dark:border-neutral-900 ring-2 ring-neutral-400/40' : 'border-neutral-200 dark:border-neutral-300 opacity-60 hover:opacity-100'
               }`}
             >
               <Image

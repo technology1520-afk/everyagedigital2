@@ -146,7 +146,7 @@ export default async function AdminProductsPage({
                   <img
                     src={p.imageUrl}
                     alt={p.name}
-                    className="w-14 h-14 rounded-xl object-cover bg-slate-100 dark:bg-slate-800 border border-white/40 dark:border-white/10 shrink-0"
+                    className="w-14 h-14 rounded-xl object-contain bg-white dark:bg-white border border-neutral-300 dark:border-neutral-700 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
@@ -267,7 +267,7 @@ export default async function AdminProductsPage({
                           <img
                             src={p.imageUrl}
                             alt={p.name}
-                            className="w-10 h-10 rounded-lg object-cover bg-slate-100 dark:bg-slate-800 border border-white/40 dark:border-white/10 shrink-0"
+                            className="w-10 h-10 rounded-lg object-contain bg-white dark:bg-white border border-neutral-300 dark:border-neutral-700 shrink-0"
                           />
                           <div className="min-w-0 max-w-xs">
                             <div className="font-semibold text-slate-900 dark:text-white truncate">
