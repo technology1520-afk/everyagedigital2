@@ -33,7 +33,7 @@ export function BookCard({ book, className = '', priority = false }: BookCardPro
 
   return (
     <article
-      className={`group flex flex-col h-full glass glass-hover rounded-2xl overflow-hidden p-4 sm:p-5 ${className}`}
+      className={`group flex flex-col h-full bg-[var(--surface)] glass glass-hover rounded-2xl overflow-hidden p-4 sm:p-5 ${className}`}
     >
       {/* Top Section: Cover Left + Info Right */}
       <div className="flex items-start gap-3.5 sm:gap-4">

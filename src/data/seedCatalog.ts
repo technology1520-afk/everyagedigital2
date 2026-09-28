@@ -719,7 +719,9 @@ export const COLLECTIONS: Collection[] = [
     ],
     productIds: ['prod-1', 'prod-2', 'prod-7'],
     bookIds: ['book-1'],
-    coverImage: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80',
+    banner_image_url: 'https://wlfwdbusmzgdiryhtdki.supabase.co/storage/v1/object/public/collections/calm-home-office-starter-kit-banner.jpg',
+    image_url: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80',
+    coverImage: 'https://wlfwdbusmzgdiryhtdki.supabase.co/storage/v1/object/public/collections/calm-home-office-starter-kit-banner.jpg',
     lastReviewedAt: '2026-03-18T12:00:00Z',
     status: 'published'
   },
@@ -736,6 +738,7 @@ export const COLLECTIONS: Collection[] = [
     ],
     productIds: ['prod-5'],
     bookIds: ['book-2', 'book-4'],
+    image_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
     coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
     lastReviewedAt: '2026-03-19T10:00:00Z',
     status: 'published'
@@ -753,6 +756,7 @@ export const COLLECTIONS: Collection[] = [
     ],
     productIds: ['prod-6', 'prod-8', 'prod-4'],
     bookIds: ['book-3'],
+    image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80',
     coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80',
     lastReviewedAt: '2026-03-20T14:00:00Z',
     status: 'published'
@@ -770,6 +774,7 @@ export const COLLECTIONS: Collection[] = [
     ],
     productIds: ['prod-5'],
     bookIds: ['book-1', 'book-2', 'book-3', 'book-4'],
+    image_url: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1200&q=80',
     coverImage: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1200&q=80',
     lastReviewedAt: '2026-03-21T09:00:00Z',
     status: 'published'

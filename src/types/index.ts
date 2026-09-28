@@ -128,6 +128,10 @@ export interface Collection {
   bookIds?: string[];
   coverImage: string;
   cover_image?: string;
+  banner_image_url?: string | null;
+  bannerImageUrl?: string | null;
+  image_url?: string | null;
+  imageUrl?: string | null;
   products?: Array<{
     id: string;
     slug?: string;

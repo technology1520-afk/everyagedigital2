@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Collection } from '../../types';
+import { getCollectionBannerImage } from '../../lib/db/supabaseMapper';
 import { ArrowRight, Layers } from 'lucide-react';
 
 export interface CollectionCardProps {
@@ -15,13 +16,7 @@ export interface CollectionCardProps {
 export function CollectionCard({ collection, className = '', priority = false }: CollectionCardProps) {
   const totalItems = collection.activeProductCount ?? (collection.productIds.length + (collection.bookIds?.length || 0));
 
-  const rawCover = collection.cover_image || collection.coverImage;
-  const isDesk = typeof rawCover === 'string' && (rawCover.includes('photo-1518455027359-f3f8164ba6bd') || rawCover.includes('/desk.jpg'));
-  const isPlaceholder = !rawCover || rawCover.includes('placeholder') || isDesk;
-
-  const bundleCoverImage = (!isPlaceholder && rawCover)
-    ? rawCover
-    : collection.products?.[0]?.image_url || collection.products?.[0]?.imageUrl || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
+  const bundleCoverImage = getCollectionBannerImage(collection);
 
   return (
     <article

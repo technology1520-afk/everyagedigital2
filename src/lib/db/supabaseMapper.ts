@@ -1,5 +1,5 @@
-import { Product, MerchantOffer, MerchantName } from '../../types';
-import { ProductInput } from './schema';
+import { Product, MerchantOffer, MerchantName, Collection } from '../../types';
+import { ProductInput, CollectionInput } from './schema';
 
 export const DEFAULT_FALLBACK_IMAGE = 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
 export const DEFAULT_FALLBACK_AFFILIATE_URL = 'https://www.amazon.com?tag=everyagedigital-20';
@@ -331,6 +331,222 @@ export function mapProductUpdateToSupabaseRow(input: Partial<ProductInput>): Rec
   if (input.notFor !== undefined) row.not_for = input.notFor?.trim() || null;
   if (extra.features !== undefined) row.features = extra.features;
   if (extra.limitations !== undefined) row.limitations = extra.limitations;
+
+  return row;
+}
+
+export interface SupabaseCollectionRow {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  subtitle?: string | null;
+  introduction?: string | null;
+  product_ids?: string[] | null;
+  banner_image_url?: string | null;
+  bannerImageUrl?: string | null;
+  image_url?: string | null;
+  imageUrl?: string | null;
+  cover_image?: string | null;
+  coverImage?: string | null;
+  last_reviewed_at?: string | null;
+  status?: string | null;
+  is_active?: boolean | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+/**
+ * Validates if an image URL is a real asset rather than a legacy placeholder or broken path.
+ */
+export function isValidCollectionImage(url?: string | null): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  if (!trimmed) return false;
+  const lower = trimmed.toLowerCase();
+  if (
+    lower.includes('photo-1518455027359-f3f8164ba6bd') ||
+    lower.includes('/desk.jpg') ||
+    lower.includes('placeholder')
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Safely resolves the display/banner image for a collection or bundle.
+ * Strict Fallback Priority:
+ * 1. collection.banner_image_url (or bannerImageUrl)
+ * 2. collection.image_url (or imageUrl or cover_image or coverImage)
+ * 3. first item's image (fallbackProductImage or collection.products[0].imageUrl)
+ * 4. DEFAULT_FALLBACK_IMAGE (never a blank box)
+ */
+export function getCollectionBannerImage(
+  collection?: Partial<Collection> | null,
+  fallbackProductImage?: string | null
+): string {
+  if (!collection) {
+    if (fallbackProductImage && isValidCollectionImage(fallbackProductImage)) {
+      return sanitizeValidUrl(fallbackProductImage, DEFAULT_FALLBACK_IMAGE) || DEFAULT_FALLBACK_IMAGE;
+    }
+    return DEFAULT_FALLBACK_IMAGE;
+  }
+
+  // 1. Dedicated composite banner image
+  const rawBanner = collection.banner_image_url || collection.bannerImageUrl;
+  const banner = sanitizeValidUrl(rawBanner, null);
+  if (banner && isValidCollectionImage(banner)) {
+    return banner;
+  }
+
+  // 2. Collection fallback image (image_url or cover_image)
+  const rawImg = collection.image_url || collection.imageUrl || collection.cover_image || collection.coverImage;
+  const img = sanitizeValidUrl(rawImg, null);
+  if (img && isValidCollectionImage(img)) {
+    return img;
+  }
+
+  // 3. First product's image
+  if (fallbackProductImage && isValidCollectionImage(fallbackProductImage)) {
+    const safeProductImg = sanitizeValidUrl(fallbackProductImage, null);
+    if (safeProductImg) return safeProductImg;
+  }
+
+  const firstProdImg = collection.products?.[0]?.image_url || collection.products?.[0]?.imageUrl;
+  if (firstProdImg && isValidCollectionImage(firstProdImg)) {
+    const safeFirstProd = sanitizeValidUrl(firstProdImg, null);
+    if (safeFirstProd) return safeFirstProd;
+  }
+
+  // 4. Default fallback (never a blank box)
+  return DEFAULT_FALLBACK_IMAGE;
+}
+
+/**
+ * Maps a Supabase 'collections' table row to the frontend Collection model,
+ * resolving the banner_image_url -> image_url -> first item fallback chain.
+ */
+export function mapSupabaseRowToCollection(
+  row: SupabaseCollectionRow,
+  seed?: Partial<Collection>,
+  activeProductsMap?: Map<string, { id: string; slug: string; title: string; image_url?: string; imageUrl?: string }>
+): Collection {
+  const rawProductIds: string[] = Array.isArray(row.product_ids)
+    ? row.product_ids
+    : (seed?.productIds || []);
+
+  const matchingProducts = activeProductsMap
+    ? rawProductIds
+        .map(id => activeProductsMap.get(id))
+        .filter(Boolean) as Array<{ id: string; slug: string; title: string; image_url?: string; imageUrl?: string }>
+    : [];
+
+  const firstProductImage = matchingProducts[0]?.image_url || matchingProducts[0]?.imageUrl;
+
+  const bannerImageUrl = sanitizeValidUrl(
+    row.banner_image_url || row.bannerImageUrl || seed?.banner_image_url || seed?.bannerImageUrl,
+    null
+  );
+
+  const imageUrl = sanitizeValidUrl(
+    row.image_url || row.imageUrl || row.cover_image || row.coverImage || seed?.image_url || seed?.imageUrl || seed?.cover_image || seed?.coverImage,
+    null
+  );
+
+  const resolvedBanner = getCollectionBannerImage(
+    {
+      banner_image_url: bannerImageUrl,
+      image_url: imageUrl,
+      products: matchingProducts.map(p => ({
+        id: p.id,
+        imageUrl: p.imageUrl || p.image_url,
+        image_url: p.image_url || p.imageUrl
+      }))
+    },
+    firstProductImage
+  );
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    subtitle: seed?.subtitle || row.description || '',
+    introduction: seed?.introduction || row.description || '',
+    description: row.description || seed?.description,
+    selectionCriteria: seed?.selectionCriteria || [
+      'Must have undergone hands-on editorial vetting',
+      'Must prioritize daily durability and utility',
+      'Direct merchant fulfillment with verified warranties'
+    ],
+    productIds: rawProductIds,
+    bookIds: seed?.bookIds || [],
+    banner_image_url: bannerImageUrl,
+    bannerImageUrl: bannerImageUrl,
+    image_url: imageUrl,
+    imageUrl: imageUrl,
+    coverImage: resolvedBanner,
+    cover_image: resolvedBanner,
+    products: matchingProducts.map(p => ({
+      id: p.id,
+      slug: p.slug,
+      title: p.title,
+      image_url: p.image_url || p.imageUrl,
+      imageUrl: p.imageUrl || p.image_url
+    })),
+    lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
+    status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published'),
+    activeProductCount: matchingProducts.length
+  };
+}
+
+/**
+ * Maps CollectionInput to Supabase row format for insertion.
+ */
+export function mapCollectionInputToSupabaseRow(input: CollectionInput, id: string): Record<string, unknown> {
+  const safeBanner = sanitizeValidUrl(input.bannerImageUrl || input.banner_image_url, null);
+  const safeImage = sanitizeValidUrl(input.imageUrl || input.image_url || input.coverImage || input.cover_image, null);
+  const now = new Date().toISOString();
+
+  return {
+    id,
+    slug: input.slug,
+    title: input.title,
+    description: input.description || '',
+    product_ids: input.productIds || [],
+    banner_image_url: safeBanner,
+    image_url: safeImage,
+    cover_image: safeBanner || safeImage,
+    last_reviewed_at: now,
+    status: input.status || 'published',
+    created_at: now
+  };
+}
+
+/**
+ * Maps partial CollectionInput to Supabase row format for update.
+ */
+export function mapCollectionUpdateToSupabaseRow(input: Partial<CollectionInput>): Record<string, unknown> {
+  const row: Record<string, unknown> = {
+    last_reviewed_at: new Date().toISOString()
+  };
+
+  if (input.title !== undefined) row.title = input.title;
+  if (input.slug !== undefined) row.slug = input.slug;
+  if (input.description !== undefined) row.description = input.description;
+  if (input.productIds !== undefined) row.product_ids = input.productIds;
+  if (input.status !== undefined) row.status = input.status;
+
+  const safeBanner = sanitizeValidUrl(input.bannerImageUrl || input.banner_image_url, null);
+  if (safeBanner !== null || input.bannerImageUrl === '' || input.banner_image_url === '') {
+    row.banner_image_url = safeBanner;
+  }
+
+  const safeImage = sanitizeValidUrl(input.imageUrl || input.image_url || input.coverImage || input.cover_image, null);
+  if (safeImage !== null || input.imageUrl === '' || input.image_url === '' || input.coverImage === '' || input.cover_image === '') {
+    row.image_url = safeImage;
+    row.cover_image = safeImage;
+  }
 
   return row;
 }

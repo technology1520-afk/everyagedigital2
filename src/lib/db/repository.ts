@@ -32,7 +32,8 @@ import {
   sanitizeValidUrl,
   sanitizeAffiliateUrl,
   sanitizePriceBound,
-  SupabaseProductRow
+  SupabaseProductRow,
+  getCollectionBannerImage
 } from './supabaseMapper';
 
 const TABLE_PRODUCTS = 'products';
@@ -1047,14 +1048,9 @@ class CatalogRepository {
           const activeIds = activeProdsList.map(p => p.id);
           const firstProductImage = activeProdsList[0]?.image_url;
 
-          // Dynamic image resolution: remove desk photo fallback
-          let coverImg = (row.cover_image as string);
-          if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
-            coverImg = firstProductImage || seed?.coverImage || '';
-          }
-          if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg')) {
-            coverImg = firstProductImage || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
-          }
+          const bannerImg = (row.banner_image_url as string) || (seed as any)?.banner_image_url || (seed as any)?.bannerImageUrl || null;
+          const imgUrl = (row.image_url as string) || (seed as any)?.image_url || (seed as any)?.imageUrl || null;
+          const coverImgRaw = (row.cover_image as string) || seed?.coverImage || null;
 
           const resolvedProducts = activeProdsList.map(p => ({
             id: p.id,
@@ -1063,6 +1059,15 @@ class CatalogRepository {
             image_url: p.image_url,
             imageUrl: p.image_url
           }));
+
+          const resolvedCover = getCollectionBannerImage(
+            {
+              banner_image_url: bannerImg,
+              image_url: imgUrl || coverImgRaw,
+              products: resolvedProducts
+            },
+            firstProductImage
+          );
 
           col = {
             id: row.id,
@@ -1077,8 +1082,12 @@ class CatalogRepository {
             ],
             productIds: rawProductIds,
             bookIds: seed?.bookIds || [],
-            coverImage: coverImg,
-            cover_image: coverImg,
+            banner_image_url: bannerImg,
+            bannerImageUrl: bannerImg,
+            image_url: imgUrl || resolvedCover,
+            imageUrl: imgUrl || resolvedCover,
+            coverImage: resolvedCover,
+            cover_image: resolvedCover,
             products: resolvedProducts,
             lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
             status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published'),
@@ -1097,22 +1106,37 @@ class CatalogRepository {
         }).filter((p): p is NonNullable<typeof p> => Boolean(p));
 
         const firstProductImage = activeProds[0]?.imageUrl;
-        let coverImg = (found as any).cover_image || found.coverImage;
-        if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
-          coverImg = firstProductImage || '/placeholder-bundle.png';
-        }
+        const bannerImg = (found as any).banner_image_url || (found as any).bannerImageUrl || null;
+        const imgUrl = (found as any).image_url || (found as any).imageUrl || null;
+        const coverImgRaw = (found as any).cover_image || found.coverImage || null;
+
+        const resolvedProds = activeProds.map(p => ({
+          id: p.id,
+          slug: p.slug,
+          title: p.name,
+          image_url: p.imageUrl,
+          imageUrl: p.imageUrl
+        }));
+
+        const resolvedCover = getCollectionBannerImage(
+          {
+            ...found,
+            banner_image_url: bannerImg,
+            image_url: imgUrl || coverImgRaw,
+            products: resolvedProds
+          },
+          firstProductImage
+        );
 
         col = {
           ...found,
-          coverImage: coverImg,
-          cover_image: coverImg,
-          products: activeProds.map(p => ({
-            id: p.id,
-            slug: p.slug,
-            title: p.name,
-            image_url: p.imageUrl,
-            imageUrl: p.imageUrl
-          })),
+          banner_image_url: bannerImg,
+          bannerImageUrl: bannerImg,
+          image_url: imgUrl || resolvedCover,
+          imageUrl: imgUrl || resolvedCover,
+          coverImage: resolvedCover,
+          cover_image: resolvedCover,
+          products: resolvedProds,
           activeProductCount: activeProds.length
         };
       }
@@ -1151,13 +1175,26 @@ class CatalogRepository {
             const validActiveCount = matchingProducts.length;
             const firstProductImage = matchingProducts[0]?.image_url;
 
-            let coverImg = (row.cover_image as string);
-            if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
-              coverImg = firstProductImage || seed?.coverImage || '';
-            }
-            if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg')) {
-              coverImg = firstProductImage || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
-            }
+            const bannerImg = (row.banner_image_url as string) || (seed as any)?.banner_image_url || (seed as any)?.bannerImageUrl || null;
+            const imgUrl = (row.image_url as string) || (seed as any)?.image_url || (seed as any)?.imageUrl || null;
+            const coverImgRaw = (row.cover_image as string) || seed?.coverImage || null;
+
+            const resolvedProducts = matchingProducts.map(p => ({
+              id: p.id,
+              slug: p.slug,
+              title: p.title,
+              image_url: p.image_url,
+              imageUrl: p.image_url
+            }));
+
+            const resolvedCover = getCollectionBannerImage(
+              {
+                banner_image_url: bannerImg,
+                image_url: imgUrl || coverImgRaw,
+                products: resolvedProducts
+              },
+              firstProductImage
+            );
 
             return {
               id: row.id,
@@ -1165,6 +1202,7 @@ class CatalogRepository {
               title: row.title,
               subtitle: seed?.subtitle || row.description || '',
               introduction: seed?.introduction || row.description || '',
+              description: row.description || seed?.description,
               selectionCriteria: seed?.selectionCriteria || [
                 'Must have undergone hands-on editorial vetting',
                 'Must prioritize daily durability and utility',
@@ -1172,15 +1210,13 @@ class CatalogRepository {
               ],
               productIds: rawProductIds,
               bookIds: seed?.bookIds || [],
-              coverImage: coverImg,
-              cover_image: coverImg,
-              products: matchingProducts.map(p => ({
-                id: p.id,
-                slug: p.slug,
-                title: p.title,
-                image_url: p.image_url,
-                imageUrl: p.image_url
-              })),
+              banner_image_url: bannerImg,
+              bannerImageUrl: bannerImg,
+              image_url: imgUrl || resolvedCover,
+              imageUrl: imgUrl || resolvedCover,
+              coverImage: resolvedCover,
+              cover_image: resolvedCover,
+              products: resolvedProducts,
               lastReviewedAt: row.last_reviewed_at || row.created_at || new Date().toISOString(),
               status: row.is_active === false ? 'draft' : ((row.status as Collection['status']) || 'published'),
               activeProductCount: validActiveCount
@@ -1199,21 +1235,37 @@ class CatalogRepository {
       result = baseCollections.map(c => {
         const matching = (c.productIds || []).map(id => activeMap.get(id)).filter(Boolean) as typeof activeProds;
         const firstProductImage = matching[0]?.imageUrl;
-        let coverImg = (c as any).cover_image || c.coverImage;
-        if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
-          coverImg = firstProductImage || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
-        }
+        const bannerImg = (c as any).banner_image_url || (c as any).bannerImageUrl || null;
+        const imgUrl = (c as any).image_url || (c as any).imageUrl || null;
+        const coverImgRaw = (c as any).cover_image || c.coverImage || null;
+
+        const resolvedProds = matching.map(p => ({
+          id: p.id,
+          slug: p.slug,
+          title: p.name,
+          image_url: p.imageUrl,
+          imageUrl: p.imageUrl
+        }));
+
+        const resolvedCover = getCollectionBannerImage(
+          {
+            ...c,
+            banner_image_url: bannerImg,
+            image_url: imgUrl || coverImgRaw,
+            products: resolvedProds
+          },
+          firstProductImage
+        );
+
         return {
           ...c,
-          coverImage: coverImg,
-          cover_image: coverImg,
-          products: matching.map(p => ({
-            id: p.id,
-            slug: p.slug,
-            title: p.name,
-            image_url: p.imageUrl,
-            imageUrl: p.imageUrl
-          })),
+          banner_image_url: bannerImg,
+          bannerImageUrl: bannerImg,
+          image_url: imgUrl || resolvedCover,
+          imageUrl: imgUrl || resolvedCover,
+          coverImage: resolvedCover,
+          cover_image: resolvedCover,
+          products: resolvedProds,
           activeProductCount: matching.length
         };
       });
@@ -1231,6 +1283,10 @@ class CatalogRepository {
     slug: string;
     description?: string;
     coverImage?: string;
+    bannerImageUrl?: string;
+    banner_image_url?: string;
+    imageUrl?: string;
+    image_url?: string;
     productIds?: string[];
     status?: 'published' | 'draft';
   }): Promise<{ success: boolean; collection?: Collection; error?: string }> {
@@ -1241,8 +1297,11 @@ class CatalogRepository {
     const status = input.status || 'published';
     const desc = input.description || '';
 
+    const bannerImage = input.bannerImageUrl || input.banner_image_url || undefined;
+    const itemImage = input.imageUrl || input.image_url || input.coverImage || undefined;
+
     // Dynamic resolution for cover image
-    let coverImage = input.coverImage;
+    let coverImage = bannerImage || itemImage;
     if (!coverImage || coverImage.includes('photo-1518455027359-f3f8164ba6bd') || coverImage.includes('/desk.jpg') || coverImage.includes('placeholder')) {
       if (productIds.length > 0) {
         const firstProd = await this.getProductById(productIds[0]);
@@ -1268,6 +1327,10 @@ class CatalogRepository {
       ],
       productIds,
       bookIds: [],
+      banner_image_url: bannerImage || null,
+      bannerImageUrl: bannerImage || null,
+      image_url: itemImage || coverImage,
+      imageUrl: itemImage || coverImage,
       coverImage,
       cover_image: coverImage,
       lastReviewedAt: now,
@@ -1284,13 +1347,17 @@ class CatalogRepository {
           description: desc,
           product_ids: productIds,
           cover_image: coverImage,
+          banner_image_url: bannerImage || null,
+          image_url: itemImage || null,
           last_reviewed_at: now,
           status,
           created_at: now
         };
 
         let { error: sbError } = await supabase.from('collections').insert(row);
-        if (sbError && (sbError.code === 'PGRST204' || sbError.message.includes('cover_image'))) {
+        if (sbError && (sbError.code === 'PGRST204' || sbError.message.includes('banner_image_url') || sbError.message.includes('image_url') || sbError.message.includes('cover_image'))) {
+          delete row.banner_image_url;
+          delete row.image_url;
           delete row.cover_image;
           const retry = await supabase.from('collections').insert(row);
           sbError = retry.error;
@@ -1332,6 +1399,10 @@ class CatalogRepository {
       slug: string;
       description: string;
       coverImage: string;
+      bannerImageUrl: string;
+      banner_image_url: string;
+      imageUrl: string;
+      image_url: string;
       productIds: string[];
       status: 'published' | 'draft';
     }>
@@ -1349,9 +1420,25 @@ class CatalogRepository {
       existing.introduction = input.description;
     }
     if (input.productIds) existing.productIds = Array.from(new Set(input.productIds));
+
+    const bannerImage = input.bannerImageUrl || input.banner_image_url;
+    if (bannerImage !== undefined) {
+      existing.banner_image_url = bannerImage || null;
+      existing.bannerImageUrl = bannerImage || null;
+    }
+
+    const imageUrl = input.imageUrl || input.image_url;
+    if (imageUrl !== undefined) {
+      existing.image_url = imageUrl || null;
+      existing.imageUrl = imageUrl || null;
+    }
+
     if (input.coverImage) {
       existing.coverImage = input.coverImage;
       existing.cover_image = input.coverImage;
+    } else if (bannerImage) {
+      existing.coverImage = bannerImage;
+      existing.cover_image = bannerImage;
     } else if (input.productIds && input.productIds.length > 0) {
       const isCurrentDeskOrPlaceholder = !existing.coverImage || existing.coverImage.includes('photo-1518455027359-f3f8164ba6bd') || existing.coverImage.includes('/desk.jpg') || existing.coverImage.includes('placeholder');
       if (isCurrentDeskOrPlaceholder) {
@@ -1374,6 +1461,8 @@ class CatalogRepository {
           description: existing.introduction,
           product_ids: existing.productIds,
           cover_image: existing.coverImage,
+          banner_image_url: existing.banner_image_url || null,
+          image_url: existing.image_url || null,
           last_reviewed_at: now,
           status: existing.status
         };
@@ -1383,7 +1472,9 @@ class CatalogRepository {
           .update(updateRow)
           .eq('id', existing.id);
 
-        if (sbError && (sbError.code === 'PGRST204' || sbError.message.includes('cover_image'))) {
+        if (sbError && (sbError.code === 'PGRST204' || sbError.message.includes('banner_image_url') || sbError.message.includes('image_url') || sbError.message.includes('cover_image'))) {
+          delete updateRow.banner_image_url;
+          delete updateRow.image_url;
           delete updateRow.cover_image;
           const retry = await supabase
             .from('collections')

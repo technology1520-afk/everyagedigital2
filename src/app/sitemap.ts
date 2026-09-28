@@ -1,33 +1,15 @@
 import { MetadataRoute } from 'next';
-import { createClient } from '@supabase/supabase-js';
+import { getAllCollectionsAsync } from '../lib/search/catalogSearch';
+import { catalogRepository } from '../lib/db/repository';
+import { getCollectionBannerImage } from '../lib/db/supabaseMapper';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.everyagedigital.store';
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
-  let [{ data: products }, { data: collections }] = await Promise.all([
-    supabase.from('products').select('slug, updated_at').eq('status', 'active'),
-    supabase.from('collections').select('slug, updated_at').eq('is_active', true),
+  const [products, collections] = await Promise.all([
+    catalogRepository.getAllProducts({ status: 'active' }),
+    getAllCollectionsAsync({ storefrontOnly: true })
   ]);
-
-  if (!collections || collections.length === 0) {
-    const { data: altCols } = await supabase
-      .from('collections')
-      .select('slug, last_reviewed_at, created_at, status')
-      .neq('status', 'draft');
-
-    if (altCols) {
-      collections = altCols
-        .filter((c) => !c.slug.startsWith('__'))
-        .map((c) => ({
-          slug: c.slug,
-          updated_at: c.last_reviewed_at || c.created_at,
-        }));
-    }
-  }
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
@@ -35,19 +17,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/collections`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
   ];
 
-  const productRoutes = (products || []).map((p) => ({
-    url: `${baseUrl}/product/${p.slug}`,
-    lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
+  const productRoutes = products.map((p) => {
+    const rawImg = p.imageUrl || (p as any).image_url;
+    return {
+      url: `${baseUrl}/product/${p.slug}`,
+      lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+      images: rawImg ? [rawImg] : undefined
+    };
+  });
 
-  const collectionRoutes = (collections || []).map((c) => ({
-    url: `${baseUrl}/collections/${c.slug}`,
-    lastModified: c.updated_at ? new Date(c.updated_at) : new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
+  const collectionRoutes = collections.map((c) => {
+    const banner = getCollectionBannerImage(c);
+    return {
+      url: `${baseUrl}/collections/${c.slug}`,
+      lastModified: c.lastReviewedAt ? new Date(c.lastReviewedAt) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+      images: banner ? [banner] : undefined
+    };
+  });
 
   return [...staticRoutes, ...collectionRoutes, ...productRoutes];
 }

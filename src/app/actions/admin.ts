@@ -21,6 +21,7 @@ import {
   OwnProductInput, 
   OwnProductInputSchema 
 } from '../../lib/db/schema';
+import { getSupabaseAdminClient } from '../../lib/supabase/server';
 
 // Helper guard to enforce owner authentication on mutating server actions
 async function assertAdmin() {
@@ -210,6 +211,10 @@ export async function createCollectionAction(data: {
   slug: string;
   description?: string;
   coverImage?: string;
+  bannerImageUrl?: string;
+  banner_image_url?: string;
+  imageUrl?: string;
+  image_url?: string;
   productIds?: string[];
   status?: 'published' | 'draft';
 }) {
@@ -237,6 +242,10 @@ export async function updateCollectionAction(
     slug: string;
     description: string;
     coverImage: string;
+    bannerImageUrl: string;
+    banner_image_url: string;
+    imageUrl: string;
+    image_url: string;
     productIds: string[];
     status: 'published' | 'draft';
   }>
@@ -294,5 +303,48 @@ export async function setSeasonalThemeAction(active: boolean, theme: string = 'h
   revalidatePath('/admin/settings');
   return { success: true, theme: result };
 }
+
+// 17. Upload Collection Banner to Supabase Storage
+export async function uploadCollectionBannerAction(formData: FormData): Promise<{ success: boolean; publicUrl?: string; error?: string }> {
+  await assertAdmin();
+  const file = formData.get('file') as File | null;
+  if (!file || !file.size) {
+    return { success: false, error: 'No image file provided' };
+  }
+
+  try {
+    const supabase = getSupabaseAdminClient();
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const ext = file.name.split('.').pop() || 'jpg';
+    const filename = `banner-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+    // Ensure bucket exists
+    try {
+      await supabase.storage.createBucket('collections', { public: true });
+    } catch {
+      // bucket already exists or ignore
+    }
+
+    const { error: uploadError } = await supabase.storage
+      .from('collections')
+      .upload(filename, buffer, {
+        contentType: file.type || 'image/jpeg',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error('[uploadCollectionBannerAction] Supabase storage upload error:', uploadError);
+      return { success: false, error: uploadError.message };
+    }
+
+    const { data: pubData } = supabase.storage.from('collections').getPublicUrl(filename);
+    return { success: true, publicUrl: pubData.publicUrl };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Upload failed';
+    return { success: false, error: msg };
+  }
+}
+
 
 

@@ -4,6 +4,10 @@ import {
   mapSupabaseRowToOffer,
   mapProductInputToSupabaseRow, 
   mapProductUpdateToSupabaseRow,
+  mapSupabaseRowToCollection,
+  mapCollectionInputToSupabaseRow,
+  getCollectionBannerImage,
+  DEFAULT_FALLBACK_IMAGE,
   sanitizeValidUrl,
   sanitizeAffiliateUrl,
   sanitizePriceBound
@@ -128,7 +132,7 @@ describe('Supabase Product Row Mapper', () => {
       description: 'Product description',
       image_url: 'invalid:url:pattern'
     });
-    expect(product.imageUrl).toBe('https://images.unsplash.com/photo-1587829741301-dc798b83add3');
+    expect(product.imageUrl).toBe(DEFAULT_FALLBACK_IMAGE);
     expect(() => new URL(product.imageUrl)).not.toThrow();
   });
 
@@ -152,5 +156,78 @@ describe('Supabase Product Row Mapper', () => {
     expect(isNaN(offer.price)).toBe(false);
     expect(offer.originalPrice).toBeUndefined();
     expect(offer.affiliateUrl).toBe('https://amazon.com/dp/test');
+  });
+});
+
+describe('Collection Banner Image Fallback Priority Engine', () => {
+  it('prioritizes banner_image_url when present', () => {
+    const collection = {
+      id: 'col-1',
+      title: 'The Calm Home Office Starter Kit',
+      slug: 'home-office-starter-kit',
+      banner_image_url: 'https://cdn.example.com/composite-banner.jpg',
+      image_url: 'https://cdn.example.com/fallback-collage.jpg',
+      coverImage: 'https://cdn.example.com/legacy-cover.jpg'
+    };
+    const resolved = getCollectionBannerImage(collection, 'https://cdn.example.com/first-item.jpg');
+    expect(resolved).toBe('https://cdn.example.com/composite-banner.jpg');
+  });
+
+  it('falls back to image_url if banner_image_url is missing or placeholder', () => {
+    const collection = {
+      id: 'col-halloween',
+      title: 'Halloween Tech Kit',
+      slug: 'halloween-kit',
+      image_url: 'https://cdn.example.com/halloween-collage.jpg',
+      coverImage: 'https://cdn.example.com/legacy-cover.jpg'
+    };
+    const resolved = getCollectionBannerImage(collection, 'https://cdn.example.com/first-item.jpg');
+    expect(resolved).toBe('https://cdn.example.com/halloween-collage.jpg');
+  });
+
+  it('falls back to first item image if banner_image_url and image_url are missing', () => {
+    const collection = {
+      id: 'col-bare',
+      title: 'Bare Bundle',
+      slug: 'bare-bundle'
+    };
+    const resolved = getCollectionBannerImage(collection, 'https://cdn.example.com/first-item.jpg');
+    expect(resolved).toBe('https://cdn.example.com/first-item.jpg');
+  });
+
+  it('falls back to DEFAULT_FALLBACK_IMAGE and never produces a blank or unresolvable URL', () => {
+    const collection = {
+      id: 'col-empty',
+      title: 'Empty Bundle',
+      slug: 'empty-bundle',
+      banner_image_url: 'placeholder',
+      image_url: ''
+    };
+    const resolved = getCollectionBannerImage(collection);
+    expect(resolved).toBe(DEFAULT_FALLBACK_IMAGE);
+    expect(resolved.length).toBeGreaterThan(0);
+  });
+
+  it('maps Supabase Collection row with banner_image_url and fallback aliases', () => {
+    const row = {
+      id: 'col-db-1',
+      slug: 'db-bundle',
+      title: 'DB Bundle',
+      description: 'A curated bundle from DB',
+      banner_image_url: 'https://cdn.example.com/db-banner.jpg',
+      image_url: 'https://cdn.example.com/db-cover.jpg',
+      curator_name: 'Tech Curators',
+      is_staff_pick: true,
+      product_ids: ['prod-1', 'prod-2', 'prod-3']
+    };
+
+    const collection = mapSupabaseRowToCollection(row);
+    expect(collection.id).toBe('col-db-1');
+    expect(collection.slug).toBe('db-bundle');
+    expect(collection.banner_image_url).toBe('https://cdn.example.com/db-banner.jpg');
+    expect(collection.bannerImageUrl).toBe('https://cdn.example.com/db-banner.jpg');
+    expect(collection.image_url).toBe('https://cdn.example.com/db-cover.jpg');
+    expect(collection.coverImage).toBe('https://cdn.example.com/db-banner.jpg');
+    expect(collection.productIds).toEqual(['prod-1', 'prod-2', 'prod-3']);
   });
 });

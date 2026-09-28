@@ -13,6 +13,7 @@ import { BookCard } from '../../../components/ui/BookCard';
 import { Breadcrumbs } from '../../../components/ui/Breadcrumbs';
 import { ShareButton } from '../../../components/ui/ShareButton';
 import { BundleProductList, BundleItem } from '../../../components/collection/BundleProductList';
+import { getCollectionBannerImage } from '../../../lib/db/supabaseMapper';
 import { Check, Calendar, Layers, ArrowRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -42,14 +43,7 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
     };
   }
 
-  const rawCover = collection.cover_image || collection.coverImage;
-  const isDesk = typeof rawCover === 'string' && (rawCover.includes('photo-1518455027359-f3f8164ba6bd') || rawCover.includes('/desk.jpg'));
-  const isPlaceholder = !rawCover || rawCover.includes('placeholder') || isDesk;
-
-  const bundleCoverImage = (!isPlaceholder && rawCover)
-    ? rawCover
-    : collection.products?.[0]?.image_url || '/placeholder-bundle.png';
-
+  const bundleCoverImage = getCollectionBannerImage(collection);
   const description = collection.description || (collection.subtitle ? `${collection.subtitle} ${collection.introduction?.slice(0, 150) || ''}...` : undefined);
 
   return {
@@ -62,7 +56,20 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
       title: collection.title,
       description: collection.subtitle || collection.description,
       url: canonicalUrl,
-      images: [{ url: bundleCoverImage }]
+      images: [
+        {
+          url: bundleCoverImage,
+          width: 1200,
+          height: 675,
+          alt: collection.title
+        }
+      ]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: collection.title,
+      description: collection.subtitle || collection.description,
+      images: [bundleCoverImage]
     }
   };
 }
@@ -91,15 +98,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     notFound();
   }
 
-  // Dynamic image resolution:
-  // Remove hardcoded desk image URL/path, fallback to first active product's image or placeholder
-  const rawCover = collection.cover_image || collection.coverImage;
-  const isDesk = typeof rawCover === 'string' && (rawCover.includes('photo-1518455027359-f3f8164ba6bd') || rawCover.includes('/desk.jpg'));
-  const isPlaceholder = !rawCover || rawCover.includes('placeholder') || isDesk;
-
-  const bundleCoverImage = (!isPlaceholder && rawCover)
-    ? rawCover
-    : collection.products?.[0]?.image_url || activeProducts[0]?.imageUrl || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
+  const bundleCoverImage = getCollectionBannerImage(collection, activeProducts[0]?.imageUrl);
 
   // Map to BundleItem view models with live offers & affiliate URLs, strictly requiring price > 0
   const bundleItems: BundleItem[] = activeProducts
@@ -131,82 +130,118 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     .map(id => allBooks.find(b => b.id === id))
     .filter((book): book is NonNullable<typeof book> => Boolean(book));
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32 space-y-12">
-      <Breadcrumbs
-        items={[
-          { label: 'Collections', href: '/collections' },
-          { label: collection.title }
-        ]}
-      />
+  // 3. Schema.org ItemList JSON-LD with ALL item images + composite banner
+  const allItemImages = activeProducts.map(p => p.imageUrl || (p as any).image_url).filter(Boolean);
+  const jsonLdImages = Array.from(new Set([bundleCoverImage, ...allItemImages]));
 
-      {/* Collection Hero */}
-      <div className="rounded-3xl glass-strong overflow-hidden shadow-2xl">
-        <div className="grid grid-cols-1 lg:grid-cols-12">
-          {/* Text Summary */}
-          <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between">
-            <div className="space-y-4">
-              {/* Metadata Bar with ShareButton on the right */}
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <span className="px-2.5 py-1 rounded-full text-xs font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 glass-pill font-semibold">
-                    Curated Bundle
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono">
-                    <Calendar className="w-3.5 h-3.5" />
-                    Reviewed {new Date(collection.lastReviewedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                  </span>
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: collection.title,
+    description: collection.subtitle || collection.description,
+    url: `https://www.everyagedigital.store/collections/${collection.slug}`,
+    image: jsonLdImages,
+    numberOfItems: bundleItems.length,
+    itemListElement: bundleItems.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: item.name,
+        image: item.imageUrl,
+        url: `https://www.everyagedigital.store/product/${item.slug}`,
+        offers: {
+          '@type': 'Offer',
+          price: item.price,
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: item.affiliateUrl
+        }
+      }
+    }))
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32 space-y-12">
+        <Breadcrumbs
+          items={[
+            { label: 'Collections', href: '/collections' },
+            { label: collection.title }
+          ]}
+        />
+
+        {/* Collection Hero */}
+        <div className="rounded-3xl glass-strong overflow-hidden shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12">
+            {/* Text Summary */}
+            <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between">
+              <div className="space-y-4">
+                {/* Metadata Bar with ShareButton on the right */}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 glass-pill font-semibold">
+                      Curated Bundle
+                    </span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono">
+                      <Calendar className="w-3.5 h-3.5" />
+                      Reviewed {new Date(collection.lastReviewedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                    </span>
+                  </div>
+
+                  <ShareButton
+                    title={collection.title}
+                    text={collection.subtitle}
+                  />
                 </div>
 
-                <ShareButton
-                  title={collection.title}
-                  text={collection.subtitle}
-                />
+                {/* High-Contrast Hero Title & Subtitle */}
+                <h1 className="font-serif text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white leading-tight tracking-tight">
+                  {collection.title}
+                </h1>
+
+                <p className="text-base sm:text-lg font-medium text-slate-800 dark:text-slate-100 leading-relaxed">
+                  {collection.subtitle}
+                </p>
+
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {collection.introduction}
+                </p>
               </div>
 
-              {/* High-Contrast Hero Title & Subtitle */}
-              <h1 className="font-serif text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white leading-tight tracking-tight">
-                {collection.title}
-              </h1>
-
-              <p className="text-base sm:text-lg font-medium text-slate-800 dark:text-slate-100 leading-relaxed">
-                {collection.subtitle}
-              </p>
-
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                {collection.introduction}
-              </p>
+              {/* Selection Criteria Box */}
+              <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-white/10">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white block mb-2.5">
+                  Vetting Criteria for This Bundle:
+                </span>
+                <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+                  {collection.selectionCriteria.map((crit, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span>{crit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
-            {/* Selection Criteria Box */}
-            <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-white/10">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white block mb-2.5">
-                Vetting Criteria for This Bundle:
-              </span>
-              <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
-                {collection.selectionCriteria.map((crit, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
-                    <span>{crit}</span>
-                  </li>
-                ))}
-              </ul>
+            {/* Cover Media: 16:9 on mobile, aspect-[4/3] on desktop with edge-to-edge object-cover */}
+            <div className="lg:col-span-5 relative aspect-video lg:aspect-[4/3] lg:h-full w-full overflow-hidden">
+              <Image
+                src={bundleCoverImage}
+                alt={collection.title}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="w-full h-full object-cover"
+              />
             </div>
-          </div>
-
-          {/* Cover Media: Bound to dynamic bundleCoverImage */}
-          <div className="lg:col-span-5 relative aspect-video lg:aspect-auto lg:h-full w-full overflow-hidden bg-neutral-900">
-            <Image
-              src={bundleCoverImage}
-              alt={collection.title}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="w-full h-full object-cover"
-            />
           </div>
         </div>
-      </div>
 
       {/* Interactive Bundle Product List + Sticky Checkout Bar or Clean Fallback */}
       {bundleItems.length === 0 ? (
@@ -257,5 +292,6 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         </section>
       )}
     </div>
+    </>
   );
 }

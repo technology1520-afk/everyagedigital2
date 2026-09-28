@@ -63,6 +63,22 @@ export const OwnProductInputSchema = z.object({
 
 export type OwnProductInput = z.infer<typeof OwnProductInputSchema>;
 
+export const CollectionInputSchema = z.object({
+  title: z.string().min(2, 'Title must be at least 2 characters').max(256),
+  slug: z.string().min(2).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase alphanumeric with hyphens'),
+  description: z.string().optional(),
+  bannerImageUrl: z.string().url('Must be a valid image URL').optional().or(z.literal('')).nullable(),
+  banner_image_url: z.string().url('Must be a valid image URL').optional().or(z.literal('')).nullable(),
+  imageUrl: z.string().url('Must be a valid image URL').optional().or(z.literal('')).nullable(),
+  image_url: z.string().url('Must be a valid image URL').optional().or(z.literal('')).nullable(),
+  coverImage: z.string().url('Must be a valid image URL').optional().or(z.literal('')).nullable(),
+  cover_image: z.string().url('Must be a valid image URL').optional().or(z.literal('')).nullable(),
+  productIds: z.array(z.string()).default([]),
+  status: z.enum(['published', 'draft']).default('published')
+});
+
+export type CollectionInput = z.infer<typeof CollectionInputSchema>;
+
 export const AffiliateUrlValidationMap: Record<MerchantNetwork, RegExp> = {
   amazon: /^https?:\/\/(([a-zA-Z0-9-]+\.)?amazon\.[a-z.]+|amzn\.to)/i,
   gumroad: /^https?:\/\/([a-zA-Z0-9-]+\.)?gumroad\.com/i,

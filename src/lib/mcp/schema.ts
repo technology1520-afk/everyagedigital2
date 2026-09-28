@@ -85,6 +85,8 @@ export const CreateBundleInputSchema = z.object({
   slug: z.string().min(2).optional(),
   description: z.string().optional(),
   product_slugs: z.array(z.string()).default([]).optional(),
+  banner_image_url: z.string().optional(),
+  image_url: z.string().optional(),
   cover_image: z.string().optional()
 });
 export type CreateBundleInput = z.infer<typeof CreateBundleInputSchema>;
@@ -96,6 +98,8 @@ export const UpdateBundleInputSchema = z.object({
   slug: z.string().min(2).optional(),
   description: z.string().optional(),
   product_slugs: z.array(z.string()).optional(),
+  banner_image_url: z.string().optional(),
+  image_url: z.string().optional(),
   cover_image: z.string().optional(),
   status: z.enum(['published', 'draft']).optional()
 });
@@ -304,7 +308,9 @@ export const MCP_TOOLS: McpToolDefinition[] = [
           items: { type: 'string' },
           description: 'Array of product slugs to include in the bundle'
         },
-        cover_image: { type: 'string', description: 'Cover image URL' }
+        cover_image: { type: 'string', description: 'Cover image URL' },
+        banner_image_url: { type: 'string', description: 'Dedicated composite banner image URL (16:9)' },
+        image_url: { type: 'string', description: 'Fallback image URL' }
       },
       required: ['title']
     }
@@ -325,6 +331,8 @@ export const MCP_TOOLS: McpToolDefinition[] = [
           description: 'Updated array of product slugs'
         },
         cover_image: { type: 'string', description: 'Updated cover image URL' },
+        banner_image_url: { type: 'string', description: 'Updated dedicated composite banner image URL (16:9)' },
+        image_url: { type: 'string', description: 'Updated fallback image URL' },
         status: {
           type: 'string',
           enum: ['published', 'draft'],
