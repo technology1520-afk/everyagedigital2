@@ -210,7 +210,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/collections"
-            className="text-xs font-mono uppercase tracking-wider text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white flex items-center gap-1.5"
+            className="text-xs font-mono uppercase tracking-wider text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 ml-4"
           >
             <span>Explore Collections</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -295,7 +295,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/books"
-            className="text-xs font-mono uppercase tracking-wider text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white flex items-center gap-1.5"
+            className="text-xs font-mono uppercase tracking-wider text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 ml-4"
           >
             <span>View All Books</span>
             <ArrowRight className="w-3.5 h-3.5" />
