@@ -99,7 +99,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 
   const bundleCoverImage = (!isPlaceholder && rawCover)
     ? rawCover
-    : collection.products?.[0]?.image_url || activeProducts[0]?.imageUrl || '/placeholder-bundle.png';
+    : collection.products?.[0]?.image_url || activeProducts[0]?.imageUrl || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
 
   // Map to BundleItem view models with live offers & affiliate URLs, strictly requiring price > 0
   const bundleItems: BundleItem[] = activeProducts
@@ -114,7 +114,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         slug: p.slug,
         name: p.name,
         category: p.category,
-        imageUrl: p.imageUrl,
+        imageUrl: p.imageUrl || (p as any).image_url || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg',
         price,
         originalPrice: offer?.originalPrice,
         merchantName: offer?.merchantName || p.sourceProvider || 'Direct Merchant',

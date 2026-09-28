@@ -1,7 +1,7 @@
 import { Product, MerchantOffer, MerchantName } from '../../types';
 import { ProductInput } from './schema';
 
-export const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1587829741301-dc798b83add3';
+export const DEFAULT_FALLBACK_IMAGE = 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
 export const DEFAULT_FALLBACK_AFFILIATE_URL = 'https://www.amazon.com?tag=everyagedigital-20';
 
 /**
@@ -145,6 +145,7 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     limitations: limitations.length > 0 ? limitations : (isBook ? ['Requires dedicated reading and application time'] : ['Demands dedicated desktop footprint over ultra-compact travel gear']),
     sourceProvider: (row.merchant_id as string) || 'merchant_direct',
     imageUrl: safeImageUrl,
+    image_url: safeImageUrl,
     imageSource: isBook ? 'Publisher Authorized' : 'Merchant Verified',
     imageLicense: 'Official Affiliate Feed',
     altText: row.title || 'Product Image',

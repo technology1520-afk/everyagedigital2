@@ -39,6 +39,7 @@ export interface Product {
   sourceProvider: string;
   sourceProductId?: string;
   imageUrl: string;
+  image_url?: string;
   imageSource: string;
   imageLicense: 'Official Affiliate Feed' | 'Merchant Press Kit' | 'Creator Authorized' | 'Original Photography' | 'Public Domain / Open';
   altText: string;

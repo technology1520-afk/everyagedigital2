@@ -89,20 +89,22 @@ export default async function HomePage() {
             {/* Right Column: Search Form Inside Hero */}
             <div className="lg:col-span-5 w-full">
               <div className="bg-neutral-100/80 dark:bg-neutral-900/90 border border-neutral-200 dark:border-neutral-800 p-5 sm:p-6 rounded-xl">
-                <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold block mb-2.5">
+                <span className="text-xs font-mono uppercase tracking-wider text-neutral-700 dark:text-neutral-300 font-semibold block mb-2.5">
                   Direct Specimen Query
                 </span>
-                <form action="/search" method="GET" className="relative flex items-center">
-                  <Search className="w-4 h-4 text-neutral-400 dark:text-neutral-500 absolute left-3.5 pointer-events-none" />
-                  <input
-                    type="text"
-                    name="q"
-                    placeholder="Search mechanical keyboard, habit books..."
-                    className="w-full pl-10 pr-24 py-2.5 rounded-lg text-xs font-mono bg-white dark:bg-[#0d1117] border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-hidden focus:border-neutral-500 dark:focus:border-neutral-400 min-h-[40px] transition-colors"
-                  />
+                <form action="/search" method="GET" className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 text-neutral-400 dark:text-neutral-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      name="q"
+                      placeholder="Search mechanical keyboard, habit books..."
+                      className="w-full pl-10 pr-4 py-2.5 rounded-lg text-xs font-mono bg-white dark:bg-[#0d1117] border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-hidden focus:border-neutral-500 dark:focus:border-neutral-400 min-h-[42px] transition-colors"
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="absolute right-1 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-white text-xs font-mono uppercase tracking-wider rounded-md transition-colors cursor-pointer"
+                    className="px-4 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-white text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer shrink-0 min-h-[42px] font-semibold"
                   >
                     Query
                   </button>
@@ -153,7 +155,7 @@ export default async function HomePage() {
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-semibold">
+            <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
               Vetted & Field-Tested
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-900 dark:text-white mt-1">
@@ -198,7 +200,7 @@ export default async function HomePage() {
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-semibold">
+            <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
               Thematic Setups
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-900 dark:text-white mt-1">
@@ -218,7 +220,7 @@ export default async function HomePage() {
         </div>
 
         {collections.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className={`grid gap-6 w-full ${collections.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
             {collections.map((col: Collection) => (
               <CollectionCard key={col.id} collection={col} />
             ))}
@@ -279,51 +281,44 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. Books & Knowledge Resources */}
-      <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-semibold">
-              Essential Texts
-            </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-900 dark:text-white mt-1">
-              Books, Guides & Foundations
-            </h2>
-            <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-              Rigorous ideas on deep work, commercial economics, and habit mastery.
-            </p>
+      {/* 6. Books & Knowledge Resources (Hidden when no curated books are available) */}
+      {books.length > 0 && (
+        <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
+                Essential Texts
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-900 dark:text-white mt-1">
+                Books, Guides & Foundations
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                Rigorous ideas on deep work, commercial economics, and habit mastery.
+              </p>
+            </div>
+            <Link
+              href="/books"
+              className="text-xs font-mono uppercase tracking-wider text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 ml-4"
+            >
+              <span>View All Books</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <Link
-            href="/books"
-            className="text-xs font-mono uppercase tracking-wider text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 ml-4"
-          >
-            <span>View All Books</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
 
-        {books.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {books.map(book => (
               <BookCard key={book.id} book={book} />
             ))}
           </div>
-        ) : (
-          <div className="rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 p-10 text-center my-4 space-y-2 shadow-xs">
-            <p className="font-serif text-neutral-900 dark:text-white font-bold text-base">No books available</p>
-            <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
-              No curated books are currently published in the catalog.
-            </p>
-          </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* 7. Direct Publisher Products */}
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-8 sm:p-10 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-semibold">
+              <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
                 Direct Publisher Products
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-900 dark:text-white mt-1">
@@ -404,7 +399,7 @@ export default async function HomePage() {
       <section className="px-4 sm:px-6 lg:px-8 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <div className="border border-neutral-200/80 dark:border-neutral-800 bg-[#faf9f6] dark:bg-[#0d1117] rounded-2xl p-8 sm:p-12 shadow-xs">
           <div className="max-w-2xl">
-            <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-semibold">
+            <span className="text-xs font-mono uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-semibold">
               Editorial Independence
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-900 dark:text-white mt-1">

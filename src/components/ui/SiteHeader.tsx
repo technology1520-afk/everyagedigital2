@@ -93,7 +93,7 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
                 <Image alt="EveryAge Digital" className="h-full w-full object-contain invert dark:invert-0" height={32} priority src="/logo.png" width={32}/>
               </div>
               <span className="font-serif font-bold text-lg text-neutral-900 dark:text-white tracking-tight flex items-center">
-                EveryAge <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-500 dark:text-neutral-400 ml-1.5 pt-0.5">Editorial</span>
+                EveryAge <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-500 dark:text-neutral-400 ml-1.5 pt-0.5">Digital</span>
               </span>
               <span className="hidden [html[data-seasonal=halloween]_&]:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/20 text-orange-300 border border-orange-400/40 shadow-xs">
                 🎃 Spooky Edition

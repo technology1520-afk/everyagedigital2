@@ -137,16 +137,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 lg:gap-10">
         {/* Gallery Col: 12 on phone, 7 on md (60%), 5 on lg */}
         <div className="md:col-span-7 lg:col-span-5 space-y-4">
-          <ProductGallery
-            images={[
-              product.imageUrl,
-              product.imageUrl.includes('?') ? `${product.imageUrl}&auto=format&fit=crop&w=1000&q=80` : product.imageUrl
-            ]}
-            altText={product.altText}
-            editorialBadge={product.editorialBadge}
-            imageSource={product.imageSource}
-            imageLicense={product.imageLicense}
-          />
+          {(() => {
+            const rawMainImg = (product as any).image_url || product.imageUrl;
+            const mainImg = (rawMainImg && typeof rawMainImg === 'string' && rawMainImg.trim() !== '')
+              ? rawMainImg
+              : 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
+            return (
+              <ProductGallery
+                images={[mainImg, mainImg]}
+                altText={product.altText || product.name || 'Product Image'}
+                editorialBadge={product.editorialBadge}
+                imageSource={product.imageSource}
+                imageLicense={product.imageLicense}
+              />
+            );
+          })()}
 
           {/* Action buttons with touch targets >= 44px */}
           <div className="flex items-center gap-3 pt-1">

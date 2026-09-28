@@ -40,6 +40,11 @@ export function ProductCard({
     product.merchant = merchantName;
   }
 
+  const rawImg = product.imageUrl || (product as any).image_url;
+  const displayImage = (rawImg && typeof rawImg === 'string' && rawImg.trim() !== '') 
+    ? rawImg 
+    : 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
+
   const isPriority = priority !== undefined ? priority : (index !== undefined ? index < 2 : false);
 
   const getBadgeInfo = () => {
@@ -189,15 +194,15 @@ export function ProductCard({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
           {/* Left: Studio Display Photo Box */}
           <div className="md:col-span-5 flex flex-col justify-between">
-            <div className="relative w-full aspect-[4/3] md:aspect-square rounded-lg bg-neutral-100 dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center p-6 overflow-hidden">
-              <Link href={`/product/${product.slug}`} className="relative w-full h-full block flex items-center justify-center">
+            <div className="relative w-full aspect-[4/3] md:aspect-square rounded-lg bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center p-6 overflow-hidden">
+              <Link href={`/product/${product.slug}`} className="relative w-full h-full flex items-center justify-center">
                 <Image
-                  src={product.imageUrl}
-                  alt={product.altText}
+                  src={displayImage}
+                  alt={product.altText || product.name || 'Product Image'}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority={true}
-                  className="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-102 transition-transform duration-300"
+                  className="h-full w-full object-contain group-hover:scale-102 transition-transform duration-300"
                 />
               </Link>
 
@@ -347,15 +352,15 @@ export function ProductCard({
     >
       <div>
         {/* Dedicated Studio Display Box */}
-        <div className="relative w-full aspect-[4/3] rounded-lg bg-neutral-100 dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center p-4 overflow-hidden mb-3">
-          <Link href={`/product/${product.slug}`} className="relative w-full h-full block flex items-center justify-center">
+        <div className="relative w-full aspect-[4/3] rounded-lg bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center p-4 overflow-hidden mb-3">
+          <Link href={`/product/${product.slug}`} className="relative w-full h-full flex items-center justify-center">
             <Image
-              src={product.imageUrl}
-              alt={product.altText}
+              src={displayImage}
+              alt={product.altText || product.name || 'Product Image'}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={isPriority}
-              className="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-102 transition-transform duration-200"
+              className="h-full w-full object-contain group-hover:scale-102 transition-transform duration-200"
             />
           </Link>
 

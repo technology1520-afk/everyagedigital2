@@ -22,7 +22,8 @@ export function ProductGallery({
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const galleryImages = images.length > 0 ? images : ['/images/placeholder.jpg'];
+  const validImages = (images || []).filter(img => typeof img === 'string' && img.trim().length > 0);
+  const galleryImages = validImages.length > 0 ? validImages : ['https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg'];
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
@@ -47,7 +48,7 @@ export function ProductGallery({
   return (
     <div className="space-y-3">
       {/* Mobile Swipeable Carousel & Desktop Main View */}
-      <div className="relative w-full rounded-3xl overflow-hidden bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-xl">
+      <div className="relative w-full rounded-2xl overflow-hidden bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 shadow-xs">
         {/* Swipeable Container */}
         <div
           ref={scrollRef}
@@ -58,7 +59,7 @@ export function ProductGallery({
           {galleryImages.map((src, idx) => (
             <div
               key={idx}
-              className="min-w-full snap-center relative aspect-square sm:aspect-4/3 md:aspect-square bg-slate-950/40 flex items-center justify-center"
+              className="min-w-full snap-center relative aspect-square sm:aspect-4/3 md:aspect-square flex items-center justify-center p-6 bg-white dark:bg-neutral-900/80"
             >
               <Image
                 src={src}
@@ -66,7 +67,7 @@ export function ProductGallery({
                 fill
                 priority={idx === 0}
                 sizes="(max-width: 767px) 100vw, (max-width: 1023px) 60vw, 40vw"
-                className="object-cover"
+                className="object-contain"
               />
             </div>
           ))}
@@ -74,8 +75,8 @@ export function ProductGallery({
 
         {/* Editorial Badge */}
         {editorialBadge && (
-          <div className="absolute top-3 left-3 z-10 bg-amber-500/10 text-amber-200 border border-amber-500/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-lg">
-            <Award className="w-3.5 h-3.5 text-amber-400" />
+          <div className="absolute top-3 left-3 z-10 bg-neutral-900/90 text-white dark:bg-white/90 dark:text-neutral-950 px-3 py-1 rounded-md text-xs font-mono uppercase tracking-wider font-semibold flex items-center gap-1.5 shadow-xs">
+            <Award className="w-3.5 h-3.5" />
             <span>{editorialBadge}</span>
           </div>
         )}
@@ -89,7 +90,7 @@ export function ProductGallery({
                 onClick={() => scrollToImage(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
                 className={`h-2 rounded-full transition-all duration-200 ${
-                  activeIndex === idx ? 'w-5 bg-blue-500 shadow-sm shadow-blue-500/50' : 'w-2 bg-white/20 hover:bg-white/40'
+                  activeIndex === idx ? 'w-5 bg-neutral-900 dark:bg-white shadow-xs' : 'w-2 bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400'
                 }`}
               />
             ))}
@@ -104,8 +105,8 @@ export function ProductGallery({
             <button
               key={idx}
               onClick={() => scrollToImage(idx)}
-              className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 bg-slate-900/40 backdrop-blur-md ${
-                activeIndex === idx ? 'border-blue-400 ring-2 ring-blue-400/30' : 'border-white/10 opacity-60 hover:opacity-100'
+              className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 bg-white dark:bg-neutral-900/80 p-1 ${
+                activeIndex === idx ? 'border-neutral-900 dark:border-white ring-2 ring-neutral-400/30' : 'border-neutral-200 dark:border-neutral-800 opacity-60 hover:opacity-100'
               }`}
             >
               <Image
@@ -113,7 +114,7 @@ export function ProductGallery({
                 alt={`Thumbnail ${idx + 1}`}
                 fill
                 sizes="64px"
-                className="object-cover"
+                className="object-contain"
               />
             </button>
           ))}

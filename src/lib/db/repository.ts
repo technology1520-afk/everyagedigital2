@@ -1053,7 +1053,7 @@ class CatalogRepository {
             coverImg = firstProductImage || seed?.coverImage || '';
           }
           if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg')) {
-            coverImg = firstProductImage || '/placeholder-bundle.png';
+            coverImg = firstProductImage || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
           }
 
           const resolvedProducts = activeProdsList.map(p => ({
@@ -1156,7 +1156,7 @@ class CatalogRepository {
               coverImg = firstProductImage || seed?.coverImage || '';
             }
             if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg')) {
-              coverImg = firstProductImage || '/placeholder-bundle.png';
+              coverImg = firstProductImage || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
             }
 
             return {
@@ -1201,7 +1201,7 @@ class CatalogRepository {
         const firstProductImage = matching[0]?.imageUrl;
         let coverImg = (c as any).cover_image || c.coverImage;
         if (!coverImg || coverImg.includes('photo-1518455027359-f3f8164ba6bd') || coverImg.includes('/desk.jpg') || coverImg.includes('placeholder')) {
-          coverImg = firstProductImage || '/placeholder-bundle.png';
+          coverImg = firstProductImage || 'https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_SL1500_.jpg';
         }
         return {
           ...c,
