@@ -31,13 +31,13 @@ export function CompareButton({
         onClick={handleToggle}
         aria-label={inCompare ? 'Remove from comparison' : 'Add to comparison'}
         aria-pressed={inCompare}
-        className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border backdrop-blur-md transition-all cursor-pointer min-h-[44px] ${
+        className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-mono border transition-all cursor-pointer min-h-[40px] ${
           inCompare
-            ? 'bg-purple-600/10 text-purple-900 border-purple-300 dark:bg-blue-600/20 dark:text-blue-300 dark:border-blue-500/40'
-            : 'bg-white/80 dark:bg-white/5 text-slate-700 dark:text-slate-200 border-purple-200/60 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
+            ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-white dark:text-neutral-950 dark:border-white'
+            : 'bg-neutral-100 text-neutral-700 border-neutral-200 hover:bg-neutral-200/70 hover:text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700 dark:hover:text-white'
         } ${className}`}
       >
-        {inCompare ? <Check className="w-3.5 h-3.5 text-purple-600 dark:text-blue-400" /> : <Scale className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />}
+        {inCompare ? <Check className="w-3.5 h-3.5" /> : <Scale className="w-3.5 h-3.5 text-neutral-500" />}
         {inCompare ? 'Added to Compare' : 'Compare'}
       </button>
     );
@@ -50,13 +50,13 @@ export function CompareButton({
       aria-label={inCompare ? 'Remove from comparison' : 'Add to comparison (up to 4)'}
       aria-pressed={inCompare}
       title={inCompare ? 'Remove from compare' : 'Compare product'}
-      className={`h-8 w-8 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-xs flex items-center justify-center ${
+      className={`h-7 w-7 rounded-md border transition-all cursor-pointer shadow-xs flex items-center justify-center ${
         inCompare
-          ? 'bg-purple-600/30 text-purple-200 border-purple-400/50 [html[data-seasonal=halloween]_&]:bg-orange-600/40 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/50'
-          : 'bg-black/40 hover:bg-black/70 border-white/10 text-white/80 hover:text-white'
+          ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-white dark:text-neutral-950 dark:border-white'
+          : 'bg-white/90 hover:bg-white text-neutral-600 hover:text-neutral-900 border-neutral-200 dark:bg-neutral-900/90 dark:hover:bg-neutral-800 dark:text-neutral-400 dark:hover:text-white dark:border-neutral-700'
       } ${className}`}
     >
-      <Scale className="w-4 h-4 text-current" />
+      <Scale className="w-3.5 h-3.5" />
     </button>
   );
 }

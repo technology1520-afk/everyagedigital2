@@ -195,28 +195,28 @@ export function ShopMarketplace({
         {/* Products Column */}
         <div className="flex-1 w-full min-w-0 space-y-4 sm:space-y-6">
           {/* Controls Bar: Mobile Filter Button + Item count + Sorting */}
-          <div className="rounded-2xl bg-white/65 dark:bg-white/[0.03] backdrop-blur-md border border-purple-200/60 dark:border-white/10 [html[data-seasonal=halloween]_&]:bg-slate-900/60 [html[data-seasonal=halloween]_&]:backdrop-blur-xl [html[data-seasonal=halloween]_&]:border-orange-500/20 [html[data-seasonal=halloween]_&]:text-orange-100 [html[data-seasonal=halloween]_&]:rounded-2xl [html[data-seasonal=halloween]_&]:px-6 [html[data-seasonal=halloween]_&]:py-3 [html[data-seasonal=halloween]_&]:shadow-lg flex flex-wrap items-center justify-between gap-3 p-3 sm:px-6 sm:py-3 shadow-sm dark:shadow-none catalog-controls-bar">
+          <div className="rounded-xl bg-[#faf9f6] dark:bg-[#0d1117] border border-neutral-200/80 dark:border-neutral-800 flex flex-wrap items-center justify-between gap-3 p-3 sm:px-5 sm:py-2.5 shadow-xs">
             <div className="flex items-center gap-3">
               {/* Phone Filter Trigger Button */}
               <button
                 type="button"
                 onClick={() => setBottomSheetOpen(true)}
-                className="touch-target md:hidden inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/80 border border-purple-200/60 text-xs font-semibold text-slate-800 hover:bg-white dark:bg-white/5 dark:border-white/10 dark:text-white dark:hover:bg-white/10 [html[data-seasonal=halloween]_&]:bg-slate-950/80 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/30 backdrop-blur-md shadow-xs cursor-pointer"
+                className="touch-target md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200 text-xs font-mono uppercase tracking-wider text-neutral-800 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:border-neutral-700 dark:text-neutral-200 cursor-pointer transition-colors"
               >
-                <Filter className="w-4 h-4 text-purple-600 dark:text-blue-400 [html[data-seasonal=halloween]_&]:text-orange-400" />
+                <Filter className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
                 <span>Filters</span>
                 {activeFilters.length > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-purple-600 dark:bg-blue-600 [html[data-seasonal=halloween]_&]:bg-orange-600 text-white text-[10px] font-bold flex items-center justify-center">
+                  <span className="w-4 h-4 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 text-[10px] font-mono font-bold flex items-center justify-center">
                     {activeFilters.length}
                   </span>
                 )}
               </button>
 
-              <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 [html[data-seasonal=halloween]_&]:text-orange-100 flex items-center gap-1.5 sm:gap-2">
-                <span className="hidden md:inline font-bold [html[data-seasonal=halloween]_&]:text-orange-300">Filters</span>
-                <span className="text-slate-400 dark:text-slate-600 [html[data-seasonal=halloween]_&]:text-orange-500/40 hidden md:inline">|</span>
+              <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400 flex items-center gap-1.5 sm:gap-2">
+                <span className="hidden md:inline font-bold uppercase tracking-wider text-neutral-900 dark:text-neutral-200">Catalog Specimen</span>
+                <span className="text-neutral-300 dark:text-neutral-700 hidden md:inline">|</span>
                 <span>
-                  Showing <span className="text-slate-900 dark:text-white [html[data-seasonal=halloween]_&]:text-amber-300 font-bold">{searchResult.total}</span> item{searchResult.total === 1 ? '' : 's'}
+                  Showing <span className="font-semibold text-neutral-900 dark:text-neutral-100">{searchResult.total}</span> item{searchResult.total === 1 ? '' : 's'}
                 </span>
               </span>
             </div>
@@ -230,7 +230,7 @@ export function ShopMarketplace({
           {/* Removable Active Filter Chips Row */}
           {activeFilters.length > 0 && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 [html[data-seasonal=halloween]_&]:text-orange-300 uppercase tracking-wider mr-1">
+              <span className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mr-1">
                 Active:
               </span>
               {activeFilters.map(chip => (
@@ -238,16 +238,16 @@ export function ShopMarketplace({
                   key={chip.label}
                   type="button"
                   onClick={chip.onRemove}
-                  className="touch-target filter-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-purple-100 text-purple-900 border border-purple-300 hover:bg-purple-200 dark:bg-blue-600/20 dark:text-blue-300 dark:border-blue-500/30 dark:hover:bg-blue-600/30 [html[data-seasonal=halloween]_&]:bg-slate-950/80 [html[data-seasonal=halloween]_&]:text-orange-200 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:hover:bg-orange-950/60 backdrop-blur-md transition-colors cursor-pointer"
+                  className="touch-target inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-neutral-100 hover:bg-neutral-200/80 text-neutral-800 border border-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-700 transition-colors cursor-pointer"
                 >
                   <span>{chip.label}</span>
-                  <X className="w-3.5 h-3.5 opacity-70" />
+                  <X className="w-3 h-3 opacity-70" />
                 </button>
               ))}
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="text-xs text-slate-500 hover:text-purple-700 dark:text-slate-400 dark:hover:text-white [html[data-seasonal=halloween]_&]:text-orange-400 [html[data-seasonal=halloween]_&]:hover:text-orange-300 underline ml-1 cursor-pointer py-1"
+                className="text-xs font-mono text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white underline ml-1 cursor-pointer py-1"
               >
                 Clear all
               </button>
@@ -257,7 +257,8 @@ export function ShopMarketplace({
           {/* Product Grid */}
           <ProductGrid
             items={searchResult.items}
-            columns={4}
+            columns={3}
+            enableEditorialHierarchy={true}
             emptyMessage="No products match your filter criteria."
           />
         </div>

@@ -20,6 +20,9 @@ export function sanitizeValidUrl(url?: string | null, fallback?: string | null):
   ) {
     return fallback || null;
   }
+  if (trimmed.startsWith('/')) {
+    return trimmed;
+  }
   try {
     const parsed = new URL(trimmed);
     if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
@@ -134,12 +137,12 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     productType,
     category,
     subcategory,
-    useCases: isBook ? ['Deep focus', 'Commercial wisdom', 'Daily habit design'] : ['Daily productivity', 'Everyday utility'],
-    bestFor: row.best_for?.trim() || 'Shoppers looking for reliable tested essentials.',
-    notFor: row.not_for?.trim() || 'Users seeking cheap disposable alternatives.',
+    useCases: isBook ? ['Deep focus', 'Commercial strategy', 'Daily habit architecture'] : ['Focused desktop ergonomics', 'High-throughput productivity'],
+    bestFor: row.best_for?.trim() || (isBook ? 'Readers seeking rigorous foundational mental models.' : 'Long-term desktop setups requiring tactile durability.'),
+    notFor: row.not_for?.trim() || (isBook ? 'Passive skimming or shallow quick-fix summaries.' : 'Minimalist travel kits prioritizing pocketability over endurance.'),
     features: features.length > 0 ? features : ['Editorial vetted', 'Verified merchant warranty'],
     benefits: ['High durability', 'Direct merchant fulfillment'],
-    limitations: limitations.length > 0 ? limitations : ['Standard merchant shipping policies apply'],
+    limitations: limitations.length > 0 ? limitations : (isBook ? ['Requires dedicated reading and application time'] : ['Demands dedicated desktop footprint over ultra-compact travel gear']),
     sourceProvider: (row.merchant_id as string) || 'merchant_direct',
     imageUrl: safeImageUrl,
     imageSource: isBook ? 'Publisher Authorized' : 'Merchant Verified',

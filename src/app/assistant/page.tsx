@@ -2,43 +2,43 @@ import React from 'react';
 import { Metadata } from 'next';
 import { ShoppingAssistant } from '../../components/ui/ShoppingAssistant';
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs';
-import { Sparkles, ShieldCheck, CheckCircle2, Lock } from 'lucide-react';
+import { SlidersHorizontal, ShieldCheck, CheckCircle2, Lock } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'AI Shopping Receptionist — Grounded Recommendations',
-  description: 'Ask our polite shopping receptionist for curated product and guide recommendations tailored to your budget and workspace.'
+  title: 'Catalog Concierge — Grounded Recommendations',
+  description: 'Consult our catalog concierge for curated product and guide recommendations tailored to your budget and workspace.'
 };
 
 export default function AssistantPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-      <Breadcrumbs items={[{ label: 'AI Shopping Receptionist' }]} />
+      <Breadcrumbs items={[{ label: 'Catalog Concierge' }]} />
 
       <div className="max-w-3xl space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-semibold border border-blue-500/20 backdrop-blur-md">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>EveryAge Assistant</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neutral-200/60 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 text-xs font-mono uppercase tracking-wider border border-neutral-300 dark:border-neutral-700">
+          <SlidersHorizontal className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
+          <span>EveryAge Concierge</span>
         </div>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-white leading-tight">
-          Polite, Catalog-Grounded Product Concierge
+        <h1 className="font-serif text-3xl sm:text-5xl font-normal text-neutral-900 dark:text-white leading-tight">
+          Catalog-Grounded Specimen Concierge
         </h1>
-        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-          Tell us your budget, the problem you want to solve, or the gear you need. Our shopping assistant never hallucinates unvetted products or ranks by affiliate commission.
+        <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed font-normal">
+          Specify your workspace parameters, budget threshold, or setup bottleneck. Our concierge executes deterministic lookups over our vetted catalog and highlights real trade-offs before you purchase.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
-        <div className="bg-slate-900/40 backdrop-blur-xl p-4 rounded-2xl border border-white/10 flex items-center gap-2.5 shadow-md">
-          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono text-neutral-600 dark:text-neutral-400">
+        <div className="bg-[#faf9f6] dark:bg-[#0d1117] p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800 flex items-center gap-2.5 shadow-xs">
+          <ShieldCheck className="w-4 h-4 text-neutral-700 dark:text-neutral-300 shrink-0" />
           <span>Restricted strictly to vetted catalog tools</span>
         </div>
-        <div className="bg-slate-900/40 backdrop-blur-xl p-4 rounded-2xl border border-white/10 flex items-center gap-2.5 shadow-md">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="bg-[#faf9f6] dark:bg-[#0d1117] p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800 flex items-center gap-2.5 shadow-xs">
+          <CheckCircle2 className="w-4 h-4 text-neutral-700 dark:text-neutral-300 shrink-0" />
           <span>Explicitly highlights limitations & trade-offs</span>
         </div>
-        <div className="bg-slate-900/40 backdrop-blur-xl p-4 rounded-2xl border border-white/10 flex items-center gap-2.5 shadow-md">
-          <Lock className="w-4 h-4 text-blue-400 shrink-0" />
-          <span>Privacy-preserving (no personal data logged)</span>
+        <div className="bg-[#faf9f6] dark:bg-[#0d1117] p-4 rounded-xl border border-neutral-200/80 dark:border-neutral-800 flex items-center gap-2.5 shadow-xs">
+          <Lock className="w-4 h-4 text-neutral-700 dark:text-neutral-300 shrink-0" />
+          <span>Privacy-preserving (zero ad trackers)</span>
         </div>
       </div>
 

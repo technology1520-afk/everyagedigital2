@@ -35,13 +35,13 @@ export function WishlistButton({
         onClick={handleToggle}
         aria-label={isSaved ? 'Remove from saved list' : 'Save for later'}
         aria-pressed={isSaved}
-        className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border backdrop-blur-md transition-all cursor-pointer min-h-[44px] ${
+        className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono border transition-all cursor-pointer min-h-[40px] ${
           isSaved
-            ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/40'
-            : 'bg-white/80 dark:bg-white/5 text-slate-700 dark:text-slate-200 border-purple-200/60 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
+            ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-800'
+            : 'bg-neutral-100 text-neutral-700 border-neutral-200 hover:bg-neutral-200/70 hover:text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700 dark:hover:text-white'
         } ${className}`}
       >
-        <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-amber-400 text-amber-500' : 'text-slate-400'}`} />
+        <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-amber-600 text-amber-600 dark:fill-amber-400 dark:text-amber-400' : 'text-neutral-500'}`} />
         {isSaved ? 'Saved to List' : 'Save for Later'}
       </button>
     );
@@ -53,13 +53,13 @@ export function WishlistButton({
       onClick={handleToggle}
       aria-label={isSaved ? 'Remove from saved list' : 'Save for later'}
       aria-pressed={isSaved}
-      className={`h-8 w-8 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-xs flex items-center justify-center ${
+      className={`h-7 w-7 rounded-md border transition-all cursor-pointer shadow-xs flex items-center justify-center ${
         isSaved
-          ? 'bg-amber-500/30 text-amber-300 border-amber-500/50'
-          : 'bg-black/40 hover:bg-black/70 border-white/10 text-white/80 hover:text-white'
+          ? 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/50 dark:text-amber-200 dark:border-amber-700'
+          : 'bg-white/90 hover:bg-white text-neutral-600 hover:text-neutral-900 border-neutral-200 dark:bg-neutral-900/90 dark:hover:bg-neutral-800 dark:text-neutral-400 dark:hover:text-white dark:border-neutral-700'
       } ${className}`}
     >
-      <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : 'currentColor'}`} />
+      <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-amber-600 dark:fill-amber-400' : 'currentColor'}`} />
     </button>
   );
 }

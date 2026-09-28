@@ -8,7 +8,7 @@ import {
   Search, 
   Bookmark, 
   Scale, 
-  Sparkles, 
+  SlidersHorizontal, 
   Menu, 
   X, 
   BookOpen, 
@@ -79,46 +79,60 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
     { name: 'Collections', href: '/collections', icon: Compass },
     { name: 'Books & Guides', href: '/books', icon: BookOpen },
     { name: 'Deals', href: '/deals', icon: Flame },
-    { name: 'AI Assistant', href: '/assistant', icon: Sparkles, highlight: true },
+    { name: 'Concierge', href: '/assistant', icon: SlidersHorizontal, isPill: true },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-white/70 dark:bg-slate-950/70 border-b border-purple-200/50 dark:border-white/10 shadow-sm dark:shadow-black/20 transition-all">
+    <header className="sticky top-0 z-50 w-full bg-[#faf9f6]/95 dark:bg-[#0d1117]/95 border-b border-neutral-200/80 dark:border-neutral-800 shadow-xs transition-colors backdrop-blur-md">
       <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3 relative">
         {/* Logo & Brand Identity */}
         <div className="flex items-center gap-4 sm:gap-6">
           <Link href="/" className="hover:opacity-90 transition-opacity touch-target">
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <div className="logo-emblem h-10 w-10 overflow-hidden rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0 border border-transparent transition-all">
-                <Image alt="EveryAge Digital" className="h-full w-full object-contain" height={36} priority src="/logo.png" width={36}/>
+              <div className="logo-emblem h-9 w-9 overflow-hidden rounded-lg bg-neutral-900 dark:bg-neutral-100 p-1 shadow-xs flex items-center justify-center shrink-0 border border-neutral-300 dark:border-neutral-800 transition-all">
+                <Image alt="EveryAge Digital" className="h-full w-full object-contain invert dark:invert-0" height={32} priority src="/logo.png" width={32}/>
               </div>
-              <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight flex items-center">
-                EveryAge <span className="text-xs uppercase tracking-widest text-blue-500 font-semibold ml-1">Digital</span>
+              <span className="font-serif font-bold text-lg text-neutral-900 dark:text-white tracking-tight flex items-center">
+                EveryAge <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-500 dark:text-neutral-400 ml-1.5 pt-0.5">Editorial</span>
               </span>
-              <span className="hidden [html[data-seasonal=halloween]_&]:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/20 text-orange-300 border border-orange-400/40 shadow-xs animate-pulse">
-                🎃 Spooky Season Edition
+              <span className="hidden [html[data-seasonal=halloween]_&]:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/20 text-orange-300 border border-orange-400/40 shadow-xs">
+                🎃 Spooky Edition
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links (inline on md+) */}
-          <nav className="hidden md:flex items-center gap-1.5 lg:gap-2" aria-label="Main Navigation">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2" aria-label="Main Navigation">
             {navLinks.map(link => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+
+              if (link.isPill) {
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono uppercase tracking-wider transition-all border ${
+                      isActive
+                        ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-950 dark:border-white font-semibold'
+                        : 'bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+                    }`}
+                  >
+                    <link.icon className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
+                    <span>{link.name}</span>
+                  </Link>
+                );
+              }
 
               return (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium backdrop-blur-md transition-all ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs uppercase tracking-wider font-mono transition-colors ${
                     isActive
-                      ? 'bg-purple-600/10 text-purple-900 border border-purple-300/60 dark:bg-white/10 dark:text-white dark:border-white/20 shadow-xs font-semibold'
-                      : link.highlight
-                      ? 'bg-purple-500/10 border border-purple-500/25 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20 hover:text-purple-900 dark:hover:text-purple-200'
-                      : 'text-slate-600 hover:text-slate-900 bg-white/60 border border-purple-200/60 hover:bg-purple-100/50 dark:text-slate-300 dark:hover:text-white dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10'
+                      ? 'text-neutral-950 dark:text-white font-semibold'
+                      : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white'
                   }`}
                 >
-                  <link.icon className={`w-3.5 h-3.5 ${isActive ? 'text-purple-700 dark:text-blue-400' : link.highlight ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 dark:text-slate-400'}`} />
                   <span>{link.name}</span>
                 </Link>
               );
@@ -137,14 +151,14 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
           <Link
             href="/search"
             aria-label="Search catalog"
-            className="hidden md:flex p-2 px-3 text-slate-700 hover:text-slate-900 bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 focus:border-purple-400 dark:text-slate-300 dark:hover:text-white dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:focus:border-blue-400/50 backdrop-blur-md rounded-xl transition-all items-center gap-1.5 text-xs font-medium min-h-[40px]"
+            className="hidden md:flex p-2 px-3 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors items-center gap-1.5 text-xs font-mono min-h-[36px]"
           >
-            <Search className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-            <span className="text-slate-700 dark:text-slate-300 font-medium">Search</span>
+            <Search className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500" />
+            <span className="font-mono text-xs uppercase tracking-wider">Search</span>
           </Link>
 
           {/* Light / Dark Theme Toggle or Halloween Pumpkin */}
-          <div className="bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 focus-within:border-purple-400 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:focus-within:border-blue-400/50 [html[data-seasonal=halloween]_&]:border-orange-500/30 [html[data-seasonal=halloween]_&]:bg-slate-900/60 backdrop-blur-md rounded-xl transition-all flex items-center justify-center min-h-[40px] min-w-[40px]">
+          <div className="bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors flex items-center justify-center min-h-[36px] min-w-[36px]">
             <ThemeToggle isHalloween={isHalloween} />
           </div>
 
@@ -152,11 +166,11 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
           <Link
             href="/wishlist"
             aria-label={mounted && totalSaved > 0 ? `Saved items (${totalSaved})` : 'Saved items'}
-            className="touch-target relative p-2.5 text-slate-700 hover:text-slate-900 bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 focus:border-purple-400 dark:text-slate-300 dark:hover:text-white dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:focus:border-blue-400/50 backdrop-blur-md rounded-xl transition-all min-h-[40px] min-w-[40px] flex items-center justify-center"
+            className="touch-target relative p-2 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
-            <Bookmark className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+            <Bookmark className="w-4 h-4" />
             {mounted && totalSaved > 0 && (
-              <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-xs">
+              <span className="absolute -top-1 -right-1 bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-[10px] font-mono font-bold rounded-full w-4 h-4 flex items-center justify-center">
                 {totalSaved}
               </span>
             )}
@@ -166,11 +180,11 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
           <Link
             href="/compare"
             aria-label={mounted && totalCompare > 0 ? `Compare products (${totalCompare})` : 'Compare products'}
-            className="touch-target relative p-2.5 text-slate-700 hover:text-slate-900 bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 focus:border-purple-400 dark:text-slate-300 dark:hover:text-white dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:focus:border-blue-400/50 backdrop-blur-md rounded-xl transition-all min-h-[40px] min-w-[40px] flex items-center justify-center"
+            className="touch-target relative p-2 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
-            <Scale className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+            <Scale className="w-4 h-4" />
             {mounted && totalCompare > 0 && (
-              <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-xs">
+              <span className="absolute -top-1 -right-1 bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-[10px] font-mono font-bold rounded-full w-4 h-4 flex items-center justify-center">
                 {totalCompare}
               </span>
             )}
@@ -182,7 +196,7 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle secondary navigation"
             aria-expanded={mobileMenuOpen}
-            className="md:hidden p-2 text-slate-700 hover:text-slate-900 bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 dark:text-slate-300 dark:hover:text-white dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10 backdrop-blur-md rounded-xl cursor-pointer transition-all min-h-[40px] min-w-[40px] flex items-center justify-center"
+            className="md:hidden p-2 text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/80 dark:text-neutral-400 dark:hover:text-white dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:border-neutral-800 rounded-lg cursor-pointer transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -193,14 +207,14 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
       {mobileMenuOpen && (
         <>
           <div
-            className="md:hidden fixed inset-0 top-[88px] bg-black/60 backdrop-blur-sm z-30 transition-opacity"
+            className="md:hidden fixed inset-0 top-[64px] bg-black/60 z-30 transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
-          <div className="md:hidden absolute top-full left-0 right-0 backdrop-blur-2xl bg-white/95 dark:bg-slate-950/90 border-b border-purple-200/60 dark:border-white/10 p-5 space-y-4 shadow-2xl z-40 max-h-[calc(100vh-80px)] overflow-y-auto animate-in slide-in-from-top-2 duration-200 text-slate-900 dark:text-slate-100">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[#faf9f6] dark:bg-[#0d1117] border-b border-neutral-200 dark:border-neutral-800 p-5 space-y-4 shadow-xl z-40 max-h-[calc(100vh-80px)] overflow-y-auto animate-in slide-in-from-top-2 duration-200 text-neutral-900 dark:text-neutral-100">
             {/* Primary Destinations in drawer */}
             <div className="space-y-1.5">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold px-3 block mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500 font-semibold px-3 block mb-1">
                 Explore Catalog
               </span>
               {navLinks.map(link => {
@@ -210,15 +224,15 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
                     key={link.name}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`touch-target w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-colors ${
+                    className={`touch-target w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-xs font-mono uppercase tracking-wider transition-colors ${
                       isActive
-                        ? 'bg-purple-600/10 text-purple-900 border border-purple-300/60 dark:bg-blue-600/20 dark:text-white dark:border-blue-500/30 font-semibold shadow-xs'
-                        : link.highlight
-                        ? 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/25'
-                        : 'text-slate-700 hover:text-slate-900 bg-white/60 border border-purple-200/60 hover:bg-purple-100/40 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10 dark:bg-white/5 dark:border-white/10'
+                        ? 'bg-neutral-200 text-neutral-950 dark:bg-neutral-800 dark:text-white font-bold'
+                        : link.isPill
+                        ? 'bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-700'
+                        : 'text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white'
                     }`}
                   >
-                    <link.icon className={`w-4 h-4 ${isActive ? 'text-purple-700 dark:text-blue-400' : link.highlight ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 dark:text-slate-400'}`} />
+                    <link.icon className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
                     <span>{link.name}</span>
                   </Link>
                 );
@@ -226,40 +240,40 @@ export function SiteHeader({ isHalloween: propIsHalloween = false }: SiteHeaderP
             </div>
 
             {/* Secondary Editorial & Info Links */}
-            <div className="pt-3 border-t border-purple-200/40 dark:border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold px-3 block mb-1">
+            <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500 font-semibold px-3 block mb-1">
                 Editorial & Standards
               </span>
               <Link
                 href="/about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-purple-100/40 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-mono text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
               >
-                <Info className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <Info className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
                 <span>About EveryAge Digital</span>
               </Link>
               <Link
                 href="/methodology"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-purple-100/40 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-mono text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
               >
-                <ShieldCheck className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <ShieldCheck className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
                 <span>Vetting Methodology & Testing</span>
               </Link>
               <Link
                 href="/affiliate-disclosure"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-purple-100/40 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-mono text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
               >
-                <FileText className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <FileText className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
                 <span>Full Affiliate Disclosure</span>
               </Link>
               <Link
                 href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-purple-100/40 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/10"
+                className="touch-target flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-mono text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
               >
-                <span className="w-2 h-2 rounded-full bg-purple-600 dark:bg-blue-500" />
+                <span className="w-2 h-2 rounded-full bg-neutral-400 dark:bg-neutral-500" />
                 <span>Owner Control Center</span>
               </Link>
             </div>
