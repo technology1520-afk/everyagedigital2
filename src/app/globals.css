@@ -3,56 +3,56 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* DAY MODE: LAVENDER GLASSMORPHISM TOKENS */
-  --background: #f4f0fa;        /* soft lavender canvas */
-  --surface: rgba(255, 255, 255, 0.75);       /* frosted white/lavender cards */
-  --surface-muted: rgba(243, 238, 251, 0.65);
-  --text: #0F172A;              /* deep slate-900 for high-contrast readability */
-  --text-secondary: #64748B;    /* slate-500 */
-  --border: rgba(216, 180, 254, 0.4);         /* purple-300/40 subtle borders */
+  /* DAY MODE: BESPOKE EDITORIAL MATTE TOKENS */
+  --background: #f7f6f2;        /* warm tactile canvas */
+  --surface: #faf9f6;           /* crisp warm off-white surface */
+  --surface-muted: #f0ede6;     /* muted tactile surface */
+  --text: #171717;              /* neutral-900 high contrast */
+  --text-secondary: #525252;    /* neutral-600 */
+  --border: #e2dfd5;            /* crisp warm border */
 
-  /* PRIMARY ACCENT — buttons, links, active states */
-  --accent: #7C3AED;            /* rich purple */
-  --accent-hover: #6D28D9;
-  --accent-soft: rgba(124, 58, 237, 0.1);
+  /* PRIMARY ACCENT — understated utilitarian editorial */
+  --accent: #171717;
+  --accent-hover: #262626;
+  --accent-soft: rgba(0, 0, 0, 0.06);
 
   /* SEMANTIC ACCENT FAMILIES */
-  --coral: #E11D48;        --coral-soft: rgba(225, 29, 72, 0.1);
-  --amber: #D97706;        --amber-soft: rgba(217, 119, 6, 0.12);
-  --featured: rgba(243, 238, 251, 0.75);
-  --success: #059669;      --success-soft: rgba(5, 150, 105, 0.12);
-  --purple: #8B5CF6;       --purple-soft: rgba(139, 92, 246, 0.12);
-  --gumroad-pink: #DB2777;
-  --amazon-navy: #1E293B;  --amazon-orange: #EA580C;
+  --coral: #dc2626;        --coral-soft: rgba(220, 38, 38, 0.08);
+  --amber: #d97706;        --amber-soft: rgba(217, 119, 6, 0.1);
+  --featured: #ece9e2;
+  --success: #15803d;      --success-soft: rgba(21, 128, 61, 0.1);
+  --purple: #4f46e5;       --purple-soft: rgba(79, 70, 229, 0.08);
+  --gumroad-pink: #be185d;
+  --amazon-navy: #1e293b;  --amazon-orange: #c2410c;
 
-  --soft: #64748B;
-  --warning: #D97706;
-  --danger: #DC2626;
-  --font-serif: "Newsreader", "Georgia", "Cambria", serif;
+  --soft: #737373;
+  --warning: #d97706;
+  --danger: #b91c1c;
+  --font-serif: var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, serif;
 }
 
 .dark {
-  /* NIGHT MODE: COSMIC GLASSMORPHISM TOKENS */
-  --background: #020617;        /* deep cosmic slate-950 */
-  --surface: rgba(15, 23, 42, 0.4);           /* translucent cards */
-  --surface-muted: rgba(30, 41, 59, 0.3);
-  --text: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --border: rgba(255, 255, 255, 0.1);
+  /* NIGHT MODE: BESPOKE MATTE GRAPHITE TOKENS */
+  --background: #090d13;        /* deep matte charcoal */
+  --surface: #0d1117;           /* solid matte graphite card surface */
+  --surface-muted: #161b22;     /* muted tactile surface */
+  --text: #f0f6fc;              /* crisp white text */
+  --text-secondary: #8b949e;    /* neutral slate-400 */
+  --border: #21262d;            /* solid graphite border */
 
-  --accent: #3B82F6;            /* vibrant blue accent */
-  --accent-hover: #60A5FA;
-  --accent-soft: rgba(59, 130, 246, 0.15);
+  --accent: #f0f6fc;            /* crisp monochrome accent */
+  --accent-hover: #ffffff;
+  --accent-soft: rgba(255, 255, 255, 0.08);
 
-  --coral: #F08A78;             --coral-soft: rgba(240, 138, 120, 0.15);
-  --amber: #F59E0B;             --amber-soft: rgba(245, 158, 11, 0.12);
-  --success: #10B981;           --success-soft: rgba(16, 185, 129, 0.15);
-  --purple: #A855F7;            --purple-soft: rgba(168, 85, 247, 0.15);
-  --featured: rgba(30, 41, 59, 0.4);
+  --coral: #f87171;             --coral-soft: rgba(248, 113, 113, 0.12);
+  --amber: #fbbf24;             --amber-soft: rgba(251, 191, 36, 0.1);
+  --success: #34d399;           --success-soft: rgba(52, 211, 153, 0.12);
+  --purple: #818cf8;            --purple-soft: rgba(129, 140, 248, 0.12);
+  --featured: #161b22;
 
-  --soft: #94A3B8;
-  --warning: #F59E0B;
-  --danger: #EF4444;
+  --soft: #8b949e;
+  --warning: #fbbf24;
+  --danger: #f87171;
 }
 
 @theme {
@@ -76,6 +76,7 @@
   --color-brand-warning: var(--warning);
   --color-brand-danger: var(--danger);
   --color-brand-featured: var(--featured);
+  --font-serif: var(--font-newsreader), "Newsreader", "Playfair Display", Georgia, serif;
   --font-editorial: var(--font-serif);
 }
 

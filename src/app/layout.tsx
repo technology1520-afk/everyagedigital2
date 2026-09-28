@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { WishlistProvider } from "../context/WishlistContext";
@@ -45,6 +45,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -112,30 +118,21 @@ export default async function RootLayout({
       lang="en" 
       suppressHydrationWarning 
       data-seasonal={isHalloween ? 'halloween' : undefined}
-      className={`${geistSans.variable} ${geistMono.variable} ${isHalloween ? 'dark' : ''} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} ${isHalloween ? 'dark' : ''} h-full antialiased`}
     >
       <body 
         suppressHydrationWarning 
         data-seasonal={isHalloween ? 'halloween' : undefined}
-        className="min-h-screen bg-[#f4f0fa] text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 relative overflow-x-hidden flex flex-col antialiased selection:bg-purple-500/30 selection:text-purple-900 dark:selection:bg-blue-500/30 dark:selection:text-white"
+        className="min-h-screen bg-[#f7f6f2] text-neutral-900 dark:bg-[#090d13] dark:text-neutral-100 transition-colors duration-300 relative overflow-x-hidden flex flex-col antialiased selection:bg-neutral-300 dark:selection:bg-neutral-800"
       >
         {isHalloween && <HalloweenAmbientOverlay />}
-        {/* Persistent ambient blur glow spheres in fixed positions (lavender day / indigo dark) */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-          {/* Top-left orb */}
-          <div className="h-[500px] w-[500px] bg-purple-300/40 dark:bg-blue-600/15 blur-[150px] pointer-events-none fixed -top-40 -left-40 z-0 rounded-full transition-colors duration-500" />
-          {/* Center-right orb */}
-          <div className="h-[600px] w-[600px] bg-fuchsia-200/30 dark:bg-indigo-600/10 blur-[180px] pointer-events-none fixed top-1/3 -right-40 z-0 rounded-full transition-colors duration-500" />
-          {/* Bottom-left orb */}
-          <div className="h-[500px] w-[500px] bg-indigo-200/30 dark:bg-sky-500/10 blur-[150px] pointer-events-none fixed -bottom-40 left-1/4 z-0 rounded-full transition-colors duration-500" />
-        </div>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem forcedTheme={isHalloween ? 'dark' : undefined}>
           <div className="relative z-10 flex flex-col min-h-screen">
             {/* Skip to Content for WCAG 2.2 AA Accessibility */}
             <a
               href="#main-content"
-              className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-hidden"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-neutral-900 focus:text-white dark:focus:bg-white dark:focus:text-neutral-900 focus:rounded-lg focus:shadow-lg focus:outline-hidden"
             >
               Skip to main content
             </a>
