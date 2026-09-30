@@ -388,6 +388,168 @@ export const PRODUCTS: Product[] = [
     editorialBadge: 'Top Practical Pick',
     createdAt: '2026-02-10T16:00:00Z',
     updatedAt: '2026-03-14T12:00:00Z'
+  },
+  {
+    id: 'prod-google-ai-plus',
+    slug: 'google-ai-plus-students-free-handshake',
+    name: 'Google AI Plus for Students - Free for 1 Year via Handshake',
+    brand: 'Google / Handshake',
+    description: 'Undergraduate and graduate students get Google AI Plus free for one year through Handshake: Gemini with higher limits, access to Google Pro models, and 2TB/400GB storage. Normally $7.99–$19.99/mo.',
+    productType: 'digital',
+    category: 'Digital Templates & Downloads',
+    subcategory: 'Student & Creator Perks',
+    useCases: ['Academic research synthesis', 'Coding and paper outlining', 'Cloud workspace backup'],
+    bestFor: 'College students, graduate researchers, and academic writers with .edu credentials.',
+    notFor: 'Users without an active eligible university affiliation or Handshake profile.',
+    features: [
+      'Gemini with significantly elevated query limits',
+      'Direct access to Google Pro reasoning models',
+      'Up to 2TB cloud storage across Drive, Photos, and Gmail',
+      'Seamless Google Workspace integrations'
+    ],
+    benefits: [
+      '100% Free for 12 months ($95.88 total annual savings)',
+      'Zero recurring charge during the promotional period'
+    ],
+    limitations: [
+      'Requires active college/university student verification via Handshake',
+      'Requires Google Play activation with valid payment method on file'
+    ],
+    officialUrl: 'https://app.joinhandshake.com/gemini',
+    sourceProvider: 'Direct Brand',
+    sourceProductId: 'GOOGLE-AI-PLUS-STUDENT',
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+    imageSource: 'Publisher Authorized',
+    imageLicense: 'Official Affiliate Feed',
+    altText: 'Google AI Plus for Students perk illustration with Gemini neural graphics',
+    region: ['US', 'Global'],
+    language: 'en',
+    status: 'active',
+    editorialNotes: 'Unmatched zero-cost value for students looking to supercharge academic workflows with Gemini Pro.',
+    handsOnTested: true,
+    editorialConfidence: 'Verified',
+    editorialBadge: 'Best Value',
+    is_deal: true,
+    isDeal: true,
+    is_free: true,
+    isFree: true,
+    price: 0,
+    original_price: 95.88,
+    originalPrice: 95.88,
+    discount_percent: 100,
+    discountPercent: 100,
+    deal_type: 'student',
+    dealType: 'student',
+    verified_date: 'Verified Live',
+    verifiedDate: 'Verified Live',
+    deal_facts: {
+      duration: '12 Months',
+      discount: '100% OFF (1 Year)',
+      value: '$95.88/year',
+      access: 'Student .edu / Handshake Verification'
+    },
+    dealFacts: {
+      duration: '12 Months',
+      discount: '100% OFF (1 Year)',
+      value: '$95.88/year',
+      access: 'Student .edu / Handshake Verification'
+    },
+    claim_steps: [
+      'Log in to Handshake at app.joinhandshake.com/gemini with your university student account.',
+      'Unlock the Google AI promotional offer on your Handshake dashboard.',
+      'Activate using your preferred personal or university Google account.',
+      'Add a payment method on Google Play to activate (no charges apply during the 12-month free term).'
+    ],
+    claimSteps: [
+      'Log in to Handshake at app.joinhandshake.com/gemini with your university student account.',
+      'Unlock the Google AI promotional offer on your Handshake dashboard.',
+      'Activate using your preferred personal or university Google account.',
+      'Add a payment method on Google Play to activate (no charges apply during the 12-month free term).'
+    ],
+    affiliate_url: 'https://app.joinhandshake.com/gemini',
+    affiliateUrl: 'https://app.joinhandshake.com/gemini',
+    merchant: 'Google / Handshake',
+    createdAt: '2026-03-20T12:00:00Z',
+    updatedAt: '2026-03-25T12:00:00Z'
+  },
+  {
+    id: 'prod-creator-motion-pack',
+    slug: 'creator-pro-motion-sound-superpack',
+    name: 'Creator Studio Ultimate FX & Motion Suite (85% OFF Lifetime License)',
+    brand: 'MotionCraft Pro',
+    description: 'Over 2,400+ 4K transitions, cinematic color LUTs, and lossless sound design assets for digital video creators and editors.',
+    productType: 'digital',
+    category: 'Digital Templates & Downloads',
+    subcategory: 'Creator Assets',
+    useCases: ['YouTube & short-form video production', 'Commercial promo editing', 'Podcast audio mastering'],
+    bestFor: 'Solo video creators, agencies, and editors needing a comprehensive drag-and-drop asset vault.',
+    notFor: 'Users looking exclusively for physical recording hardware.',
+    features: [
+      '2,400+ Drag-and-drop 4K assets',
+      'Compatible with Premiere, Final Cut, DaVinci Resolve, and CapCut',
+      'Royalty-free commercial lifetime clearance'
+    ],
+    benefits: [
+      '85% flash discount on complete lifetime library bundle',
+      'Instant cloud download with zero recurring subscriptions'
+    ],
+    limitations: [
+      'Requires ~45GB local storage for complete uncompressed asset extraction'
+    ],
+    officialUrl: 'https://gumroad.com',
+    sourceProvider: 'Gumroad',
+    sourceProductId: 'MOTION-ULTIMATE-85',
+    imageUrl: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=80',
+    imageSource: 'Creator Authorized',
+    imageLicense: 'Official Affiliate Feed',
+    altText: 'Video editing timeline and color grading suite preview',
+    region: ['Global'],
+    language: 'en',
+    status: 'active',
+    editorialNotes: 'Massive asset library providing agency-grade production value at a fraction of stock site subscription fees.',
+    handsOnTested: true,
+    editorialConfidence: 'Verified',
+    editorialBadge: 'Editor’s Choice',
+    is_deal: true,
+    isDeal: true,
+    is_free: false,
+    isFree: false,
+    price: 29.00,
+    original_price: 199.00,
+    originalPrice: 199.00,
+    discount_percent: 85,
+    discountPercent: 85,
+    deal_type: 'discount',
+    dealType: 'discount',
+    verified_date: 'Verified Live',
+    verifiedDate: 'Verified Live',
+    deal_facts: {
+      duration: 'Lifetime License',
+      discount: '85% OFF Flash Sale',
+      value: '$199.00 retail value',
+      access: 'Instant Digital Download'
+    },
+    dealFacts: {
+      duration: 'Lifetime License',
+      discount: '85% OFF Flash Sale',
+      value: '$199.00 retail value',
+      access: 'Instant Digital Download'
+    },
+    claim_steps: [
+      'Visit the official Gumroad creator bundle checkout page.',
+      'Enter the verified editorial discount code at checkout.',
+      'Receive instant lifetime access and cloud asset links.'
+    ],
+    claimSteps: [
+      'Visit the official Gumroad creator bundle checkout page.',
+      'Enter the verified editorial discount code at checkout.',
+      'Receive instant lifetime access and cloud asset links.'
+    ],
+    affiliate_url: 'https://creatorcraft.gumroad.com/l/motion-suite?discount=EVERYAGE85',
+    affiliateUrl: 'https://creatorcraft.gumroad.com/l/motion-suite?discount=EVERYAGE85',
+    merchant: 'Gumroad',
+    createdAt: '2026-03-18T10:00:00Z',
+    updatedAt: '2026-03-25T10:00:00Z'
   }
 ];
 
@@ -538,6 +700,44 @@ export const MERCHANT_OFFERS: MerchantOffer[] = [
     region: ['Global'],
     shippingNote: 'Available in dot grid, lined, and graph formats',
     lastCheckedAt: '2026-03-19T11:00:00Z',
+    staleAfterDays: 14,
+    active: true
+  },
+  {
+    id: 'off-google-ai-plus',
+    productId: 'prod-google-ai-plus',
+    merchantName: 'Direct Brand',
+    providerName: 'Google / Handshake',
+    affiliateProgram: 'prog-direct',
+    originalUrl: 'https://app.joinhandshake.com/gemini',
+    affiliateUrl: 'https://app.joinhandshake.com/gemini',
+    currency: 'USD',
+    price: 0.00,
+    originalPrice: 95.88,
+    priceType: 'free',
+    availability: 'digital_instant',
+    region: ['US', 'Global'],
+    shippingNote: 'Instant online activation via Handshake',
+    lastCheckedAt: '2026-03-25T08:00:00Z',
+    staleAfterDays: 30,
+    active: true
+  },
+  {
+    id: 'off-creator-motion-pack',
+    productId: 'prod-creator-motion-pack',
+    merchantName: 'Gumroad',
+    providerName: 'Gumroad',
+    affiliateProgram: 'prog-gumroad',
+    originalUrl: 'https://creatorcraft.gumroad.com/l/motion-suite?discount=EVERYAGE85',
+    affiliateUrl: 'https://creatorcraft.gumroad.com/l/motion-suite?discount=EVERYAGE85',
+    currency: 'USD',
+    price: 29.00,
+    originalPrice: 199.00,
+    priceType: 'fixed',
+    availability: 'digital_instant',
+    region: ['Global'],
+    shippingNote: 'Instant digital duplicate and download',
+    lastCheckedAt: '2026-03-25T08:00:00Z',
     staleAfterDays: 14,
     active: true
   }

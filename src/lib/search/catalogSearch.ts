@@ -291,27 +291,70 @@ export async function getAllMerchantsAsync(): Promise<{ name: string; count: num
   }));
 }
 
-export function getDeals(): EnrichedProduct[] {
-  return catalogRepository.getProducts({ status: 'active' })
-    .map(p => enrichProduct(p))
-    .filter(item => {
-      if (!item.offer) return false;
-      const hasDiscount = item.offer.originalPrice && item.offer.originalPrice > item.offer.price;
-      const isBestValue = item.product.editorialBadge === 'Best Value';
-      return hasDiscount || isBestValue;
-    });
+export function isQualifyingDeal(item: EnrichedProduct): boolean {
+  const p = item.product;
+  const isFree = Boolean(p.is_free || p.isFree || (item.offer && item.offer.price === 0) || (p.price === 0));
+  const isExplicitDeal = Boolean(p.is_deal || p.isDeal);
+  
+  let discountPercent = p.discount_percent ?? p.discountPercent;
+  if (discountPercent === undefined || discountPercent === null) {
+    const origPrice = p.original_price ?? p.originalPrice ?? item.offer?.originalPrice;
+    const curPrice = p.price ?? item.offer?.price;
+    if (origPrice && curPrice !== undefined && curPrice !== null && origPrice > curPrice) {
+      discountPercent = Math.round(((origPrice - curPrice) / origPrice) * 100);
+    } else {
+      discountPercent = 0;
+    }
+  }
+  if (isFree) {
+    discountPercent = 100;
+  }
+
+  // Ensure fields are synchronized onto product
+  if (p.discount_percent === undefined) p.discount_percent = discountPercent;
+  if (p.discountPercent === undefined) p.discountPercent = discountPercent;
+  if (p.is_free === undefined) p.is_free = isFree;
+  if (p.isFree === undefined) p.isFree = isFree;
+  if (p.is_deal === undefined) p.is_deal = isExplicitDeal || isFree || discountPercent >= 50;
+  if (p.isDeal === undefined) p.isDeal = p.is_deal;
+
+  // STRICT REQUIREMENT: Only items where is_deal = true OR is_free = true OR discount_percent >= 50
+  return isExplicitDeal || isFree || discountPercent >= 50;
 }
 
-export async function getDealsAsync(): Promise<EnrichedProduct[]> {
-  const products = await catalogRepository.getAllProducts({ status: 'active' });
-  return products
+export function getDeals(filter?: 'all' | 'free' | 'steals'): EnrichedProduct[] {
+  const all = catalogRepository.getProducts({ status: 'active' })
     .map(p => enrichProduct(p))
-    .filter(item => {
-      if (!item.offer) return false;
-      const hasDiscount = item.offer.originalPrice && item.offer.originalPrice > item.offer.price;
-      const isBestValue = item.product.editorialBadge === 'Best Value';
-      return hasDiscount || isBestValue;
+    .filter(isQualifyingDeal);
+
+  if (filter === 'free') {
+    return all.filter(item => Boolean(item.product.is_free || item.product.isFree || item.offer?.price === 0 || item.product.price === 0));
+  }
+  if (filter === 'steals') {
+    return all.filter(item => {
+      const discount = item.product.discount_percent ?? item.product.discountPercent ?? 0;
+      return discount >= 80 || item.product.is_free || item.product.isFree;
     });
+  }
+  return all;
+}
+
+export async function getDealsAsync(filter?: 'all' | 'free' | 'steals'): Promise<EnrichedProduct[]> {
+  const products = await catalogRepository.getAllProducts({ status: 'active' });
+  const all = products
+    .map(p => enrichProduct(p))
+    .filter(isQualifyingDeal);
+
+  if (filter === 'free') {
+    return all.filter(item => Boolean(item.product.is_free || item.product.isFree || item.offer?.price === 0 || item.product.price === 0));
+  }
+  if (filter === 'steals') {
+    return all.filter(item => {
+      const discount = item.product.discount_percent ?? item.product.discountPercent ?? 0;
+      return discount >= 80 || item.product.is_free || item.product.isFree;
+    });
+  }
+  return all;
 }
 
 export function getAllCollections(options?: { storefrontOnly?: boolean }): Collection[] {

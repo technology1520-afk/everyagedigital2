@@ -1714,7 +1714,7 @@ class CatalogRepository {
       clicksLast7d: clicks7d,
       clicksLast30d: clicks30d,
       topProduct: sortedByClicks[0],
-      topProducts: sortedByClicks.slice(0, 10),
+      topProducts: sortedByClicks.slice(0, 25),
       staleProducts,
       assistantConversations7d: conversations7d,
       recentQuestions: this.assistantLogs.slice(0, 5).map(l => ({

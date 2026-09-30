@@ -78,6 +78,17 @@ export interface SupabaseProductRow {
   editorial_stance?: string | null;
   tested_in_house?: boolean | null;
   last_price_checked_at?: string | null;
+  price?: number | string | null;
+  original_price?: number | string | null;
+  discount_percent?: number | null;
+  is_deal?: boolean | null;
+  is_free?: boolean | null;
+  deal_type?: string | null;
+  claim_steps?: unknown;
+  deal_facts?: unknown;
+  verified_date?: string | null;
+  category?: string | null;
+  merchant?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
 }
@@ -153,6 +164,47 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
       ? ['Yard & porch transformations', 'Thematic parties', 'Spooky holiday staging']
       : ['Focused desktop ergonomics', 'High-throughput productivity'];
 
+  const isFree = Boolean(row.is_free) || (row.price !== undefined && row.price !== null && Number(row.price) === 0 && Boolean(row.is_deal));
+  const isDeal = Boolean(row.is_deal) || isFree;
+  const currentPrice = sanitizePriceBound(row.price ?? row.price_min, isFree ? 0 : null) ?? undefined;
+  const originalPrice = sanitizePriceBound(row.original_price ?? row.price_max, null) ?? undefined;
+
+  let discountPercent = typeof row.discount_percent === 'number'
+    ? row.discount_percent
+    : (row.discount_percent ? parseInt(String(row.discount_percent), 10) : undefined);
+
+  if (discountPercent === undefined && originalPrice && currentPrice !== undefined && originalPrice > currentPrice) {
+    discountPercent = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+  }
+  if (isFree) {
+    discountPercent = 100;
+  }
+
+  const claimSteps = Array.isArray(row.claim_steps)
+    ? row.claim_steps.map(s => String(s))
+    : typeof row.claim_steps === 'string'
+      ? (() => {
+          try {
+            const parsed = JSON.parse(row.claim_steps);
+            return Array.isArray(parsed) ? parsed.map(String) : [row.claim_steps];
+          } catch {
+            return [row.claim_steps];
+          }
+        })()
+      : undefined;
+
+  const dealFacts = (typeof row.deal_facts === 'object' && row.deal_facts !== null)
+    ? (row.deal_facts as Record<string, string>)
+    : typeof row.deal_facts === 'string'
+      ? (() => {
+          try {
+            return JSON.parse(row.deal_facts) as Record<string, string>;
+          } catch {
+            return undefined;
+          }
+        })()
+      : undefined;
+
   return {
     id: row.id,
     slug: row.slug || `product-${row.id}`,
@@ -196,8 +248,25 @@ export function mapSupabaseRowToProduct(row: SupabaseProductRow): Product {
     editorial_stance: row.editorial_stance || undefined,
     testedInHouse: row.tested_in_house !== undefined && row.tested_in_house !== null ? Boolean(row.tested_in_house) : true,
     tested_in_house: row.tested_in_house !== undefined && row.tested_in_house !== null ? Boolean(row.tested_in_house) : true,
-    priceMin: typeof row.price_min === 'number' ? row.price_min : row.price_min ? Number(row.price_min) : undefined,
-    priceMax: typeof row.price_max === 'number' ? row.price_max : row.price_max ? Number(row.price_max) : undefined,
+    price: currentPrice,
+    priceMin: currentPrice ?? (typeof row.price_min === 'number' ? row.price_min : row.price_min ? Number(row.price_min) : undefined),
+    priceMax: originalPrice ?? (typeof row.price_max === 'number' ? row.price_max : row.price_max ? Number(row.price_max) : undefined),
+    is_deal: isDeal,
+    isDeal,
+    is_free: isFree,
+    isFree,
+    original_price: originalPrice,
+    originalPrice,
+    discount_percent: discountPercent,
+    discountPercent,
+    deal_type: row.deal_type || (isFree ? 'student' : (isDeal ? 'discount' : undefined)),
+    dealType: row.deal_type || (isFree ? 'student' : (isDeal ? 'discount' : undefined)),
+    claim_steps: claimSteps,
+    claimSteps,
+    deal_facts: dealFacts,
+    dealFacts,
+    verified_date: row.verified_date || undefined,
+    verifiedDate: row.verified_date || undefined,
     currency: row.currency || 'USD',
     lastPriceCheckedAt: row.last_price_checked_at || undefined,
     last_price_checked_at: row.last_price_checked_at || undefined,
@@ -242,8 +311,10 @@ export function mapSupabaseRowToOffer(row: SupabaseProductRow): MerchantOffer {
   } else {
     merchantName = 'Amazon';
   }
-  const price = sanitizePriceBound(row.price_min, 0) ?? 0;
-  const originalPrice = sanitizePriceBound(row.price_max, null) ?? undefined;
+
+  const isFree = Boolean(row.is_free) || (row.price !== undefined && row.price !== null && Number(row.price) === 0 && Boolean(row.is_deal));
+  const price = isFree ? 0 : (sanitizePriceBound(row.price ?? row.price_min, 0) ?? 0);
+  const originalPrice = sanitizePriceBound(row.original_price ?? row.price_max, null) ?? undefined;
   const nowIso = new Date().toISOString();
 
   return {
@@ -257,7 +328,7 @@ export function mapSupabaseRowToOffer(row: SupabaseProductRow): MerchantOffer {
     currency: (row.currency || 'USD').trim().toUpperCase(),
     price,
     originalPrice,
-    priceType: 'fixed',
+    priceType: isFree ? 'free' : 'fixed',
     availability: 'in_stock',
     region: ['Global', 'US'],
     lastCheckedAt: row.updated_at || row.created_at || nowIso,

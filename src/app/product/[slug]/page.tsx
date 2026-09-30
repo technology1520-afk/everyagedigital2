@@ -1,7 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { 
   getProductBySlug, 
   getProductBySlugAsync,
@@ -84,6 +84,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const { product, offer, freshness } = enriched;
+
+  if (product.is_deal || product.isDeal || product.is_free || product.isFree) {
+    redirect(`/deals/${product.slug}`);
+  }
+
   const evidences = getSourceEvidenceForProduct(product.id);
   const isAmazon = offer?.merchantName === 'Amazon';
 

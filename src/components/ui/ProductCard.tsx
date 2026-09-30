@@ -48,6 +48,13 @@ export function ProductCard({
   const isPriority = priority !== undefined ? priority : (index !== undefined ? index < 2 : false);
 
   const getBadgeInfo = () => {
+    if (product.is_free || product.isFree) {
+      return { label: '100% FREE PERK', className: 'badge-best-value' };
+    }
+    const discount = product.discount_percent ?? product.discountPercent ?? 0;
+    if (discount >= 80) {
+      return { label: `${discount}% OFF`, className: 'badge-top-pick' };
+    }
     if (product.editorialBadge) {
       const lower = product.editorialBadge.toLowerCase();
       if (lower.includes('value')) {
@@ -68,6 +75,7 @@ export function ProductCard({
   const productAny = product as Record<string, any>;
 
   const getDisplayPrice = (): number | null => {
+    if (product.is_free || product.isFree) return 0;
     const candidates = [
       offer?.price,
       product.price,
@@ -81,7 +89,7 @@ export function ProductCard({
     for (const c of candidates) {
       if (c !== undefined && c !== null) {
         const num = typeof c === 'number' ? c : parseFloat(String(c));
-        if (!isNaN(num) && num > 0) return num;
+        if (!isNaN(num) && num >= 0) return num;
       }
     }
     return null;
@@ -312,8 +320,8 @@ export function ProductCard({
                   </span>
                 ) : displayPrice !== null ? (
                   <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-xl font-bold text-neutral-900 dark:text-neutral-100">
-                      ${displayPrice.toFixed(2)}
+                    <span className={`font-mono text-xl font-bold ${displayPrice === 0 ? 'text-emerald-500 dark:text-emerald-400 font-black' : 'text-neutral-900 dark:text-neutral-100'}`}>
+                      {displayPrice === 0 ? 'FREE' : `$${displayPrice.toFixed(2)}`}
                     </span>
                     {offer?.originalPrice && offer.originalPrice > displayPrice && (
                       <span className="font-mono line-through text-xs text-neutral-400 dark:text-neutral-500">
@@ -443,8 +451,8 @@ export function ProductCard({
             </span>
           ) : displayPrice !== null ? (
             <div className="flex items-baseline gap-1.5">
-              <span className="font-mono text-sm tracking-tight font-semibold text-neutral-900 dark:text-neutral-100">
-                ${displayPrice.toFixed(2)}
+              <span className={`font-mono text-sm tracking-tight font-semibold ${displayPrice === 0 ? 'text-emerald-500 dark:text-emerald-400 font-bold' : 'text-neutral-900 dark:text-neutral-100'}`}>
+                {displayPrice === 0 ? 'FREE' : `$${displayPrice.toFixed(2)}`}
               </span>
               {offer?.originalPrice && offer.originalPrice > displayPrice && (
                 <span className="font-mono line-through text-[10px] text-neutral-400 dark:text-neutral-500">

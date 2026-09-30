@@ -68,6 +68,22 @@ export interface Product {
   affiliate_url?: string;
   affiliateUrl?: string;
   merchant?: string;
+  is_deal?: boolean;
+  isDeal?: boolean;
+  is_free?: boolean;
+  isFree?: boolean;
+  original_price?: number;
+  originalPrice?: number;
+  discount_percent?: number;
+  discountPercent?: number;
+  deal_type?: 'freebie' | 'student' | 'hardware_clearance' | 'discount' | string;
+  dealType?: 'freebie' | 'student' | 'hardware_clearance' | 'discount' | string;
+  claim_steps?: string[];
+  claimSteps?: string[];
+  deal_facts?: Record<string, string>;
+  dealFacts?: Record<string, string>;
+  verified_date?: string;
+  verifiedDate?: string;
   createdAt: string;
   updatedAt: string;
 }
